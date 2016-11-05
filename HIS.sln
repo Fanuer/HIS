@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{F004783B-4614-4575-876D-33447D5B5219}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HIS.WebApi.Auth", "HIS.WebApi.Auth\HIS.WebApi.Auth.xproj", "{FCA13C87-5D32-4B7D-9780-B4304D49EBA5}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HIS.WebApi.Recipes", "HIS.WebApi.Recipes\HIS.WebApi.Recipes.xproj", "{4EC8F0CD-EA98-49DD-9453-3B3440628974}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FCA13C87-5D32-4B7D-9780-B4304D49EBA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCA13C87-5D32-4B7D-9780-B4304D49EBA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCA13C87-5D32-4B7D-9780-B4304D49EBA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCA13C87-5D32-4B7D-9780-B4304D49EBA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC8F0CD-EA98-49DD-9453-3B3440628974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC8F0CD-EA98-49DD-9453-3B3440628974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC8F0CD-EA98-49DD-9453-3B3440628974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC8F0CD-EA98-49DD-9453-3B3440628974}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FCA13C87-5D32-4B7D-9780-B4304D49EBA5} = {F004783B-4614-4575-876D-33447D5B5219}
+		{4EC8F0CD-EA98-49DD-9453-3B3440628974} = {F004783B-4614-4575-876D-33447D5B5219}
+	EndGlobalSection
+EndGlobal
