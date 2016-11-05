@@ -240,3 +240,8 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+
+# Own
+node_modules
+**/*.keys.json
