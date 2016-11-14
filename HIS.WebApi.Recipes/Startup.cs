@@ -40,10 +40,10 @@ namespace HIS.WebApi.Recipes
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = "http://localhost:5000",
-                ScopeName = "api1",
-
+                ScopeName = "Robot",
                 RequireHttpsMetadata = false
             });
+
 
             app.UseMvc();
         }

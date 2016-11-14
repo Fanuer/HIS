@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using HIS.WebApi.Auth.Data;
+using HIS.WebApi.Auth.Models;
+using HIS.WebApi.Auth.Services;
+using System.Reflection;
+using HIS.WebApi.Auth.IdentityConfigs;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 
 namespace HIS.WebApi.Auth
 {
@@ -26,49 +33,123 @@ namespace HIS.WebApi.Auth
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddJsonFile($"appsettings.keys.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
-        #endregion
-
-        #region METHODS
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services
-                .AddDeveloperIdentityServer()
-                .AddInMemoryScopes(InMemoryData.GetScopes())
-                .AddInMemoryClients(InMemoryData.GetClients())
-                .AddInMemoryUsers(InMemoryData.GetUsers());
-
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                .AddJsonFile("appsettings.keys.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             if (env.IsDevelopment())
             {
-                loggerFactory.AddDebug();
-                app.UseDeveloperExceptionPage();
+                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
+                builder.AddUserSecrets();
             }
 
-
-            app.UseIdentityServer();
+            builder.AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
+        #endregion
+
+        #region METHODS
         #endregion
 
         #region PROPERTIES
         public IConfigurationRoot Configuration { get; }
 
         #endregion
-
         
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container. 
+        /// </summary>
+        /// <param name="services">Collection to add services to</param>
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Add framework services.
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddMvc();
+
+            // Add application services.
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name; // aktuelle Assembly
+            services.AddIdentityServer()
+                //.AddTemporarySigningCredential()
+                //.AddInMemoryPersistedGrants()
+                .AddConfigurationStore(builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options => options.MigrationsAssembly(migrationsAssembly)))
+                .AddOperationalStore(builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options => options.MigrationsAssembly(migrationsAssembly)))
+                .AddAspNetIdentity<ApplicationUser>();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="app">Grants access to the app to add configurations</param>
+        /// <param name="env">Grants access to the app enviroment to add configurations</param>
+        /// <param name="loggerFactory">Logging Factory</param>
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            InitializeDatabase(app);
+
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                app.UseBrowserLink();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            app.UseStaticFiles();
+
+            app.UseIdentity();
+            app.UseIdentityServer();
+            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+                context.Database.Migrate();
+                if (!context.Clients.Any())
+                {
+                    foreach (var client in IdentityConfig.GetClients())
+                    {
+                        context.Clients.Add(client.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+
+                if (!context.Scopes.Any())
+                {
+                    foreach (var scope in IdentityConfig.GetScopes())
+                    {
+                        context.Scopes.Add(scope.ToEntity());
+                    }
+                    context.SaveChanges();
+                }
+            }
+        }
 
     }
 }

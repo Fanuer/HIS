@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>4ec8f0cd-ea98-49dd-9453-3b3440628974</ProjectGuid>
+    <ProjectGuid>a45a6e64-579b-46df-933c-468e53ff706d</ProjectGuid>
     <RootNamespace>HIS.WebApi.Recipes</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>

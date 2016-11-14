@@ -11,8 +11,6 @@ namespace HIS.WebApi.Auth
     {
         public static void Main(string[] args)
         {
-            Console.Title = "HIS Auth Service";
-
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://localhost:5000")
