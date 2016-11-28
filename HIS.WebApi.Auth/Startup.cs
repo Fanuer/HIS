@@ -13,21 +13,26 @@ using HIS.WebApi.Auth.Data;
 using HIS.WebApi.Auth.Models;
 using HIS.WebApi.Auth.Services;
 using System.Reflection;
+using AutoMapper;
 using HIS.WebApi.Auth.IdentityConfigs;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using Microsoft.Extensions.DependencyModel;
 
 namespace HIS.WebApi.Auth
 {
     public class Startup
     {
         #region CONST
+
         #endregion
 
         #region FIELDS
+
         #endregion
 
         #region CTOR
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -49,13 +54,15 @@ namespace HIS.WebApi.Auth
         #endregion
 
         #region METHODS
+
         #endregion
 
         #region PROPERTIES
+
         public IConfigurationRoot Configuration { get; }
 
         #endregion
-        
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container. 
         /// </summary>
@@ -63,7 +70,8 @@ namespace HIS.WebApi.Auth
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -79,9 +87,11 @@ namespace HIS.WebApi.Auth
             services.AddIdentityServer()
                 //.AddTemporarySigningCredential()
                 //.AddInMemoryPersistedGrants()
-                .AddConfigurationStore(builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options => options.MigrationsAssembly(migrationsAssembly)))
+                .AddConfigurationStore( builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options => options.MigrationsAssembly(migrationsAssembly)))
                 .AddOperationalStore(builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options => options.MigrationsAssembly(migrationsAssembly)))
                 .AddAspNetIdentity<ApplicationUser>();
+
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -150,6 +160,5 @@ namespace HIS.WebApi.Auth
                 }
             }
         }
-
     }
 }

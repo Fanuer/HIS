@@ -1,21 +1,22 @@
-﻿{
+{
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "version": "1.0.1",
-      "type": "platform"
-    },
-    "Microsoft.AspNetCore.Mvc": "1.0.1",
-    "Microsoft.AspNetCore.Routing": "1.0.1",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
-    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "Microsoft.Extensions.Logging": "1.0.0",
-    "Microsoft.Extensions.Logging.Console": "1.0.0",
-    "Microsoft.Extensions.Logging.Debug": "1.0.0",
-    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
-    "IdentityServer4.AccessTokenValidation": "1.0.1-rc2"
+    "AutoMapper": "5.2.0",
+    "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
+    "HIS.Recipes.Models": "1.0.0-*",
+    "HIS.Recipes.Services": "1.0.0-*",
+    "IdentityServer4.AccessTokenValidation": "1.0.1-rc2",
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Routing": "1.1.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "Microsoft.Extensions.Logging.Debug": "1.1.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+    "Microsoft.NETCore.App": "1.1.0"
   },
 
   "tools": {
@@ -23,7 +24,7 @@
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
+    "netcoreapp1.1": {
       "imports": [
         "dotnet5.6",
         "portable-net45+win8"

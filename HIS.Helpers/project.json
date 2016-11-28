@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "AutoMapper": "5.2.0",
+    "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
+    "HIS.Data.Base.Interfaces": "1.0.0-*",
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
+    "Microsoft.Extensions.DependencyModel": "1.0.1-beta-003206",
+    "NETStandard.Library": "1.6.1",
+    "System.ComponentModel": "4.3.0",
+    "System.Linq": "4.3.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

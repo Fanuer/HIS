@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HIS.WebApi.Recipes.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class RecipeController : Controller
     {
         // GET api/values
         [HttpGet]
