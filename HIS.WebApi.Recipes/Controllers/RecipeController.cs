@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace HIS.WebApi.Recipes.Controllers
+namespace HIS.Recipes.WebApi.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

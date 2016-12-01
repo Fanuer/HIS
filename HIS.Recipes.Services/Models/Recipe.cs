@@ -21,7 +21,7 @@ namespace HIS.Recipes.Services.Models
             this.Images = new HashSet<RecipeImage>();
             this.Ingrediants = new HashSet<RecipeIngrediant>();
             this.Tags = new HashSet<RecipeRecipeTag>();
-            this.Source = new RecipeCookbookSource();
+            this.Source = new RecipeSourceRecipe();
         }
         #endregion
 
@@ -49,7 +49,7 @@ namespace HIS.Recipes.Services.Models
 
         public virtual ICollection<RecipeImage> Images { get; set; }
 
-        public virtual RecipeCookbookSource Source { get; set; }
+        public virtual RecipeSourceRecipe Source { get; set; }
 
         public Guid SourceId { get; set; }
         public virtual ICollection<RecipeStep> Steps { get; set; }

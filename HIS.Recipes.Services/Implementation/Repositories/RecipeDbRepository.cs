@@ -24,7 +24,8 @@ namespace HIS.Recipes.Services.Implementation.Repositories
             IDbImageRepository images, 
             IIngrediantRepository ingrediants, 
             IRecipeRepository recipes,
-            ISourceRepository sources,
+            ISourceRepository<RecipeUrlSource> urlSources,
+            ISourceRepository<RecipeCookbookSource> cookbookSources,
             IStepRepository steps,
             ITagsRepository tags
             )
@@ -32,10 +33,13 @@ namespace HIS.Recipes.Services.Implementation.Repositories
             this.Images = images;
             this.Ingrediants = ingrediants;
             this.Recipes = recipes;
-            this.Sources = sources;
+            this.UrlSources = urlSources;
+            this.CookBookSources = cookbookSources;
             this.Steps = steps;
             this.Tags = tags;
         }
+
+
         #endregion
 
         #region METHODS
@@ -45,7 +49,10 @@ namespace HIS.Recipes.Services.Implementation.Repositories
         public IDbImageRepository Images { get; }
         public IIngrediantRepository Ingrediants { get; }
         public IRecipeRepository Recipes { get; }
-        public ISourceRepository Sources { get; }
+
+        public ISourceRepository<RecipeCookbookSource> CookBookSources { get; }
+
+        public ISourceRepository<RecipeUrlSource> UrlSources { get; }
         public IStepRepository Steps { get; }
         public ITagsRepository Tags { get; }
 
@@ -69,10 +76,20 @@ namespace HIS.Recipes.Services.Implementation.Repositories
         {
             public StepRepository(RecipeDBContext context) : base(context) { }
         }
-        internal class SourceRepository : GenericDbRepository<RecipeBaseSource, Guid>, ISourceRepository
+        internal class CookbookSourceRepository : GenericDbRepository<RecipeCookbookSource, Guid>, ICookbookSourceRepository
         {
-            public SourceRepository(RecipeDBContext context) : base(context) { }
+            public CookbookSourceRepository(RecipeDBContext context) : base(context) { }
         }
+        internal class WebSourceRepository : GenericDbRepository<RecipeUrlSource, Guid>, IWebSourceRepository
+        {
+            public WebSourceRepository(RecipeDBContext context) : base(context) { }
+        }
+        internal class BaseSourceRepository : GenericDbRepository<RecipeBaseSource, Guid>, IBaseSourceRepository
+        {
+            public BaseSourceRepository(RecipeDBContext context) : base(context) { }
+        }
+
+
         internal class TagsRepository : GenericDbRepository<RecipeTag, Guid>, ITagsRepository
         {
             public TagsRepository(RecipeDBContext context) : base(context) { }

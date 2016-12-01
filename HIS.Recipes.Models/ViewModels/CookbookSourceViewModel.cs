@@ -8,7 +8,14 @@ namespace HIS.Recipes.Models.ViewModels
 {
     public class CookbookSourceViewModel : CookbookSourceCreationViewModel, IViewModelEntity<Guid>
     {
-        public Guid Id { get; }
-        public string Url { get; }
+        public CookbookSourceViewModel()
+        {
+            Recipes = new List<RecipeSourceShortInfoViewModel>();
+        }
+
+        public Guid Id { get; set; }
+        public string Url { get; set; }
+
+        public IEnumerable<RecipeSourceShortInfoViewModel> Recipes { get; set; }
     }
 }

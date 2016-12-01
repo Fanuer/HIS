@@ -10,9 +10,9 @@ namespace HIS.Recipes.Models.ViewModels
     public class RecipeImageViewModel:IViewModelEntity<Guid>
     {
         [Required]
-        public Guid Id { get; }
+        public Guid Id { get; set; }
         [Required]
-        public string Url { get; }
+        public string Url { get; set; }
 
         public string Filename { get; set; }
     }

@@ -68,7 +68,7 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region PROPERTIES
 
-        protected override IStepRepository Repository { get; }
+        protected override IStepRepository Repository { get; set; }
 
         #endregion
 

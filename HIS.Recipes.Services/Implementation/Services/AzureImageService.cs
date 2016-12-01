@@ -16,7 +16,7 @@ namespace HIS.Recipes.Services.Implementation.Services
     /// <summary>
     /// Grants Access to an image store for recipes by using an azure blob storage
     /// </summary>
-    public class AzureImageService : IImageService, IDisposable
+    public class AzureImageService : IImageService
     {
         #region CONST
 

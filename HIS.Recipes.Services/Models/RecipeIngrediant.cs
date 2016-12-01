@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HIS.Recipes.Services.Enums;
+using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Services.Models
 {
@@ -12,8 +12,8 @@ namespace HIS.Recipes.Services.Models
         [Key, Column(Order = 1)]
         public Guid IngrediantId { get; set; }
 
-        public virtual Recipe Member { get; set; }
-        public virtual Ingrediant Comment { get; set; }
+        public virtual Recipe Recipe { get; set; }
+        public virtual Ingrediant Ingrediant { get; set; }
         [Required]
         public int Amount { get; set; }
         [Required]

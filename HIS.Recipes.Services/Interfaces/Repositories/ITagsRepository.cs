@@ -6,7 +6,7 @@ using HIS.Recipes.Services.Models;
 
 namespace HIS.Recipes.Services.Interfaces.Repositories
 {
-    internal interface ITagsRepository : IRepositoryFindAll<RecipeTag>, IRepositoryAddAndDelete<RecipeTag, Guid>, IRepositoryFindSingle<RecipeTag, Guid>, IRepositoryUpdate<RecipeTag, Guid>, IManualSaveChanges
+    internal interface ITagsRepository : IRepositoryFindAll<RecipeTag>, IRepositoryAddAndDelete<RecipeTag, Guid>, IRepositoryFindSingle<RecipeTag, Guid>, IRepositoryUpdate<RecipeTag, Guid>, IManualSaveChanges, IDisposable
     {
     }
 }

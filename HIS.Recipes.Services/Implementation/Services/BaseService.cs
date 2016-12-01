@@ -16,9 +16,9 @@ using Microsoft.Extensions.Logging;
 
 namespace HIS.Recipes.Services.Implementation.Services
 {
-    public abstract class BaseService<T, TDbEntity, TViewModel, TCreationViewModel> : IDisposable
-        where T : IRepositoryFindSingle<TDbEntity, Guid>, IRepositoryUpdate<TDbEntity, Guid>,
-        IRepositoryAddAndDelete<TDbEntity, Guid>
+    internal abstract class BaseService<T, TDbEntity, TViewModel, TCreationViewModel> : IDisposable
+        where T : class, IRepositoryFindSingle<TDbEntity, Guid>, IRepositoryUpdate<TDbEntity, Guid>,
+        IRepositoryAddAndDelete<TDbEntity, Guid>, IDisposable
         where TDbEntity : class, IEntity<Guid>
         where TViewModel : IViewModelEntity<Guid>
     {
@@ -161,12 +161,12 @@ namespace HIS.Recipes.Services.Implementation.Services
 
             if (disposing)
             {
-                // free other managed objects that implement
-                // IDisposable only
+                Repository.Dispose();
             }
 
-            // release any unmanaged objects
-            // set the object references to null
+            Logger = null;
+            Mapper = null;
+            Repository = null;
 
             _disposed = true;
         }
@@ -183,10 +183,10 @@ namespace HIS.Recipes.Services.Implementation.Services
         #endregion
 
         #region PROPERTIES
-        protected IMapper Mapper { get; }
-        protected ILogger Logger { get; }
+        protected IMapper Mapper { get; private set; }
+        protected ILogger Logger { get; private set; }
 
-        protected virtual T Repository { get; }
+        protected virtual T Repository { get; set; }
 
         #endregion
 

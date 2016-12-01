@@ -214,12 +214,14 @@ namespace HIS.Recipes.Services.Implementation.Services
 
             if (disposing)
             {
-                // free other managed objects that implement
-                // IDisposable only
+                this.ImageService.Dispose();
+                this.Repository.Dispose();
             }
 
-            // release any unmanaged objects
-            // set the object references to null
+            this.ImageService = null;
+            this.Repository = null;
+            this.Logger = null;
+            this.Mapper = null;
 
             _disposed = true;
         }
@@ -236,10 +238,10 @@ namespace HIS.Recipes.Services.Implementation.Services
         #endregion
 
         #region PROPERTIES
-        protected IMapper Mapper { get; }
-        protected ILogger Logger { get; }
-        protected IImageService ImageService { get; }
-        protected virtual IDbImageRepository Repository { get; }
+        protected IMapper Mapper { get; private set; }
+        protected ILogger Logger { get; private set; }
+        protected IImageService ImageService { get; private set; }
+        protected virtual IDbImageRepository Repository { get; private set; }
         #endregion  
     }
 }

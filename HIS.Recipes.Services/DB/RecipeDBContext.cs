@@ -14,6 +14,10 @@ namespace HIS.Recipes.Services.DB
 
         #region CTOR
         public RecipeDBContext(DbContextOptions options) : base(options) { }
+
+        public RecipeDBContext()
+        {
+        }
         #endregion
 
         #region METHODS
@@ -28,6 +32,8 @@ namespace HIS.Recipes.Services.DB
             modelBuilder.Entity<Recipe>().HasMany(x => x.Steps).WithOne(x=>x.Recipe);
 
             modelBuilder.Entity<RecipeTag>().HasAlternateKey(x => x.Name);
+
+            modelBuilder.Entity<RecipeSourceRecipe>().HasAlternateKey(x => new { x.RecipeId, x.SourceId, x.Page});
 
             base.OnModelCreating(modelBuilder);
         }

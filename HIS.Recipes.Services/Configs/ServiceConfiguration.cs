@@ -7,6 +7,7 @@ using HIS.Recipes.Services.Implementation.Repositories;
 using HIS.Recipes.Services.Implementation.Services;
 using HIS.Recipes.Services.Interfaces.Repositories;
 using HIS.Recipes.Services.Interfaces.Services;
+using HIS.Recipes.Services.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HIS.Recipes.Services.Configs
@@ -19,18 +20,23 @@ namespace HIS.Recipes.Services.Configs
 
             // Services
             services.AddTransient<IImageService, AzureImageService>();
-            services.AddTransient<IRecipeStepService, RecipeStepService>();
             services.AddTransient<IRecipeImageService, RecipeImagesService>();
+            services.AddTransient<IRecipeStepService, RecipeStepService>();
+            services.AddTransient<IRecipeService, RecipeService>();
+            services.AddTransient<ISourceService, SourceService>();
+
 
             // Repositories
             services.AddScoped<IDbImageRepository, RecipeDbRepository.DbImageRepository>();
             services.AddScoped<IIngrediantRepository, RecipeDbRepository.IngrediantRepository>();
             services.AddScoped<IRecipeRepository, RecipeDbRepository.RecipeRepository>();
-            services.AddScoped<ISourceRepository, RecipeDbRepository.SourceRepository>();
+            services.AddScoped<ICookbookSourceRepository, RecipeDbRepository.CookbookSourceRepository>();
+            services.AddScoped<IWebSourceRepository, RecipeDbRepository.WebSourceRepository>();
+            services.AddScoped<IBaseSourceRepository, RecipeDbRepository.BaseSourceRepository>();
+            services.AddScoped<IRecipeSourceRepository, RecipeSourceRepository>();
             services.AddScoped<IStepRepository, RecipeDbRepository.StepRepository>();
             services.AddScoped<ITagsRepository, RecipeDbRepository.TagsRepository>();
             services.AddScoped<IRecipeDBRepository, RecipeDbRepository>();
-            
         }
     }
 }

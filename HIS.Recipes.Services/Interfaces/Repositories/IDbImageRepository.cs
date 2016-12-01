@@ -7,7 +7,7 @@ using HIS.Recipes.Services.Models;
 
 namespace HIS.Recipes.Services.Interfaces.Repositories
 {
-    internal interface IDbImageRepository : IRepositoryFindAll<RecipeImage>, IRepositoryAddAndDelete<RecipeImage, Guid>, IRepositoryFindSingle<RecipeImage, Guid>, IRepositoryUpdate<RecipeImage, Guid>
+    internal interface IDbImageRepository : IRepositoryFindAll<RecipeImage>, IRepositoryAddAndDelete<RecipeImage, Guid>, IRepositoryFindSingle<RecipeImage, Guid>, IRepositoryUpdate<RecipeImage, Guid>, IDisposable
     {
     }
 }

@@ -13,5 +13,7 @@ namespace HIS.Recipes.Models.ViewModels
 
         [Required]
         public string Description { get; set; }
+
+        public Guid RecipeId { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace HIS.Recipes.Services.Enums
+﻿namespace HIS.Recipes.Models.Enums
 {
     public enum CookingUnit
     {

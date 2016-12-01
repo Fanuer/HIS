@@ -8,13 +8,14 @@ using AutoMapper.QueryableExtensions;
 using HIS.Helpers.Exceptions;
 using HIS.Recipes.Models.ViewModels;
 using HIS.Recipes.Services.Interfaces.Repositories;
+using HIS.Recipes.Services.Interfaces.Services;
 using HIS.Recipes.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HIS.Recipes.Services.Implementation.Services
 {
-    internal class TagService : BaseService<ITagsRepository, RecipeTag, TagViewModel, string>
+    internal class TagService : BaseService<ITagsRepository, RecipeTag, NamedViewModel, string>, ITagService
     {
         #region CONST
 
@@ -22,27 +23,29 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region FIELDS
 
+        private IRecipeRepository _recipeRep;
         #endregion
 
         #region CTOR
 
-        public TagService(ITagsRepository rep, IMapper mapper, ILogger logger)
-            : base(rep, mapper, logger, "recipe tag")
+        public TagService(ITagsRepository rep, IRecipeRepository recipeRep, IMapper mapper, ILoggerFactory loggerFactory)
+            : base(rep, mapper, loggerFactory?.CreateLogger<TagService>(), "recipe tag")
         {
+            _recipeRep = recipeRep;
         }
 
         #endregion
 
         #region METHODS
 
-        public IQueryable<TagViewModel> GetTagsAsync()
+        public IQueryable<NamedViewModel> GetTagsAsync()
         {
-            return this.Repository.GetAll().ProjectTo<TagViewModel>();
+            return this.Repository.GetAll().ProjectTo<NamedViewModel>();
         }
 
-        public override async Task<TagViewModel> AddAsync(string creationModel)
+        public override async Task<NamedViewModel> AddAsync(string creationModel)
         {
-            TagViewModel result;
+            NamedViewModel result;
 
             try
             {
@@ -64,11 +67,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                                 .Include(x => x.Recipes)
                                 .SingleOrDefaultAsync(x => x.Name.Equals(tagName));
 
-            var recipe = dbTag
-                            .Recipes
-                            .Where(x => x.RecipeId.Equals(recipeId))
-                            .Select(x => x.Recipe)
-                            .FirstOrDefault();
+            var recipe = await this._recipeRep.FindAsync(recipeId);
 
             if (recipe == null)
             {
@@ -76,14 +75,14 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
             recipe.Tags.Add(new RecipeRecipeTag(recipe, dbTag));
             await this.Repository.SaveChangesAsync();
+            Logger.LogInformation(new EventId(), $"Tag '{tagName}' added to recipe '{recipe.Name}({recipe.Id})'");
         }
 
         public async Task RemoveTagToRecipeAsync(Guid recipeId, string tagName)
         {
             var dbTag = await Repository.GetAll().Include(x => x.Recipes).SingleOrDefaultAsync(x => x.Name.Equals(tagName));
-            if (dbTag == null) { return; }
 
-            var recipeTag = dbTag.Recipes.FirstOrDefault(x => x.RecipeId.Equals(recipeId) && x.RecipeTagId.Equals(dbTag.Id));
+            var recipeTag = dbTag?.Recipes.FirstOrDefault(x => x.RecipeId.Equals(recipeId) && x.RecipeTagId.Equals(dbTag.Id));
             if (recipeTag != null)
             {
                 dbTag.Recipes.Remove(recipeTag);
@@ -91,11 +90,11 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
         }
 
-        private async Task<TagViewModel> GetTagByNameAsync(string tagName)
+        private async Task<NamedViewModel> GetTagByNameAsync(string tagName)
         {
             if (String.IsNullOrWhiteSpace(tagName)) { throw new ArgumentNullException(nameof(tagName)); }
             var result = await this.Repository.GetAll().FirstOrDefaultAsync(x => x.Name.Equals(tagName, StringComparison.CurrentCultureIgnoreCase));
-            return result != null ? Mapper.Map<TagViewModel>(result) : null;
+            return result != null ? Mapper.Map<NamedViewModel>(result) : null;
         }
 
         #endregion

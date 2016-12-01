@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using HIS.Recipes.Services;
 using HIS.Recipes.Services.DB;
-using HIS.Recipes.Services.Enums;
+using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Services.Migrations
 {
@@ -51,8 +50,6 @@ namespace HIS.Recipes.Services.Migrations
                     b.Property<Guid>("SourceId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SourceId");
 
                     b.ToTable("Recipes");
                 });
@@ -105,7 +102,7 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("CookingUnit");
 
-                    b.Property<Guid?>("MemberId");
+                    b.Property<Guid?>("RecipeId1");
 
                     b.HasKey("RecipeId", "IngrediantId");
 
@@ -114,7 +111,7 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.HasAlternateKey("IngrediantId", "RecipeId");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("RecipeId1");
 
                     b.ToTable("RecipeIngrediants");
                 });
@@ -144,15 +141,14 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<Guid>("SourceId");
 
-                    b.Property<int?>("Page");
-
-                    b.Property<Guid?>("RecipeId1");
+                    b.Property<int>("Page");
 
                     b.HasKey("RecipeId", "SourceId");
 
                     b.HasAlternateKey("RecipeId");
 
-                    b.HasIndex("RecipeId1");
+
+                    b.HasAlternateKey("RecipeId", "SourceId", "Page");
 
                     b.HasIndex("SourceId");
 
@@ -220,14 +216,6 @@ namespace HIS.Recipes.Services.Migrations
                     b.HasDiscriminator().HasValue("RecipeUrlSource");
                 });
 
-            modelBuilder.Entity("HIS.Recipes.Services.Models.Recipe", b =>
-                {
-                    b.HasOne("HIS.Recipes.Services.Models.RecipeCookbookSource", "Source")
-                        .WithMany()
-                        .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeImage", b =>
                 {
                     b.HasOne("HIS.Recipes.Services.Models.Recipe", "Recipe")
@@ -238,14 +226,14 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeIngrediant", b =>
                 {
-                    b.HasOne("HIS.Recipes.Services.Models.Ingrediant", "Comment")
+                    b.HasOne("HIS.Recipes.Services.Models.Ingrediant", "Ingrediant")
                         .WithMany()
                         .HasForeignKey("IngrediantId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("HIS.Recipes.Services.Models.Recipe", "Member")
+                    b.HasOne("HIS.Recipes.Services.Models.Recipe", "Recipe")
                         .WithMany("Ingrediants")
-                        .HasForeignKey("MemberId");
+                        .HasForeignKey("RecipeId1");
                 });
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeRecipeTag", b =>
@@ -263,11 +251,12 @@ namespace HIS.Recipes.Services.Migrations
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeSourceRecipe", b =>
                 {
                     b.HasOne("HIS.Recipes.Services.Models.Recipe", "Recipe")
-                        .WithMany()
-                        .HasForeignKey("RecipeId1");
+                        .WithOne("Source")
+                        .HasForeignKey("HIS.Recipes.Services.Models.RecipeSourceRecipe", "RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("HIS.Recipes.Services.Models.RecipeBaseSource", "Source")
-                        .WithMany()
+                        .WithMany("RecipeSourceRecipes")
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

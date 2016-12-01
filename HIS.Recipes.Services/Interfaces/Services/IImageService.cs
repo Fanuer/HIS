@@ -8,7 +8,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
     /// <summary>
     /// Creates access to a image storage for recipes
     /// </summary>
-    public interface IImageService
+    public interface IImageService: IDisposable
     {
         /// <summary>
         /// Uploads an Image to the image store

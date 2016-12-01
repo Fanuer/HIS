@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using HIS.Data.Base.Interfaces.Models;
+using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class WebSourceViewModel:WebSourceCreationViewModel, IViewModelEntity<Guid>
+    public class SourceListEntryViewModel:IViewModelEntity<Guid>
     {
-        [Required]
         public Guid Id { get; set; }
         public string Url { get; set; }
+        public string Name { get; set; }
+        public SourceType Type { get; set; }
+        public int CountRecipes { get; set; }
     }
 }

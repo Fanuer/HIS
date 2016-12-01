@@ -14,6 +14,6 @@ namespace HIS.Recipes.Services.Models
         public virtual Recipe Recipe { get; set; }
         public virtual RecipeBaseSource Source { get; set; }
 
-        public int? Page{ get; set; }
+        public int Page{ get; set; }
     }
 }
