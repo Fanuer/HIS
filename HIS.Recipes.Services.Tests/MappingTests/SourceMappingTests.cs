@@ -14,7 +14,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
     public class SourceMappingTests
     {
         [Fact]
-        public void Test_WebSourceCreationViewModel2RecipeUrlSource()
+        public void Convert_WebSourceCreationViewModel_To_RecipeUrlSource()
         {
             Initalize();
 
@@ -36,7 +36,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_RecipeUrlSource2WebSourceViewModel()
+        public void Convert_RecipeUrlSource_To_WebSourceViewModel()
         {
             Initalize();
 
@@ -58,7 +58,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_WebSourceViewModel2RecipeUrlSource()
+        public void Convert_WebSourceViewModel_To_RecipeUrlSource()
         {
             Initalize();
 
@@ -81,7 +81,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_CookbookSourceCreationViewModel2RecipeCookbookSource()
+        public void Convert_CookbookSourceCreationViewModel_To_RecipeCookbookSource()
         {
             Initalize();
 
@@ -105,7 +105,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_CookbookSourceViewModel2RecipeCookbookSource()
+        public void Convert_CookbookSourceViewModel_To_RecipeCookbookSource()
         {
             Initalize();
 
@@ -136,7 +136,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_RecipeSourceRecipe2RecipeSourceShortInfoViewModel()
+        public void Convert_RecipeSourceRecipe_To_RecipeSourceShortInfoViewModel()
         {
             Initalize();
 
@@ -168,7 +168,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_RecipeCookbookSource2CookbookSourceViewModel()
+        public void Convert_RecipeCookbookSource_To_CookbookSourceViewModel()
         {
             Initalize();
 
@@ -206,7 +206,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_RecipeBaseSource2SourceListEntryViewModel()
+        public void Convert_RecipeBaseSource_To_SourceListEntryViewModel()
         {
             Initalize();
 

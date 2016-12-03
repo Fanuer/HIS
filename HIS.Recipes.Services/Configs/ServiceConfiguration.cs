@@ -18,6 +18,8 @@ namespace HIS.Recipes.Services.Configs
         {
             services.AddDbContext<RecipeDBContext>();
 
+            services.AddOptions();
+
             // Services
             services.AddTransient<IImageService, AzureImageService>();
             services.AddTransient<IRecipeImageService, RecipeImagesService>();

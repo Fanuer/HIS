@@ -21,8 +21,8 @@ namespace HIS.Recipes.Services.Tests.Repository
             // Run the test against one instance of the context
             using (var context = new RecipeDBContext(options))
             {
-                var service = new RecipeDbRepository.DbImageRepository(context);
-                service.Add("http://sample.com");
+                var imageRepository = new RecipeDbRepository.DbImageRepository(context);
+                imageRepository.
             }
 
             // Use a separate instance of the context to verify correct data was saved to database

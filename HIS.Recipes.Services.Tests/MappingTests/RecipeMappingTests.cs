@@ -27,7 +27,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         #region METHODS
 
         [Fact]
-        public void Test_RecipeCreationViewModel2Recipe()
+        public void Convert_RecipeCreationViewModel_To_Recipe()
         {
             var testData = Initialize();
             var input = testData.CreationModel;
@@ -62,7 +62,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_Recipe2RecipeUpdateModel()
+        public void Convert_Recipe_To_RecipeUpdateModel()
         {
             var testData = Initialize();
             var input = testData.Recipe;
@@ -79,7 +79,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_RecipeUpdate2Recipe()
+        public void Convert_RecipeUpdate_To_Recipe()
         {
             var testData = Initialize();
             var input = testData.UpdateModel;
@@ -114,7 +114,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_Recipe2ShortRecipeViewModel()
+        public void Convert_Recipe_To_ShortRecipeViewModel()
         {
             var testData = Initialize();
             var input = testData.Recipe;
@@ -136,7 +136,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_Recipe2FullRecipeViewModel()
+        public void Convert_Recipe_To_FullRecipeViewModel()
         {
             var testData = Initialize();
             var input = testData.Recipe;

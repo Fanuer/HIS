@@ -41,19 +41,9 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <param name="loggerFactory">logging factory to create a logger with</param>
         public AzureImageService(IOptions<AzureBlobStorageOptions> options, ILoggerFactory loggerFactory)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-            if (options.Value == null)
-            {
-                throw new ArgumentNullException(nameof(options), "No Options for Azure Bob Storage defined");
-            }
-            if (String.IsNullOrEmpty(options.Value?.BlobStorageConnectionString))
-            {
-                throw new ArgumentNullException(nameof(options.Value.BlobStorageConnectionString),
-                    "Connectionstring for Azure Blob Storage must be defined");
-            }
+            if (options == null) { throw new ArgumentNullException(nameof(options)); }
+            if (options.Value == null) { throw new ArgumentNullException(nameof(options), "No Options for Azure Bob Storage defined"); }
+            if (String.IsNullOrEmpty(options.Value?.BlobStorageConnectionString)) { throw new ArgumentNullException(nameof(options.Value.BlobStorageConnectionString), "Connectionstring for Azure Blob Storage must be defined");}
 
             var storageAccount = CloudStorageAccount.Parse(options.Value.BlobStorageConnectionString);
             var client = storageAccount.CreateCloudBlobClient();

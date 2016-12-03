@@ -24,7 +24,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
         #region METHODS
         [Fact]
-        public void Test_Ingrediant2IngrediantStatisticViewModel()
+        public void Convert_Ingrediant_To_IngrediantStatisticViewModel()
         {
             var testdata = Initialize();
 
@@ -38,7 +38,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_RecipeIngrediant2IngrediantViewModel()
+        public void Convert_RecipeIngrediant_To_IngrediantViewModel()
         {
             var testdata = Initialize();
 
@@ -54,7 +54,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_String2NamedViewModel()
+        public void Convert_String_To_NamedViewModel()
         {
             Initialize();
 
@@ -68,7 +68,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_NamedViewModel2Ingrediant()
+        public void Convert_NamedViewModel_To_Ingrediant()
         {
             Initialize();
 
@@ -83,7 +83,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
-        public void Test_Ingrediant2NamedViewModel()
+        public void Convert_Ingrediant_To_NamedViewModel()
         {
             var testdata = Initialize();
 
