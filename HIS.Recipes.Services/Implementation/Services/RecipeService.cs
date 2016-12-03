@@ -59,14 +59,17 @@ namespace HIS.Recipes.Services.Implementation.Services
             try
             {
                 result = await this.Repository
-                                .GetAll()
-                                .Include(x => x.Images)
-                                .Include(x => x.Tags).ThenInclude(x => x.RecipeTag)
-                                .Include(x=>x.Steps)
-                                .Include(x=>x.Ingrediants).ThenInclude(x=>x.Ingrediant)
-                                .Include(x=>x.Source).ThenInclude(x=>x.Source)
-                                .ProjectTo<FullRecipeViewModel>()
-                                .SingleOrDefaultAsync();
+                                   .GetAll()
+                                   .Include(x => x.Images)
+                                   .Include(x => x.Tags)
+                                        .ThenInclude(x => x.RecipeTag)
+                                   .Include(x=>x.Steps)
+                                   .Include(x=>x.Ingrediants)
+                                        .ThenInclude(x=>x.Ingrediant)
+                                   .Include(x=>x.Source)
+                                        .ThenInclude(x=>x.Source)
+                                   .ProjectTo<FullRecipeViewModel>()
+                                   .SingleOrDefaultAsync();
 
                 this.Logger.LogDebug(new EventId(), $"Returned recipe '{result.Name} ({result.Id})'");
             }

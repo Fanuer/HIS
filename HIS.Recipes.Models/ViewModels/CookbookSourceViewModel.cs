@@ -10,12 +10,12 @@ namespace HIS.Recipes.Models.ViewModels
     {
         public CookbookSourceViewModel()
         {
-            Recipes = new List<RecipeSourceShortInfoViewModel>();
+            Recipes = new List<RecipeShortInfoViewModel>();
         }
 
         public Guid Id { get; set; }
         public string Url { get; set; }
 
-        public IEnumerable<RecipeSourceShortInfoViewModel> Recipes { get; set; }
+        public IEnumerable<RecipeShortInfoViewModel> Recipes { get; set; }
     }
 }

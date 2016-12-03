@@ -21,11 +21,11 @@ namespace HIS.Recipes.Services.Configs.Converter
                 PublishingCompany = source.PublishingCompany
             };
 
-            var infos = new List<RecipeSourceShortInfoViewModel>();
+            var infos = new List<RecipeShortInfoViewModel>();
 
             foreach (var sourceRecipeSourceRecipe in source.RecipeSourceRecipes)
             {
-                infos.Add(mapper.Map<RecipeSourceShortInfoViewModel>(sourceRecipeSourceRecipe));
+                infos.Add(mapper.Map<RecipeShortInfoViewModel>(sourceRecipeSourceRecipe));
             }
             result.Recipes = infos;
 

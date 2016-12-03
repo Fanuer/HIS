@@ -7,6 +7,9 @@ using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Models.ViewModels
 {
+    /// <summary>
+    /// Returns an entity with its name, id and url
+    /// </summary>
     public class NamedViewModel:IViewModelEntity<Guid>
     {
         [Required]

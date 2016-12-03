@@ -108,7 +108,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             catch (Exception e)
             {
                 _log.LogError(new EventId(), e, $"Recipe {recipeId}: Error on uploading image: {e.Message}");
-                throw new Exception("Error on uploading image");
+                throw new Exception("Error on uploading image", e);
             }
 
             return blockBlob?.StorageUri.ToString();

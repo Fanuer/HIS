@@ -13,7 +13,11 @@ namespace HIS.Recipes.Services.DB
         #endregion
 
         #region CTOR
-        public RecipeDBContext(DbContextOptions options) : base(options) { }
+
+        public RecipeDBContext(DbContextOptions options) : base(options)
+        {
+            
+        }
 
         public RecipeDBContext()
         {
@@ -32,12 +36,21 @@ namespace HIS.Recipes.Services.DB
             modelBuilder.Entity<Recipe>().HasMany(x => x.Steps).WithOne(x=>x.Recipe);
 
             modelBuilder.Entity<RecipeTag>().HasAlternateKey(x => x.Name);
-
+            modelBuilder.Entity<Ingrediant>().HasAlternateKey(x => x.Name);
             modelBuilder.Entity<RecipeSourceRecipe>().HasAlternateKey(x => new { x.RecipeId, x.SourceId, x.Page});
+            modelBuilder.Entity<RecipeStep>().HasAlternateKey(x => new { x.RecipeId, x.Order});
 
             base.OnModelCreating(modelBuilder);
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                // Use InMemory-Database for testing
+                optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=EFProviders.InMemory;Trusted_Connection=True;");
+            }
+        }
         #endregion
 
         #region PROPERTIES

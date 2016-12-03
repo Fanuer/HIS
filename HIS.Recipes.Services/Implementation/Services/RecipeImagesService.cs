@@ -175,7 +175,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                             .Where(x => x.RecipeId.Equals(recipeId))
                             .ProjectTo<RecipeImageViewModel>();
 
-                this.Logger.LogDebug(new EventId(), $"Returned all iamges of recipe {recipeId}");
+                this.Logger.LogDebug(new EventId(), $"Returned all images of recipe {recipeId}");
             }
             catch (Exception e)
             {

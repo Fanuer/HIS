@@ -17,8 +17,9 @@ namespace HIS.Recipes.Services.Models
 
         internal Recipe()
         {
-            this.LastTimeCooked = DateTime.UtcNow;
+            this.LastTimeCooked = new DateTime();
             this.Images = new HashSet<RecipeImage>();
+            this.Steps = new HashSet<RecipeStep>();
             this.Ingrediants = new HashSet<RecipeIngrediant>();
             this.Tags = new HashSet<RecipeRecipeTag>();
             this.Source = new RecipeSourceRecipe();

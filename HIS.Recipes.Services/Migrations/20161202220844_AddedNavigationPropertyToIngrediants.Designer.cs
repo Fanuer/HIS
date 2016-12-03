@@ -9,9 +9,10 @@ using HIS.Recipes.Models.Enums;
 namespace HIS.Recipes.Services.Migrations
 {
     [DbContext(typeof(RecipeDBContext))]
-    partial class RecipeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20161202220844_AddedNavigationPropertyToIngrediants")]
+    partial class AddedNavigationPropertyToIngrediants
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
@@ -172,7 +173,7 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("RecipeId", "Order");
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeSteps");
                 });

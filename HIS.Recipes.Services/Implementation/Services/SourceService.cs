@@ -29,7 +29,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         private ILogger<SourceService> _log;
         private IMapper _mapper;
         private IRecipeSourceRepository _rep;
-        private IRecipeRepository _recipeRep;
+        private readonly IRecipeRepository _recipeRep;
 
         #endregion
 
