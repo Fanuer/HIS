@@ -11,7 +11,15 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HIS.Data.Base.MSSql
 {
-    public abstract class GenericDbRepository<T, TIdProperty> : IRepositoryAddAndDelete<T, TIdProperty>, IRepositoryFindAll<T>, IRepositoryFindSingle<T, TIdProperty>, IRepositoryUpdate<T, TIdProperty>, ICountAsync, IManualSaveChanges, IDisposable where T : class, IEntity<TIdProperty>
+    public abstract class GenericDbRepository<T, TIdProperty> 
+        : IRepositoryAddAndDelete<T, TIdProperty>, 
+          IRepositoryFindAll<T>, 
+          IRepositoryFindSingle<T, TIdProperty>, 
+          IRepositoryUpdate<T, TIdProperty>, 
+          ICountAsync, 
+          IManualSaveChanges, 
+          IDisposable 
+          where T : class, IEntity<TIdProperty>
     {
         #region Field
 
@@ -118,7 +126,7 @@ namespace HIS.Data.Base.MSSql
         {
             return DbContext.SaveChanges();
         }
-
+        
         public async Task<int> SaveChangesAsync()
         {
             return await this.DbContext.SaveChangesAsync();

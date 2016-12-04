@@ -8,7 +8,7 @@ using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Services.Migrations
 {
-    [DbContext(typeof(RecipeDBContext))]
+    [DbContext(typeof(RecipeDbContext))]
     [Migration("20161204115425_Initial")]
     partial class Initial
     {

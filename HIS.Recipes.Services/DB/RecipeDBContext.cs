@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HIS.Recipes.Services.DB
 {
-    internal class RecipeDBContext:DbContext
+    internal class RecipeDbContext:DbContext
     {
 
         #region CONST
@@ -14,12 +14,12 @@ namespace HIS.Recipes.Services.DB
 
         #region CTOR
 
-        public RecipeDBContext(DbContextOptions options) : base(options)
+        public RecipeDbContext(DbContextOptions options) : base(options)
         {
             
         }
 
-        public RecipeDBContext()
+        public RecipeDbContext()
         {
         }
         #endregion

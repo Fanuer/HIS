@@ -8,7 +8,7 @@ using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Services.Migrations
 {
-    [DbContext(typeof(RecipeDBContext))]
+    [DbContext(typeof(RecipeDbContext))]
     partial class RecipeDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

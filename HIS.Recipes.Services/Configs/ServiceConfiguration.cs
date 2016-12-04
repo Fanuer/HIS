@@ -16,7 +16,7 @@ namespace HIS.Recipes.Services.Configs
     {
         public static void AddServices(IServiceCollection services)
         {
-            services.AddDbContext<RecipeDBContext>();
+            services.AddDbContext<RecipeDbContext>();
 
             services.AddOptions();
 
