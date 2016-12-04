@@ -21,7 +21,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             Assert.IsType<RecipeTag>(output);
             Assert.Equal(input, output.Name);
-            Assert.Equal(Guid.Empty, output.Id);
+            Assert.Equal(0, output.Id);
 
             Assert.NotNull(output.Recipes);
             Assert.Empty(output.Recipes);
@@ -33,11 +33,11 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Initialize();
             var input = new RecipeTag()
             {
-                Id = Guid.NewGuid(),
+                Id = 1,
                 Name = "MyTag"
             };
 
-            var recipe = new Recipe() {Name ="Recipe 1", Id = Guid.NewGuid()};
+            var recipe = new Recipe() {Name ="Recipe 1", Id = 1};
 
             var recipeTag = new RecipeRecipeTag()
             {
@@ -64,7 +64,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Initialize();
             var input = new NamedViewModel()
             {
-                Id = Guid.NewGuid(),
+                Id = 1,
                 Name = "MyTag",
                 Url = "http://www.service.de/tags"
             };

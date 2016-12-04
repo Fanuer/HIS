@@ -20,7 +20,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="id">Database id</param>
         /// <param name="model">New Data</param>
         /// <returns></returns>
-        Task UpdateAsync(Guid id, NamedViewModel model);
+        Task UpdateAsync(int id, NamedViewModel model);
         /// <summary>
         /// Creates a new entity in the Database
         /// </summary>
@@ -32,6 +32,6 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// </summary>
         /// <param name="id">entity id</param>
         /// <returns></returns>
-        Task RemoveAsync(Guid id);
+        Task RemoveAsync(int id);
     }
 }

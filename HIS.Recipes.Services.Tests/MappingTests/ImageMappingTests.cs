@@ -17,12 +17,12 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         {
             Initialize();
 
-            var recipe = new Recipe() {Name= "MyRecipe", Id = Guid.NewGuid()};
+            var recipe = new Recipe() {Name= "MyRecipe", Id = 1};
 
             var input = new RecipeImage()
             {
                 Recipe = recipe,
-                Id = Guid.NewGuid(),
+                Id = 1,
                 RecipeId = recipe.Id,
                 Url = "http://www.service/images/1",
                 Filename = "MyImage.jpg"

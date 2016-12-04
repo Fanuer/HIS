@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Services.Models
 {
-    internal class Recipe : INamedEntity<Guid>
+    internal class Recipe : INamedEntity<int>
     {
         #region CONST
         #endregion
@@ -34,12 +35,13 @@ namespace HIS.Recipes.Services.Models
         /// DB Key
         /// </summary>
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
         public int NumberOfServings { get; set; }
         public int Calories { get; set; }
+        [Required]
         public string Creator { get; set; }
         public int CookedCounter { get; set; }
         [Required]
@@ -52,7 +54,7 @@ namespace HIS.Recipes.Services.Models
 
         public virtual RecipeSourceRecipe Source { get; set; }
 
-        public Guid SourceId { get; set; }
+        public int SourceId { get; set; }
         public virtual ICollection<RecipeStep> Steps { get; set; }
 
         #endregion

@@ -40,11 +40,11 @@ namespace HIS.Recipes.Services.Models
 
         #region PROPERTIES
         [Key, Column(Order = 0)]
-        public Guid RecipeId { get; set; }
+        public int RecipeId { get; set; }
         public Recipe Recipe { get; set; }
 
         [Key, Column(Order = 1)]
-        public Guid RecipeTagId { get; set; }
+        public int RecipeTagId { get; set; }
         public RecipeTag RecipeTag { get; set; }
         #endregion
     }

@@ -22,7 +22,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// </summary>
         /// <param name="recipeId"></param>
         /// <returns></returns>
-        IQueryable<IngrediantViewModel> GetIngrediantsForRecipe(Guid recipeId);
+        IQueryable<IngrediantViewModel> GetIngrediantsForRecipe(int recipeId);
         /// <summary>
         /// Adds an ingrediant
         /// </summary>
@@ -35,13 +35,13 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="id">id of the updating ingrediant</param>
         /// <param name="model">new data</param>
         /// <returns></returns>
-        Task UpdateAsync(Guid id, NamedViewModel model);
+        Task UpdateAsync(int id, NamedViewModel model);
         /// <summary>
         /// Removes an existing ingrediant
         /// </summary>
         /// <param name="id">ingrediantId</param>
         /// <returns></returns>
-        Task RemoveAsync(Guid id);
+        Task RemoveAsync(int id);
         /// <summary>
         /// Adds or updates an ingrediant on a recipe
         /// </summary>
@@ -54,7 +54,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="recipeId">id of a recipe</param>
         /// <param name="ingrediantId">id of an ingrediant</param>
         /// <returns></returns>
-        Task RemoveIngrediantFromRecipeAsync(Guid recipeId, Guid ingrediantId);
+        Task RemoveIngrediantFromRecipeAsync(int recipeId, int ingrediantId);
 
     }
 }

@@ -13,7 +13,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// </summary>
         /// <param name="recipeId">Id of the owning recipe</param>
         /// <returns></returns>
-        IQueryable<StepViewModel> GetStepsForRecipe(Guid recipeId);
+        IQueryable<StepViewModel> GetStepsForRecipe(int recipeId);
 
         /// <summary>
         /// Updates a database entity with the given data from a view model
@@ -21,7 +21,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="id">Database id</param>
         /// <param name="model">New Data</param>
         /// <returns></returns>
-        Task UpdateAsync(Guid id, StepViewModel model);
+        Task UpdateAsync(int id, StepViewModel model);
         /// <summary>
         /// Creates a new entity in the Database
         /// </summary>
@@ -33,6 +33,6 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// </summary>
         /// <param name="id">entity id</param>
         /// <returns></returns>
-        Task RemoveAsync(Guid id);
+        Task RemoveAsync(int id);
     }
 }

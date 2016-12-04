@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Services.Models
 {
-    internal class Ingrediant: INamedEntity<Guid>
+    internal class Ingrediant: INamedEntity<int>
     {
         public Ingrediant()
         {
@@ -16,7 +17,7 @@ namespace HIS.Recipes.Services.Models
         /// DB Key
         /// </summary>
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Name of the Ingrediant

@@ -19,13 +19,13 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             var input = new StepCreateViewModel()
             {
-                RecipeId = Guid.NewGuid(),
+                RecipeId = 1,
                 Order = 0,
                 Description = "Test Description"
             };
 
             var output = Mapper.Map<RecipeStep>(input);
-            Assert.Equal(Guid.Empty, output.Id);
+            Assert.Equal(0, output.Id);
             Assert.Equal(input.Description, output.Description);
             Assert.Equal(input.Order, output.Order);
 
@@ -40,10 +40,10 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             var input = new RecipeStep()
             {
-                RecipeId = Guid.NewGuid(),
+                RecipeId = 1,
                 Order = 0,
                 Description = "Test Description",
-                Id = Guid.NewGuid()
+                Id = 1
             };
 
             var output = Mapper.Map<StepViewModel>(input);
@@ -61,10 +61,10 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             var input = new StepViewModel()
             {
-                RecipeId = Guid.NewGuid(),
+                RecipeId = 1,
                 Order = 0,
                 Description = "Test Description",
-                Id = Guid.NewGuid()
+                Id = 1
             };
 
             var output = Mapper.Map<RecipeStep>(input);

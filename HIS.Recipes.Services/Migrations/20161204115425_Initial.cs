@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace HIS.Recipes.Services.Migrations
 {
@@ -12,19 +13,41 @@ namespace HIS.Recipes.Services.Migrations
                 name: "Ingrediants",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ingrediants", x => x.Id);
+                    table.UniqueConstraint("AK_Ingrediants_Name", x => x.Name);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recipes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Calories = table.Column<int>(nullable: false),
+                    CookedCounter = table.Column<int>(nullable: false),
+                    Creator = table.Column<string>(nullable: false),
+                    LastTimeCooked = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    NumberOfServings = table.Column<int>(nullable: false),
+                    SourceId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "RecipeBaseSources",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Discriminator = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     ISBN = table.Column<string>(nullable: true),
@@ -40,7 +63,8 @@ namespace HIS.Recipes.Services.Migrations
                 name: "RecipeTags",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -50,36 +74,13 @@ namespace HIS.Recipes.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Recipes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Calories = table.Column<int>(nullable: false),
-                    CookedCounter = table.Column<int>(nullable: false),
-                    Creator = table.Column<string>(nullable: true),
-                    LastTimeCooked = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    NumberOfServings = table.Column<int>(nullable: false),
-                    SourceId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Recipes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Recipes_RecipeBaseSources_SourceId",
-                        column: x => x.SourceId,
-                        principalTable: "RecipeBaseSources",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RecipeImages",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Filename = table.Column<string>(nullable: false),
-                    RecipeId = table.Column<Guid>(nullable: false),
+                    RecipeId = table.Column<int>(nullable: false),
                     Url = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -97,17 +98,14 @@ namespace HIS.Recipes.Services.Migrations
                 name: "RecipeIngrediants",
                 columns: table => new
                 {
-                    RecipeId = table.Column<Guid>(nullable: false),
-                    IngrediantId = table.Column<Guid>(nullable: false),
+                    RecipeId = table.Column<int>(nullable: false),
+                    IngrediantId = table.Column<int>(nullable: false),
                     Amount = table.Column<int>(nullable: false),
-                    CookingUnit = table.Column<int>(nullable: false),
-                    MemberId = table.Column<Guid>(nullable: true)
+                    CookingUnit = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RecipeIngrediants", x => new { x.RecipeId, x.IngrediantId });
-                    table.UniqueConstraint("AK_RecipeIngrediants_RecipeId", x => x.RecipeId);
-                    table.UniqueConstraint("AK_RecipeIngrediants_IngrediantId_RecipeId", x => new { x.IngrediantId, x.RecipeId });
                     table.ForeignKey(
                         name: "FK_RecipeIngrediants_Ingrediants_IngrediantId",
                         column: x => x.IngrediantId,
@@ -115,28 +113,74 @@ namespace HIS.Recipes.Services.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RecipeIngrediants_Recipes_MemberId",
-                        column: x => x.MemberId,
+                        name: "FK_RecipeIngrediants_Recipes_RecipeId",
+                        column: x => x.RecipeId,
                         principalTable: "Recipes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
+                name: "RecipeSteps",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(nullable: false),
+                    Order = table.Column<int>(nullable: false),
+                    RecipeId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeSteps", x => x.Id);
+                    table.UniqueConstraint("AK_RecipeSteps_RecipeId_Order", x => new { x.RecipeId, x.Order });
+                    table.ForeignKey(
+                        name: "FK_RecipeSteps_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RecipeSourceRecipes",
+                columns: table => new
+                {
+                    RecipeId = table.Column<int>(nullable: false),
+                    SourceId = table.Column<int>(nullable: false),
+                    Page = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeSourceRecipes", x => new { x.RecipeId, x.SourceId });
+                    table.UniqueConstraint("AK_RecipeSourceRecipes_RecipeId_SourceId_Page", x => new { x.RecipeId, x.SourceId, x.Page });
+                    table.ForeignKey(
+                        name: "FK_RecipeSourceRecipes_Recipes_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "Recipes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RecipeSourceRecipes_RecipeBaseSources_SourceId",
+                        column: x => x.SourceId,
+                        principalTable: "RecipeBaseSources",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RecipeRecipeTag",
                 columns: table => new
                 {
-                    RecipeId = table.Column<Guid>(nullable: false),
-                    RecipeTagId = table.Column<Guid>(nullable: false),
-                    RecipeId1 = table.Column<Guid>(nullable: true)
+                    RecipeId = table.Column<int>(nullable: false),
+                    RecipeTagId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RecipeRecipeTag", x => new { x.RecipeId, x.RecipeTagId });
-                    table.UniqueConstraint("AK_RecipeRecipeTag_RecipeId", x => x.RecipeId);
                     table.ForeignKey(
-                        name: "FK_RecipeRecipeTag_Recipes_RecipeId1",
-                        column: x => x.RecipeId1,
+                        name: "FK_RecipeRecipeTag_Recipes_RecipeId",
+                        column: x => x.RecipeId,
                         principalTable: "Recipes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -148,72 +192,20 @@ namespace HIS.Recipes.Services.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "RecipeSourceRecipes",
-                columns: table => new
-                {
-                    RecipeId = table.Column<Guid>(nullable: false),
-                    SourceId = table.Column<Guid>(nullable: false),
-                    Page = table.Column<int>(nullable: true),
-                    RecipeId1 = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeSourceRecipes", x => new { x.RecipeId, x.SourceId });
-                    table.UniqueConstraint("AK_RecipeSourceRecipes_RecipeId", x => x.RecipeId);
-                    table.ForeignKey(
-                        name: "FK_RecipeSourceRecipes_Recipes_RecipeId1",
-                        column: x => x.RecipeId1,
-                        principalTable: "Recipes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RecipeSourceRecipes_RecipeBaseSources_SourceId",
-                        column: x => x.SourceId,
-                        principalTable: "RecipeBaseSources",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RecipeSteps",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Description = table.Column<string>(nullable: false),
-                    Order = table.Column<int>(nullable: false),
-                    RecipeId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeSteps", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RecipeSteps_Recipes_RecipeId",
-                        column: x => x.RecipeId,
-                        principalTable: "Recipes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Recipes_SourceId",
-                table: "Recipes",
-                column: "SourceId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeImages_RecipeId",
                 table: "RecipeImages",
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngrediants_MemberId",
+                name: "IX_RecipeIngrediants_RecipeId",
                 table: "RecipeIngrediants",
-                column: "MemberId");
+                column: "RecipeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeRecipeTag_RecipeId1",
+                name: "IX_RecipeRecipeTag_RecipeId",
                 table: "RecipeRecipeTag",
-                column: "RecipeId1");
+                column: "RecipeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeRecipeTag_RecipeTagId",
@@ -221,19 +213,15 @@ namespace HIS.Recipes.Services.Migrations
                 column: "RecipeTagId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecipeSourceRecipes_RecipeId1",
+                name: "IX_RecipeSourceRecipes_RecipeId",
                 table: "RecipeSourceRecipes",
-                column: "RecipeId1");
+                column: "RecipeId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecipeSourceRecipes_SourceId",
                 table: "RecipeSourceRecipes",
                 column: "SourceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeSteps_RecipeId",
-                table: "RecipeSteps",
-                column: "RecipeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -260,10 +248,10 @@ namespace HIS.Recipes.Services.Migrations
                 name: "RecipeTags");
 
             migrationBuilder.DropTable(
-                name: "Recipes");
+                name: "RecipeBaseSources");
 
             migrationBuilder.DropTable(
-                name: "RecipeBaseSources");
+                name: "Recipes");
         }
     }
 }

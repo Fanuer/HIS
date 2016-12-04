@@ -68,11 +68,11 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <param name="recipeId">Id of the owning recipe</param>
         /// <param name="data">New image data</param>
         /// <returns></returns>
-        public async Task UpdateAsync(Guid id, Guid recipeId, IFormFile data)
+        public async Task UpdateAsync(int id, int recipeId, IFormFile data)
         {
             try
             {
-                if (id.Equals(Guid.Empty)) { throw new ArgumentNullException(nameof(id)); }
+                if (id.Equals(0)) { throw new ArgumentNullException(nameof(id)); }
                 if (data == null) { throw new ArgumentNullException(nameof(data)); }
                 
                 var existingElement = await this.Repository.FindAsync(id);
@@ -113,7 +113,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <param name="recipeId">Id of the owning recipe</param>
         /// <param name="creationModel">entity data</param>
         /// <returns></returns>
-        public async Task<RecipeImageViewModel> AddAsync(Guid recipeId, IFormFile creationModel)
+        public async Task<RecipeImageViewModel> AddAsync(int recipeId, IFormFile creationModel)
         {
             RecipeImageViewModel result;
 
@@ -143,7 +143,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// </summary>
         /// <param name="id">entity id</param>
         /// <returns></returns>
-        public async Task RemoveAsync(Guid id)
+        public async Task RemoveAsync(int id)
         {
             try
             {
@@ -165,7 +165,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// </summary>
         /// <param name="recipeId">id if the recipe</param>
         /// <returns></returns>
-        public IQueryable<RecipeImageViewModel> GetImages(Guid recipeId)
+        public IQueryable<RecipeImageViewModel> GetImages(int recipeId)
         {
             IQueryable<RecipeImageViewModel> result = null;
             try
@@ -190,7 +190,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// </summary>
         /// <param name="imageId"></param>
         /// <returns></returns>
-        public async Task<RecipeImageViewModel> GetImage(Guid imageId)
+        public async Task<RecipeImageViewModel> GetImage(int imageId)
         {
             RecipeImageViewModel result = null;
             try

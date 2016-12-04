@@ -17,10 +17,10 @@ using Microsoft.Extensions.Logging;
 namespace HIS.Recipes.Services.Implementation.Services
 {
     internal abstract class BaseService<T, TDbEntity, TViewModel, TCreationViewModel> : IDisposable
-        where T : class, IRepositoryFindSingle<TDbEntity, Guid>, IRepositoryUpdate<TDbEntity, Guid>,
-        IRepositoryAddAndDelete<TDbEntity, Guid>, IDisposable
-        where TDbEntity : class, IEntity<Guid>
-        where TViewModel : IViewModelEntity<Guid>
+        where T : class, IRepositoryFindSingle<TDbEntity, int>, IRepositoryUpdate<TDbEntity, int>,
+        IRepositoryAddAndDelete<TDbEntity, int>, IDisposable
+        where TDbEntity : class, IEntity<int>
+        where TViewModel : IViewModelEntity<int>
     {
         #region CONST
 
@@ -71,11 +71,11 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <param name="id">Database id</param>
         /// <param name="model">New Data</param>
         /// <returns></returns>
-        public virtual async Task UpdateAsync(Guid id, TViewModel model)
+        public virtual async Task UpdateAsync(int id, TViewModel model)
         {
             try
             {
-                if (id.Equals(Guid.Empty))
+                if (id.Equals(0))
                 {
                     throw new ArgumentNullException(nameof(id));
                 }
@@ -135,7 +135,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// </summary>
         /// <param name="id">entity id</param>
         /// <returns></returns>
-        public virtual async Task RemoveAsync(Guid id)
+        public virtual async Task RemoveAsync(int id)
         {
             try
             {

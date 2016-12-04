@@ -73,7 +73,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             return result;
         }
 
-        public async Task AddTagToRecipeAsync(Guid recipeId, string tagName)
+        public async Task AddTagToRecipeAsync(int recipeId, string tagName)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             
         }
 
-        public async Task RemoveTagToRecipeAsync(Guid recipeId, string tagName)
+        public async Task RemoveTagToRecipeAsync(int recipeId, string tagName)
         {
             try
             {

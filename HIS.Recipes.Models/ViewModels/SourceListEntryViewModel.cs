@@ -7,9 +7,9 @@ using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class SourceListEntryViewModel:IViewModelEntity<Guid>
+    public class SourceListEntryViewModel:IViewModelEntity<int>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Url { get; set; }
         public string Name { get; set; }
         public SourceType Type { get; set; }

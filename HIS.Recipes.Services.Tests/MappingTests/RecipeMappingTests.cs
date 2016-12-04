@@ -40,10 +40,10 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(input.Calories, output.Calories);
             Assert.Equal(input.NumberOfServings, output.NumberOfServings);
 
-            Assert.Equal(Guid.Empty, output.Id);
+            Assert.Equal(0, output.Id);
             Assert.Equal(0, output.CookedCounter);
             Assert.Equal(new DateTime(), output.LastTimeCooked);
-            Assert.Equal(Guid.Empty, output.SourceId);
+            Assert.Equal(0, output.SourceId);
             
             Assert.NotNull(output.Ingrediants);
             Assert.Empty(output.Ingrediants);
@@ -58,7 +58,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Empty(output.Tags);
 
             Assert.NotNull(output.Source);
-            Assert.Equal(Guid.Empty, output.SourceId);
+            Assert.Equal(0, output.SourceId);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             Assert.Equal(0, output.CookedCounter);
             Assert.Equal(new DateTime(), output.LastTimeCooked);
-            Assert.Equal(Guid.Empty, output.SourceId);
+            Assert.Equal(0, output.SourceId);
 
             Assert.NotNull(output.Ingrediants);
             Assert.Empty(output.Ingrediants);
@@ -110,7 +110,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Empty(output.Tags);
 
             Assert.NotNull(output.Source);
-            Assert.Equal(Guid.Empty, output.SourceId);
+            Assert.Equal(0, output.SourceId);
         }
 
         [Fact]
@@ -226,7 +226,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                 Recipe = new Recipe()
                 {
                     Name = "My Recipe",
-                    Id = Guid.NewGuid(),
+                    Id = 1,
                     Calories = 1,
                     CookedCounter = 2,
                     Creator = "Tester",
@@ -239,7 +239,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                 var image = new RecipeImage()
                 {
                     Recipe = this.Recipe,
-                    Id = Guid.NewGuid(),
+                    Id = 1,
                     RecipeId = Recipe.Id,
                     Url = "http://imageUrl.de",
                     Filename = "MyImage.jpg"
@@ -250,8 +250,8 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
                 var steps = new List<RecipeStep>()
                 {
-                    new RecipeStep() { Recipe = Recipe, Id = Guid.NewGuid(), RecipeId = Recipe.Id, Order = 0, Description = "Step 1"},
-                    new RecipeStep() { Recipe = Recipe, Id = Guid.NewGuid(), RecipeId = Recipe.Id, Order = 1, Description = "Step 2"}
+                    new RecipeStep() { Recipe = Recipe, Id = 1, RecipeId = Recipe.Id, Order = 0, Description = "Step 1"},
+                    new RecipeStep() { Recipe = Recipe, Id = 2, RecipeId = Recipe.Id, Order = 1, Description = "Step 2"}
                 };
                 Recipe.Steps.AddRange(steps);
 
@@ -259,8 +259,8 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
                 var tags = new List<RecipeTag>()
                 {
-                    new RecipeTag() { Id = Guid.NewGuid(), Name = "Tag 1"},
-                    new RecipeTag() { Id = Guid.NewGuid(), Name = "Tag 2"},
+                    new RecipeTag() { Id = 1, Name = "Tag 1"},
+                    new RecipeTag() { Id = 2, Name = "Tag 2"},
                 };
 
                 var recipeTags = new List<RecipeRecipeTag>()
@@ -277,7 +277,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
                 var source = new RecipeUrlSource()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = 1,
                     Name = "WebSource",
                     Url = "http://www.websource.de"
                 };
@@ -297,7 +297,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
                 var ingrediant = new Ingrediant()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = 1,
                     Name = "Ingrediant 1"
                 };
 
@@ -316,7 +316,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                 #endregion
                 UpdateModel = new RecipeUpdateViewModel()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = 1,
                     Name = "Old Recipe",
                     Url = "http://www.webservice.de/recipes/1",
                     Calories = Recipe.Calories,

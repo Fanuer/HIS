@@ -9,8 +9,8 @@ using HIS.Recipes.Models.Enums;
 namespace HIS.Recipes.Services.Migrations
 {
     [DbContext(typeof(RecipeDBContext))]
-    [Migration("20161201171319_RenamedProperties")]
-    partial class RenamedProperties
+    [Migration("20161204115425_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,19 +20,22 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.Ingrediant", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
 
                     b.ToTable("Ingrediants");
                 });
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.Recipe", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("Calories");
@@ -48,7 +51,7 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("NumberOfServings");
 
-                    b.Property<Guid>("SourceId");
+                    b.Property<int>("SourceId");
 
                     b.HasKey("Id");
 
@@ -57,7 +60,7 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeBaseSource", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Discriminator")
@@ -75,13 +78,13 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeImage", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Filename")
                         .IsRequired();
 
-                    b.Property<Guid>("RecipeId");
+                    b.Property<int>("RecipeId");
 
                     b.Property<string>("Url")
                         .IsRequired();
@@ -95,15 +98,15 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeIngrediant", b =>
                 {
-                    b.Property<Guid>("RecipeId");
+                    b.Property<int>("RecipeId");
 
-                    b.Property<Guid>("IngrediantId");
+                    b.Property<int>("IngrediantId");
 
                     b.Property<int>("Amount");
 
                     b.Property<int>("CookingUnit");
 
-                    b.Property<Guid?>("RecipeId1");
+                    b.Property<int?>("RecipeId1");
 
                     b.HasKey("RecipeId", "IngrediantId");
 
@@ -119,11 +122,11 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeRecipeTag", b =>
                 {
-                    b.Property<Guid>("RecipeId");
+                    b.Property<int>("RecipeId");
 
-                    b.Property<Guid>("RecipeTagId");
+                    b.Property<int>("RecipeTagId");
 
-                    b.Property<Guid?>("RecipeId1");
+                    b.Property<int?>("RecipeId1");
 
                     b.HasKey("RecipeId", "RecipeTagId");
 
@@ -138,18 +141,18 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeSourceRecipe", b =>
                 {
-                    b.Property<Guid>("RecipeId");
+                    b.Property<int>("RecipeId");
 
-                    b.Property<Guid>("SourceId");
+                    b.Property<int>("SourceId");
 
                     b.Property<int>("Page");
 
                     b.HasKey("RecipeId", "SourceId");
 
-                    b.HasAlternateKey("RecipeId");
-
-
                     b.HasAlternateKey("RecipeId", "SourceId", "Page");
+
+                    b.HasIndex("RecipeId")
+                        .IsUnique();
 
                     b.HasIndex("SourceId");
 
@@ -158,7 +161,7 @@ namespace HIS.Recipes.Services.Migrations
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeStep", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description")
@@ -166,18 +169,18 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("Order");
 
-                    b.Property<Guid>("RecipeId");
+                    b.Property<int>("RecipeId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipeId");
+                    b.HasAlternateKey("RecipeId", "Order");
 
                     b.ToTable("RecipeSteps");
                 });
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeTag", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
@@ -228,7 +231,7 @@ namespace HIS.Recipes.Services.Migrations
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeIngrediant", b =>
                 {
                     b.HasOne("HIS.Recipes.Services.Models.Ingrediant", "Ingrediant")
-                        .WithMany()
+                        .WithMany("RecipeIngrediants")
                         .HasForeignKey("IngrediantId")
                         .OnDelete(DeleteBehavior.Cascade);
 

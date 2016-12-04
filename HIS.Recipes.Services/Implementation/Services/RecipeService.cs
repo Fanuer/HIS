@@ -53,7 +53,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             return result;
         }
 
-        public async Task<FullRecipeViewModel> GetRecipeAsync(Guid recipeId)
+        public async Task<FullRecipeViewModel> GetRecipeAsync(int recipeId)
         {
             FullRecipeViewModel result = null;
             try
@@ -81,7 +81,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             return result;
         }
 
-        public async Task CookNowAsync(Guid recipeId)
+        public async Task CookNowAsync(int recipeId)
         {
             var recipe = await this.Repository.FindAsync(recipeId);
             if(recipe == null)

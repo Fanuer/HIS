@@ -56,7 +56,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             return result;
         }
 
-        public IQueryable<IngrediantViewModel> GetIngrediantsForRecipe(Guid recipeId)
+        public IQueryable<IngrediantViewModel> GetIngrediantsForRecipe(int recipeId)
         {
             IQueryable<IngrediantViewModel> result = null;
             try
@@ -121,7 +121,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             
         }
 
-        public async Task RemoveIngrediantFromRecipeAsync(Guid recipeId, Guid ingrediantId)
+        public async Task RemoveIngrediantFromRecipeAsync(int recipeId, int ingrediantId)
         {
             try
             {

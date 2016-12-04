@@ -30,7 +30,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(input.Name, output.Name);
             Assert.Equal(input.SourceUrl, output.Url);
 
-            Assert.Equal(Guid.Empty, output.Id);
+            Assert.Equal(0, output.Id);
             Assert.NotNull(output.RecipeSourceRecipes);
             Assert.Empty(output.RecipeSourceRecipes);
         }
@@ -42,7 +42,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             var input = new RecipeUrlSource()
             {
-                Id = Guid.NewGuid(),
+                Id = 1,
                 Name = "TestDomain",
                 Url = "http://www.test.de/source"
             };
@@ -64,7 +64,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             var input = new WebSourceViewModel()
             {
-                Id = Guid.NewGuid(),
+                Id = 1,
                 Name = "TestDomain",
                 SourceUrl = "http://www.test.de/source"
             };
@@ -98,7 +98,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(input.Name, output.Name);
             Assert.Equal(input.ISBN, output.ISBN);
             Assert.Equal(input.PublishingCompany, output.PublishingCompany);
-            Assert.Equal(Guid.Empty, output.Id);
+            Assert.Equal(0, output.Id);
 
             Assert.NotNull(output.RecipeSourceRecipes);
             Assert.Empty(output.RecipeSourceRecipes);
@@ -114,12 +114,12 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                 Name = "Cookbook 1",
                 PublishingCompany = "ABC Corp",
                 ISBN = "1234",
-                Id = Guid.NewGuid(),
+                Id = 1,
                 Url = "http://www.test.de",
                 Recipes = new List<RecipeShortInfoViewModel>()
                 {
-                    new RecipeShortInfoViewModel() {Id = Guid.NewGuid(), Name = "Recipe 1", Page = 1, Type = SourceType.Cookbook, Url = "http://www.recipeUrl.de"},
-                    new RecipeShortInfoViewModel() {Id = Guid.NewGuid(), Name = "Recipe 2", Page = 2, Type = SourceType.Cookbook, Url = "http://www.recipeUrl2.de"},
+                    new RecipeShortInfoViewModel() {Id = 1, Name = "Recipe 1", Page = 1, Type = SourceType.Cookbook, Url = "http://www.recipeUrl.de"},
+                    new RecipeShortInfoViewModel() {Id = 1, Name = "Recipe 2", Page = 2, Type = SourceType.Cookbook, Url = "http://www.recipeUrl2.de"},
                 }
             };
 
@@ -140,8 +140,8 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         {
             Initalize();
 
-            var source = new RecipeUrlSource() {Name = "WebSource", Id = Guid.NewGuid(), Url = "http://www.websource.de"};
-            var recipe = new Recipe() {Name = "recipe 1", Id = Guid.NewGuid()};
+            var source = new RecipeUrlSource() {Name = "WebSource", Id = 1, Url = "http://www.websource.de"};
+            var recipe = new Recipe() {Name = "recipe 1", Id = 1};
 
             var input = new RecipeSourceRecipe()
             {
@@ -172,8 +172,8 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         {
             Initalize();
 
-            var source = new RecipeCookbookSource() { Name = "WebSource", Id = Guid.NewGuid(), ISBN = "1234", PublishingCompany = "ABC Corp."};
-            var recipe = new Recipe() { Name = "recipe 1", Id = Guid.NewGuid() };
+            var source = new RecipeCookbookSource() { Name = "WebSource", Id = 1, ISBN = "1234", PublishingCompany = "ABC Corp."};
+            var recipe = new Recipe() { Name = "recipe 1", Id = 1 };
 
             var input = new RecipeSourceRecipe()
             {
@@ -210,8 +210,8 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         {
             Initalize();
 
-            var source = new RecipeUrlSource() { Name = "WebSource", Id = Guid.NewGuid(), Url = "http://www.websource.de" };
-            var recipe = new Recipe() { Name = "recipe 1", Id = Guid.NewGuid() };
+            var source = new RecipeUrlSource() { Name = "WebSource", Id = 1, Url = "http://www.websource.de" };
+            var recipe = new Recipe() { Name = "recipe 1", Id = 1 };
 
             var input = new RecipeSourceRecipe()
             {

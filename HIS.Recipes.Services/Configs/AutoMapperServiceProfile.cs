@@ -44,7 +44,7 @@ namespace HIS.Recipes.Services.Configs
         private void RecipeStepConfiguration()
         {
             this.CreateMap<StepCreateViewModel, RecipeStep>()
-                .ForMember(x => x.Id, x => x.UseValue(Guid.Empty))
+                .ForMember(x => x.Id, x => x.UseValue(0))
                 .ForMember(x => x.Recipe, x => x.Ignore());
 
             this.CreateMap<RecipeStep, StepViewModel>()
@@ -57,7 +57,7 @@ namespace HIS.Recipes.Services.Configs
         {
             this.CreateMap<string, RecipeTag>()
                 .ForMember(x => x.Name, x => x.MapFrom(y => y))
-                .ForMember(x => x.Id, x => x.UseValue(Guid.Empty))
+                .ForMember(x => x.Id, x => x.UseValue(0))
                 .ForMember(x => x.Recipes, x => x.Ignore());
 
             this.CreateMap<RecipeTag, NamedViewModel>()
@@ -70,7 +70,7 @@ namespace HIS.Recipes.Services.Configs
         {
             this.CreateMap<WebSourceCreationViewModel, RecipeUrlSource>()
                 .ForMember(x => x.Url, x => x.MapFrom(s => s.SourceUrl))
-                .ForMember(x => x.Id, x => x.UseValue(Guid.Empty))
+                .ForMember(x => x.Id, x => x.UseValue(0))
                 .ForMember(x => x.RecipeSourceRecipes, x => x.Ignore());
 
             this.CreateMap<RecipeUrlSource, WebSourceViewModel>()
@@ -82,7 +82,7 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.RecipeSourceRecipes, x => x.Ignore());
 
             this.CreateMap<CookbookSourceCreationViewModel, RecipeCookbookSource>()
-                .ForMember(x => x.Id, x => x.UseValue(Guid.Empty))
+                .ForMember(x => x.Id, x => x.UseValue(0))
                 .ForMember(x => x.RecipeSourceRecipes, x => x.Ignore());
             ;
             this.CreateMap<CookbookSourceViewModel, RecipeCookbookSource>()
@@ -107,10 +107,10 @@ namespace HIS.Recipes.Services.Configs
         private void RecipeConfiguration()
         {
             this.CreateMap<RecipeCreationViewModel, Recipe>()
-                .ForMember(x => x.Id, x => x.UseValue(Guid.Empty))
+                .ForMember(x => x.Id, x => x.UseValue(0))
                 .ForMember(x => x.CookedCounter, x => x.UseValue(0))
                 .ForMember(x => x.LastTimeCooked, x => x.UseValue(new DateTime()))
-                .ForMember(x => x.SourceId, x => x.UseValue(Guid.Empty))
+                .ForMember(x => x.SourceId, x => x.UseValue(0))
                 .ForMember(x => x.Tags, x => x.Ignore())
                 .ForMember(x => x.Source, x => x.Ignore())
                 .ForMember(x => x.Ingrediants, x => x.Ignore())
@@ -176,7 +176,7 @@ namespace HIS.Recipes.Services.Configs
 
             this.CreateMap<string, NamedViewModel>()
                 .ForMember(x => x.Name, y => y.MapFrom(x => x))
-                .ForMember(x => x.Id, y => y.UseValue(Guid.Empty))
+                .ForMember(x => x.Id, y => y.UseValue(0))
                 .ForMember(x => x.Url, y => y.Ignore());
             
             this.CreateMap<NamedViewModel, Ingrediant>()

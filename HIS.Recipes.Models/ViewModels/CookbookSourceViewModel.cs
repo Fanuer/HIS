@@ -6,14 +6,14 @@ using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class CookbookSourceViewModel : CookbookSourceCreationViewModel, IViewModelEntity<Guid>
+    public class CookbookSourceViewModel : CookbookSourceCreationViewModel, IViewModelEntity<int>
     {
         public CookbookSourceViewModel()
         {
             Recipes = new List<RecipeShortInfoViewModel>();
         }
 
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Url { get; set; }
 
         public IEnumerable<RecipeShortInfoViewModel> Recipes { get; set; }

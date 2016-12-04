@@ -5,7 +5,7 @@ using HIS.Recipes.Services.Models;
 
 namespace HIS.Recipes.Services.Interfaces.Repositories
 {
-    internal interface IStepRepository:IRepositoryFindAll<RecipeStep>, IRepositoryAddAndDelete<RecipeStep, Guid>, IRepositoryUpdate<RecipeStep, Guid>, IRepositoryFindSingle<RecipeStep, Guid>, IDisposable
+    internal interface IStepRepository:IRepositoryFindAll<RecipeStep>, IRepositoryAddAndDelete<RecipeStep, int>, IRepositoryUpdate<RecipeStep, int>, IRepositoryFindSingle<RecipeStep, int>, IDisposable
     {
     }
 }

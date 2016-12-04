@@ -63,7 +63,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             Assert.IsType<NamedViewModel>(result);
             Assert.Equal(input, result.Name);
-            Assert.Equal(Guid.Empty, result.Id);
+            Assert.Equal(0, result.Id);
             Assert.Null(result.Url);
         }
 
@@ -72,7 +72,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         {
             Initialize();
 
-            var input = new NamedViewModel() {Id = Guid.NewGuid(), Name = "New Ingrediant", Url = "http://www.test.de"};
+            var input = new NamedViewModel() {Id = 1, Name = "New Ingrediant", Url = "http://www.test.de"};
             var result = Mapper.Map<Ingrediant>(input);
 
             Assert.IsType<Ingrediant>(result);
@@ -125,16 +125,16 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             {
                 Recipes = new List<Recipe>()
             {
-                new Recipe() {Name = "Test Recipe 1", Id = Guid.NewGuid(), Calories = 1, CookedCounter = 0, LastTimeCooked = new DateTime(), NumberOfServings = 1, SourceId = Guid.NewGuid(), Creator = "Tester"},
-                new Recipe() {Name = "Test Recipe 2", Id = Guid.NewGuid(), Calories = 1, CookedCounter = 0, LastTimeCooked = new DateTime(), NumberOfServings = 1, SourceId = Guid.NewGuid(), Creator = "Tester"},
-                new Recipe() {Name = "Test Recipe 3", Id = Guid.NewGuid(), Calories = 1, CookedCounter = 0, LastTimeCooked = new DateTime(), NumberOfServings = 1, SourceId = Guid.NewGuid(), Creator = "Tester"}
+                new Recipe() {Name = "Test Recipe 1", Id = 1, Calories = 1, CookedCounter = 0, LastTimeCooked = new DateTime(), NumberOfServings = 1, SourceId = 1, Creator = "Tester"},
+                new Recipe() {Name = "Test Recipe 2", Id = 2, Calories = 1, CookedCounter = 0, LastTimeCooked = new DateTime(), NumberOfServings = 1, SourceId = 2, Creator = "Tester"},
+                new Recipe() {Name = "Test Recipe 3", Id = 3, Calories = 1, CookedCounter = 0, LastTimeCooked = new DateTime(), NumberOfServings = 1, SourceId = 3, Creator = "Tester"}
             };
 
                 Ingrediants = new List<Ingrediant>()
             {
-                new Ingrediant() { Id = Guid.NewGuid(), Name = "Test Ingrediant 1"},
-                new Ingrediant() { Id = Guid.NewGuid(), Name = "Test Ingrediant 2"},
-                new Ingrediant() { Id = Guid.NewGuid(), Name = "Test Ingrediant 3"},
+                new Ingrediant() { Id = 1, Name = "Test Ingrediant 1"},
+                new Ingrediant() { Id = 2, Name = "Test Ingrediant 2"},
+                new Ingrediant() { Id = 3, Name = "Test Ingrediant 3"},
             };
 
                 var firstRecipe = Recipes.First();

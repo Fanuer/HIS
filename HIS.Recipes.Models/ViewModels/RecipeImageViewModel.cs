@@ -7,10 +7,10 @@ using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class RecipeImageViewModel:IViewModelEntity<Guid>
+    public class RecipeImageViewModel:IViewModelEntity<int>
     {
         [Required]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Url { get; set; }
 

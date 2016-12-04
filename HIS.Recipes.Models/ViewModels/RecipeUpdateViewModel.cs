@@ -6,9 +6,9 @@ using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class RecipeUpdateViewModel: RecipeCreationViewModel, IViewModelEntity<Guid>
+    public class RecipeUpdateViewModel: RecipeCreationViewModel, IViewModelEntity<int>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Url { get; set; }
     }
 }

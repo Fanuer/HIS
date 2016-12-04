@@ -93,7 +93,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             return result;
         }
 
-        public async Task RemoveSourceAsync(Guid id)
+        public async Task RemoveSourceAsync(int id)
         {
             try
             {
@@ -112,14 +112,14 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
         }
 
-        public async Task UpdateCookbookAsync(Guid id, CookbookSourceViewModel model)
+        public async Task UpdateCookbookAsync(int id, CookbookSourceViewModel model)
         {
-            await this.UpdateAsync<ICookbookSourceRepository, RecipeCookbookSource, Guid, CookbookSourceViewModel>(this._rep.CookbookSources, id, model, "cookbook");
+            await this.UpdateAsync<ICookbookSourceRepository, RecipeCookbookSource, int, CookbookSourceViewModel>(this._rep.CookbookSources, id, model, "cookbook");
         }
 
-        public async Task UpdateWebSourceAsync(Guid recipeId, Guid sourceId, WebSourceViewModel source)
+        public async Task UpdateWebSourceAsync(int recipeId, int sourceId, WebSourceViewModel source)
         {
-            await this.UpdateAsync<IWebSourceRepository, RecipeUrlSource, Guid, WebSourceViewModel>(this._rep.WebSources, sourceId, source, "web source");
+            await this.UpdateAsync<IWebSourceRepository, RecipeUrlSource, int, WebSourceViewModel>(this._rep.WebSources, sourceId, source, "web source");
             var dbsource = await this._rep.WebSources.FindAsync(sourceId);
 
             var recipe = await this._recipeRep.FindAsync(recipeId, x=>x.Source);
@@ -132,7 +132,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
         }
 
-        public async Task<CookbookSourceViewModel> UpdateRecipeOnCookbookAsync(Guid recipeId, Guid sourceId, int page)
+        public async Task<CookbookSourceViewModel> UpdateRecipeOnCookbookAsync(int recipeId, int sourceId, int page)
         {
             var dbsource = await this._rep.CookbookSources.FindAsync(sourceId, x=>x.RecipeSourceRecipes);
             var recipe = await this._recipeRep.FindAsync(recipeId, x => x.Source);
@@ -167,7 +167,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             return this._mapper.Map<CookbookSourceViewModel>(dbsource);
         }
 
-        public async Task RemoveRecipeFromCookbookAsync(Guid recipeId, Guid sourceId)
+        public async Task RemoveRecipeFromCookbookAsync(int recipeId, int sourceId)
         {
             var dbSource = await _rep.CookbookSources.GetAll().Include(x => x.RecipeSourceRecipes).SingleOrDefaultAsync(x => x.Id.Equals(sourceId));
             var recipeSource = dbSource?.RecipeSourceRecipes.FirstOrDefault(x => x.RecipeId.Equals(recipeId) && x.SourceId.Equals(recipeId));
@@ -210,7 +210,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         {
             try
             {
-                if (id.Equals(Guid.Empty))
+                if (id.Equals(0))
                 {
                     throw new ArgumentNullException(nameof(id));
                 }

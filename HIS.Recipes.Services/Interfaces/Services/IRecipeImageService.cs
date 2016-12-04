@@ -19,32 +19,32 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="recipeId">Id of the owning recipe</param>
         /// <param name="data">New image data</param>
         /// <returns></returns>
-        Task UpdateAsync(Guid id, Guid recipeId, IFormFile data);
+        Task UpdateAsync(int id, int recipeId, IFormFile data);
         /// <summary>
         /// Creates a new entity in the Database
         /// </summary>
         /// <param name="recipeId">Id of the owning recipe</param>
         /// <param name="creationModel">entity data</param>
         /// <returns></returns>
-        Task<RecipeImageViewModel> AddAsync(Guid recipeId, IFormFile creationModel);
+        Task<RecipeImageViewModel> AddAsync(int recipeId, IFormFile creationModel);
         /// <summary>
         /// Get all recipe images
         /// </summary>
         /// <param name="recipeId">id if the recipe</param>
         /// <returns></returns>
-        IQueryable<RecipeImageViewModel> GetImages(Guid recipeId);
+        IQueryable<RecipeImageViewModel> GetImages(int recipeId);
         /// <summary>
         /// Deletes an entity from the Database
         /// </summary>
         /// <param name="id">entity id</param>
         /// <returns></returns>
-        Task RemoveAsync(Guid id);
+        Task RemoveAsync(int id);
 
         /// <summary>
         /// Returns an image 
         /// </summary>
         /// <param name="imageId"></param>
         /// <returns></returns>
-        Task<RecipeImageViewModel> GetImage(Guid imageId);
+        Task<RecipeImageViewModel> GetImage(int imageId);
     }
 }

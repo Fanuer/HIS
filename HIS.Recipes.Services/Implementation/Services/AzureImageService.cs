@@ -67,7 +67,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <param name="recipeId">owning recpie Id</param>
         /// <param name="file">image data</param>
         /// <returns></returns>
-        public async Task<string> UploadImageAsync(Guid recipeId, IFormFile file)
+        public async Task<string> UploadImageAsync(int recipeId, IFormFile file)
         {
             CloudBlockBlob blockBlob = null;
             try
@@ -110,7 +110,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <param name="recipeId">owning recpie Id</param>
         /// <param name="imageFilename">image name</param>
         /// <returns></returns>
-        public async Task RemoveImageAsync(Guid recipeId, string imageFilename)
+        public async Task RemoveImageAsync(int recipeId, string imageFilename)
         {
             try
             {
@@ -143,10 +143,10 @@ namespace HIS.Recipes.Services.Implementation.Services
             _intialized = true;
         }
 
-        private string GetBlobName(Guid recipeId, string imageFilename)
+        private string GetBlobName(int recipeId, string imageFilename)
         {
             if (String.IsNullOrWhiteSpace(imageFilename)) { throw new ArgumentNullException(nameof(imageFilename)); }
-            if (recipeId.Equals(Guid.Empty)) { throw new ArgumentNullException(nameof(recipeId)); }
+            if (recipeId.Equals(0)) { throw new ArgumentNullException(nameof(recipeId)); }
 
             return String.Concat(RecipeContainerPrefix, recipeId.ToString(), "_", imageFilename);
         }

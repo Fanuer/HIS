@@ -60,37 +60,37 @@ namespace HIS.Recipes.Services.Implementation.Repositories
 
         #region Nested Classes
 
-        internal class DbImageRepository : GenericDbRepository<RecipeImage, Guid>, IDbImageRepository
+        internal class DbImageRepository : GenericDbRepository<RecipeImage, int>, IDbImageRepository
         {
             public DbImageRepository(RecipeDBContext context): base(context){}
         }
-        internal class IngrediantRepository : GenericDbRepository<Ingrediant, Guid>, IIngrediantRepository
+        internal class IngrediantRepository : GenericDbRepository<Ingrediant, int>, IIngrediantRepository
         {
             public IngrediantRepository(RecipeDBContext context) : base(context) { }
         }
-        internal class RecipeRepository : GenericDbRepository<Recipe, Guid>, IRecipeRepository
+        internal class RecipeRepository : GenericDbRepository<Recipe, int>, IRecipeRepository
         {
             public RecipeRepository(RecipeDBContext context) : base(context) { }
         }
-        internal class StepRepository : GenericDbRepository<RecipeStep, Guid>, IStepRepository
+        internal class StepRepository : GenericDbRepository<RecipeStep, int>, IStepRepository
         {
             public StepRepository(RecipeDBContext context) : base(context) { }
         }
-        internal class CookbookSourceRepository : GenericDbRepository<RecipeCookbookSource, Guid>, ICookbookSourceRepository
+        internal class CookbookSourceRepository : GenericDbRepository<RecipeCookbookSource, int>, ICookbookSourceRepository
         {
             public CookbookSourceRepository(RecipeDBContext context) : base(context) { }
         }
-        internal class WebSourceRepository : GenericDbRepository<RecipeUrlSource, Guid>, IWebSourceRepository
+        internal class WebSourceRepository : GenericDbRepository<RecipeUrlSource, int>, IWebSourceRepository
         {
             public WebSourceRepository(RecipeDBContext context) : base(context) { }
         }
-        internal class BaseSourceRepository : GenericDbRepository<RecipeBaseSource, Guid>, IBaseSourceRepository
+        internal class BaseSourceRepository : GenericDbRepository<RecipeBaseSource, int>, IBaseSourceRepository
         {
             public BaseSourceRepository(RecipeDBContext context) : base(context) { }
         }
 
 
-        internal class TagsRepository : GenericDbRepository<RecipeTag, Guid>, ITagsRepository
+        internal class TagsRepository : GenericDbRepository<RecipeTag, int>, ITagsRepository
         {
             public TagsRepository(RecipeDBContext context) : base(context) { }
         }

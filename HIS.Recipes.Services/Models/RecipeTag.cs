@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HIS.Recipes.Services.Models
 {
-    internal class RecipeTag : INamedEntity<Guid>
+    internal class RecipeTag : INamedEntity<int>
     {
         #region CONST
         #endregion
@@ -30,7 +30,7 @@ namespace HIS.Recipes.Services.Models
         /// DB Key
         /// </summary>
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
         
         public string Name { get; set; }

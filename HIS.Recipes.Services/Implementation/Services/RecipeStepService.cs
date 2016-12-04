@@ -43,7 +43,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// </summary>
         /// <param name="recipeId"></param>
         /// <returns></returns>
-        public IQueryable<StepViewModel> GetStepsForRecipe(Guid recipeId)
+        public IQueryable<StepViewModel> GetStepsForRecipe(int recipeId)
         {
             IQueryable<StepViewModel> result = null;
             try

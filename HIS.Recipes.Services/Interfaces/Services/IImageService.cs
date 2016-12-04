@@ -16,13 +16,13 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="recipeId">owning recpie Id</param>
         /// <param name="file">image data</param>
         /// <returns></returns>
-        Task<string> UploadImageAsync(Guid recipeId, IFormFile file);
+        Task<string> UploadImageAsync(int recipeId, IFormFile file);
         /// <summary>
         /// Removes an image from the image store
         /// </summary>
         /// <param name="recipeId">owning recpie Id</param>
         /// <param name="imageFilename">image name</param>
         /// <returns></returns>
-        Task RemoveImageAsync(Guid recipeId, string imageFilename);
+        Task RemoveImageAsync(int recipeId, string imageFilename);
     }
 }

@@ -6,7 +6,7 @@ using HIS.Recipes.Services.Models;
 
 namespace HIS.Recipes.Services.Interfaces.Repositories
 {
-    internal interface IIngrediantRepository : IRepositoryFindAll<Ingrediant>, IRepositoryAddAndDelete<Ingrediant, Guid>, IRepositoryFindSingle<Ingrediant, Guid>, IRepositoryUpdate<Ingrediant, Guid>, IDisposable, IManualSaveChanges
+    internal interface IIngrediantRepository : IRepositoryFindAll<Ingrediant>, IRepositoryAddAndDelete<Ingrediant, int>, IRepositoryFindSingle<Ingrediant, int>, IRepositoryUpdate<Ingrediant, int>, IDisposable, IManualSaveChanges
     {
     }
 }

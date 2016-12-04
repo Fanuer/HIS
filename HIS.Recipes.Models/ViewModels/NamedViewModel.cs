@@ -10,10 +10,10 @@ namespace HIS.Recipes.Models.ViewModels
     /// <summary>
     /// Returns an entity with its name, id and url
     /// </summary>
-    public class NamedViewModel:IViewModelEntity<Guid>
+    public class NamedViewModel:IViewModelEntity<int>
     {
         [Required]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Url { get; set; }
         [Required]

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HIS.Data.Base.Interfaces.Models;
 using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Services.Models
 {
-    internal abstract class RecipeBaseSource : INamedEntity<Guid>
+    internal abstract class RecipeBaseSource : INamedEntity<int>
     {
 
         #region CONST
@@ -51,7 +52,7 @@ namespace HIS.Recipes.Services.Models
         /// DB Key
         /// </summary>
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
 

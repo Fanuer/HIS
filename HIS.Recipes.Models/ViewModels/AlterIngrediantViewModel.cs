@@ -16,12 +16,12 @@ namespace HIS.Recipes.Models.ViewModels
         /// Id of a recipe
         /// </summary>
         [Required]
-        public Guid RecipeId { get; set; }
+        public int RecipeId { get; set; }
         /// <summary>
         /// Id of an ingrediant
         /// </summary>
         [Required]
-        public Guid IngrediantId { get; set; }
+        public int IngrediantId { get; set; }
         /// <summary>
         /// Amount of an ingrediant within a recipe
         /// </summary>
