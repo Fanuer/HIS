@@ -3,12 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using HIS.Recipes.Services.DB;
 using HIS.Recipes.Services.Implementation.Repositories;
+using HIS.Recipes.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace HIS.Recipes.Services.Tests.RepositoryTests
 {
-    public class RecipeRepositoryTests:IDisposable
+    public class RecipeRepositoryTests : IDisposable
     {
         #region CONST
         #endregion
@@ -20,7 +21,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
         #region CTOR
         public RecipeRepositoryTests()
         {
-            
+
         }
         ~RecipeRepositoryTests()
         {
@@ -38,36 +39,78 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
 
             // Use a separate instance of the context to verify correct data was saved to database
             await this.Intialize();
-            var respoitory = new RecipeDbRepository.RecipeRepository(this.Context);
+            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
             var input = this.TestData.Recipes.First();
-            var output = await respoitory.FindAsync(input.Id);
+            var output = await repository.FindAsync(input.Id);
 
             Assert.NotNull(output);
             Assert.Equal(input.Id, output.Id);
         }
 
-        /*
-         [Fact]
-        public void Add_writes_to_database()
+
+        [Fact]
+        public async Task CreateNewRecipe()
         {
-            var options = new DbContextOptionsBuilder<RecipeDBContext>()
-                .UseInMemoryDatabase("read_from_database")
-                .Options;
+            await Intialize();
+            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
 
-            // Run the test against one instance of the context
-            using (var context = new RecipeDBContext(options))
+            var input = new Recipe()
             {
-                var imageRepository = new RecipeDbRepository.RecipeRepository(context);
-            }
+                Calories = 1,
+                CookedCounter = 1,
+                Creator = "Tester",
+                Name = "New Recipe",
+                NumberOfServings = 1
+            };
+            var output = await repository.AddAsync(input);
+            Assert.NotNull(output);
+            Assert.NotEqual(0, output.Id);
 
-            // Use a separate instance of the context to verify correct data was saved to database
-            using (var context = new RecipeDBContext(options))
-            {
-                Assert.Equal(1, context.Blogs.Count());
-                Assert.Equal("http://sample.com", context.Blogs.Single().Url);
-            }
+            Assert.Equal(this.TestData.Recipes.Count +1 , this.Context.Recipes.Count());
+            var result = await this.Context.Recipes.FindAsync(output.Id);
+            Assert.NotNull(result);
         }
-         */
+
+        [Fact]
+        public async Task DeleteRecipe()
+        {
+            await Intialize();
+            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
+
+            var input = this.TestData.Recipes.First();
+            var output = await repository.RemoveAsync(input);
+            Assert.True(output);
+
+            var result = await this.Context.Recipes.FindAsync(input.Id);
+            Assert.Null(result);
+            Assert.Equal(this.TestData.Recipes.Count -1, this.Context.Recipes.Count());
+        }
+
+
+        [Fact]
+        public async Task UpdateRecipe()
+        {
+            const int newCalorien = 2;
+            const string newCreator = "New User";
+
+            await Intialize();
+            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
+
+            var input = this.TestData.Recipes.First();
+            var dbInput = await repository.FindAsync(input.Id);
+            Assert.NotNull(dbInput);
+
+            dbInput.Calories = newCalorien;
+            dbInput.Creator = newCreator;
+            await repository.UpdateAsync(dbInput);
+            
+            dbInput = await repository.FindAsync(input.Id);
+            Assert.NotNull(dbInput);
+
+            Assert.Equal(dbInput.Creator, newCreator);
+            Assert.Equal(dbInput.Calories, newCalorien);
+        }
+
 
         #endregion
 
@@ -81,6 +124,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             this.Context = new RecipeDbContext(options);
 
             this.TestData = new RepositoryTestData();
+            await this.Context.Database.EnsureDeletedAsync();
             await this.Context.Database.EnsureCreatedAsync();
             await this.TestData.WriteTestDataToDataBaseAsync(this.Context);
         }
