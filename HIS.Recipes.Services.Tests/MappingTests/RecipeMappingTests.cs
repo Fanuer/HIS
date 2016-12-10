@@ -310,7 +310,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                     Amount = 1,
                     CookingUnit = CookingUnit.Gramm
                 };
-                ingrediant.RecipeIngrediants.Add(recipeIngrediant);
+                ingrediant.Recipes.Add(recipeIngrediant);
                 Recipe.Ingrediants.Add(recipeIngrediant);
 
                 #endregion

@@ -6,7 +6,7 @@ using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Recipes.Services.Interfaces.Services
 {
-    internal interface ISourceService
+    public interface ISourceService
     {
         /// <summary>
         /// Returns all recipe source entries

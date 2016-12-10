@@ -44,7 +44,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             IQueryable<NamedViewModel> result;
             try
             {
-                result = this.Repository.GetAll().ProjectTo<NamedViewModel>();
+                result = this.Repository.GetAll().ProjectTo<NamedViewModel>(this.Mapper.ConfigurationProvider);
                 this.Logger.LogInformation("Recived all tags successfully");
             }
             catch (Exception e)
@@ -78,20 +78,17 @@ namespace HIS.Recipes.Services.Implementation.Services
             try
             {
                 var tag = await this.AddAsync(tagName);
-                var dbTag = await Repository
-                    .GetAll()
-                    .Include(x => x.Recipes)
-                    .SingleOrDefaultAsync(x => x.Name.Equals(tagName));
+                var dbTag = await this.Repository.FindAsync(tag.Id, x=>x.Recipes);
 
-                var recipe = await this._recipeRep.FindAsync(recipeId);
-
+                var recipe = await _recipeRep.FindAsync(recipeId);
                 if (recipe == null)
                 {
-                    throw new DataObjectNotFoundException($"No recipe with id '{recipeId}' found to add Tag '{tagName}'");
+                    throw new DataObjectNotFoundException($"No Recipe with id {recipeId} found to add Tag '{tagName}'");
                 }
-                recipe.Tags.Add(new RecipeRecipeTag(recipe, dbTag));
+
+                dbTag.Recipes.Add(new RecipeRecipeTag(recipeId, dbTag.Id));
                 await this.Repository.SaveChangesAsync();
-                Logger.LogInformation(new EventId(), $"Tag '{tagName}' added to recipe '{recipe.Name}({recipe.Id})'");
+                Logger.LogInformation(new EventId(), $"Tag '{tagName}' added to recipe '{recipe.Name}({recipeId})'");
             }
             catch (Exception e)
             {
@@ -99,7 +96,6 @@ namespace HIS.Recipes.Services.Implementation.Services
                 Logger.LogError(new EventId(), e, message);
                 throw new Exception(message, e);
             }
-            
         }
 
         public async Task RemoveTagToRecipeAsync(int recipeId, string tagName)

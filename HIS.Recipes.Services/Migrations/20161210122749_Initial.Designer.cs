@@ -9,7 +9,7 @@ using HIS.Recipes.Models.Enums;
 namespace HIS.Recipes.Services.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20161204115425_Initial")]
+    [Migration("20161210122749_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,8 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("CookedCounter");
 
-                    b.Property<string>("Creator");
+                    b.Property<string>("Creator")
+                        .IsRequired();
 
                     b.Property<DateTime>("LastTimeCooked");
 
@@ -106,16 +107,9 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("CookingUnit");
 
-                    b.Property<int?>("RecipeId1");
-
                     b.HasKey("RecipeId", "IngrediantId");
 
-                    b.HasAlternateKey("RecipeId");
-
-
-                    b.HasAlternateKey("IngrediantId", "RecipeId");
-
-                    b.HasIndex("RecipeId1");
+                    b.HasIndex("IngrediantId");
 
                     b.ToTable("RecipeIngrediants");
                 });
@@ -126,17 +120,11 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("RecipeTagId");
 
-                    b.Property<int?>("RecipeId1");
-
                     b.HasKey("RecipeId", "RecipeTagId");
-
-                    b.HasAlternateKey("RecipeId");
-
-                    b.HasIndex("RecipeId1");
 
                     b.HasIndex("RecipeTagId");
 
-                    b.ToTable("RecipeRecipeTag");
+                    b.ToTable("RecipeRecipeTags");
                 });
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeSourceRecipe", b =>
@@ -231,20 +219,22 @@ namespace HIS.Recipes.Services.Migrations
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeIngrediant", b =>
                 {
                     b.HasOne("HIS.Recipes.Services.Models.Ingrediant", "Ingrediant")
-                        .WithMany("RecipeIngrediants")
+                        .WithMany("Recipes")
                         .HasForeignKey("IngrediantId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("HIS.Recipes.Services.Models.Recipe", "Recipe")
                         .WithMany("Ingrediants")
-                        .HasForeignKey("RecipeId1");
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeRecipeTag", b =>
                 {
                     b.HasOne("HIS.Recipes.Services.Models.Recipe", "Recipe")
                         .WithMany("Tags")
-                        .HasForeignKey("RecipeId1");
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("HIS.Recipes.Services.Models.RecipeTag", "RecipeTag")
                         .WithMany("Recipes")

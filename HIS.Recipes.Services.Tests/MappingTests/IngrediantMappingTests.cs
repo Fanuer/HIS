@@ -32,7 +32,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             var result = Mapper.Map<IngrediantStatisticViewModel>(input);
 
             Assert.IsType<IngrediantStatisticViewModel>(result);
-            Assert.Equal(input.RecipeIngrediants.Count, result.NumberOfRecipes);
+            Assert.Equal(input.Recipes.Count, result.NumberOfRecipes);
             Assert.Equal(input.Name, result.Name);
             Assert.Equal(input.Id, result.Id);
         }
@@ -42,7 +42,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         {
             var testdata = Initialize();
 
-            var input = testdata.Ingrediants.First().RecipeIngrediants.First();
+            var input = testdata.Ingrediants.First().Recipes.First();
             var result = Mapper.Map<IngrediantViewModel>(input);
 
             Assert.IsType<IngrediantViewModel>(result);
@@ -68,6 +68,21 @@ namespace HIS.Recipes.Services.Tests.MappingTests
         }
 
         [Fact]
+        public void Convert_String_To_NamedViewModel_NonStaticMapper()
+        {
+            IMapper mapper = new Mapper(new MapperConfiguration(m => m.AddProfile<AutoMapperServiceProfile>()));
+
+            var input = "New Ingrediant";
+            var result = mapper.Map<Ingrediant>(input);
+
+            Assert.IsType<Ingrediant>(result);
+            Assert.Equal(input, result.Name);
+            Assert.Equal(0, result.Id);
+            Assert.NotNull(result.Recipes);
+            Assert.Empty(result.Recipes);
+        }
+
+        [Fact]
         public void Convert_NamedViewModel_To_Ingrediant()
         {
             Initialize();
@@ -78,8 +93,8 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.IsType<Ingrediant>(result);
             Assert.Equal(input.Id, result.Id);
             Assert.Equal(input.Name, result.Name);
-            Assert.NotNull(result.RecipeIngrediants);
-            Assert.Equal(0, result.RecipeIngrediants.Count);
+            Assert.NotNull(result.Recipes);
+            Assert.Equal(0, result.Recipes.Count);
         }
 
         [Fact]
@@ -146,9 +161,9 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                 firstRecipe.Ingrediants.Add(recipe1Ingrediant2);
                 firstRecipe.Ingrediants.Add(recipe1Ingrediant3);
 
-                Ingrediants[0].RecipeIngrediants.Add(recipe1Ingrediant1);
-                Ingrediants[1].RecipeIngrediants.Add(recipe1Ingrediant2);
-                Ingrediants[2].RecipeIngrediants.Add(recipe1Ingrediant3);
+                Ingrediants[0].Recipes.Add(recipe1Ingrediant1);
+                Ingrediants[1].Recipes.Add(recipe1Ingrediant2);
+                Ingrediants[2].Recipes.Add(recipe1Ingrediant3);
             }
             #endregion
 

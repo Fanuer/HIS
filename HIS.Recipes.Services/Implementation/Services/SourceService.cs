@@ -60,7 +60,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 result = this._rep.BaseSources
                             .GetAll()
                             .Include(x => x.RecipeSourceRecipes)
-                            .ProjectTo<SourceListEntryViewModel>();
+                            .ProjectTo<SourceListEntryViewModel>(this._mapper.ConfigurationProvider);
                 this._log.LogDebug(new EventId(), $"Returned all sources");
             }
             catch (Exception e)
@@ -81,7 +81,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 result = this._rep.CookbookSources
                             .GetAll()
                             .Include(x => x.RecipeSourceRecipes)
-                            .ProjectTo<CookbookSourceViewModel>();
+                            .ProjectTo<CookbookSourceViewModel>(this._mapper.ConfigurationProvider);
                 this._log.LogDebug(new EventId(), $"Returned all cookbooks");
             }
             catch (Exception e)

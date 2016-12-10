@@ -117,7 +117,7 @@ namespace HIS.Recipes.Services.Migrations
                         column: x => x.RecipeId,
                         principalTable: "Recipes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,7 +169,7 @@ namespace HIS.Recipes.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RecipeRecipeTag",
+                name: "RecipeRecipeTags",
                 columns: table => new
                 {
                     RecipeId = table.Column<int>(nullable: false),
@@ -177,51 +177,21 @@ namespace HIS.Recipes.Services.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecipeRecipeTag", x => new { x.RecipeId, x.RecipeTagId });
+                    table.PrimaryKey("PK_RecipeRecipeTags", x => new { x.RecipeId, x.RecipeTagId });
                     table.ForeignKey(
-                        name: "FK_RecipeRecipeTag_Recipes_RecipeId",
+                        name: "FK_RecipeRecipeTags_Recipes_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RecipeRecipeTag_RecipeTags_RecipeTagId",
+                        name: "FK_RecipeRecipeTags_RecipeTags_RecipeTagId",
                         column: x => x.RecipeTagId,
                         principalTable: "RecipeTags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeImages_RecipeId",
-                table: "RecipeImages",
-                column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngrediants_RecipeId",
-                table: "RecipeIngrediants",
-                column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeRecipeTag_RecipeId",
-                table: "RecipeRecipeTag",
-                column: "RecipeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeRecipeTag_RecipeTagId",
-                table: "RecipeRecipeTag",
-                column: "RecipeTagId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeSourceRecipes_RecipeId",
-                table: "RecipeSourceRecipes",
-                column: "RecipeId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeSourceRecipes_SourceId",
-                table: "RecipeSourceRecipes",
-                column: "SourceId");
+            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -233,7 +203,7 @@ namespace HIS.Recipes.Services.Migrations
                 name: "RecipeIngrediants");
 
             migrationBuilder.DropTable(
-                name: "RecipeRecipeTag");
+                name: "RecipeRecipeTags");
 
             migrationBuilder.DropTable(
                 name: "RecipeSourceRecipes");

@@ -7,9 +7,7 @@ namespace HIS.Recipes.Services.Models
 {
     internal class RecipeIngrediant
     {
-        [Key, Column(Order = 0)]
         public int RecipeId { get; set; }
-        [Key, Column(Order = 1)]
         public int IngrediantId { get; set; }
 
         public virtual Recipe Recipe { get; set; }

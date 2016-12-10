@@ -117,7 +117,7 @@ namespace HIS.Recipes.Services.Implementation.Services
 
             try
             {
-                var datamodel = this.Mapper.Map<TDbEntity>(creationModel);
+                TDbEntity datamodel = this.Mapper.Map<TDbEntity>(creationModel);
                 await Repository.AddAsync(datamodel);
                 result = this.Mapper.Map<TViewModel>(datamodel);
                 Logger.LogDebug($"New {_entityName} '{datamodel.Id}' successfully created");

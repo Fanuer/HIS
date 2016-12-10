@@ -16,7 +16,7 @@ namespace HIS.Recipes.Services.Implementation.Services
 {
     internal class RecipeService:BaseService<IRecipeRepository, Recipe, RecipeUpdateViewModel, RecipeCreationViewModel>, IRecipeService
     {
-
+        
         #region CONST
         #endregion
 
@@ -41,8 +41,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                                 .Include(x=>x.Images)
                                 .Include(x=>x.Tags)
                                     .ThenInclude(x=>x.RecipeTag)
-                                .ProjectTo<ShortRecipeViewModel>();
-
+                                .ProjectTo<ShortRecipeViewModel>(this.Mapper.ConfigurationProvider);
                 this.Logger.LogDebug(new EventId(), $"Returned all recipes");
             }
             catch (Exception e)
@@ -68,7 +67,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                                         .ThenInclude(x=>x.Ingrediant)
                                    .Include(x=>x.Source)
                                         .ThenInclude(x=>x.Source)
-                                   .ProjectTo<FullRecipeViewModel>()
+                                   .ProjectTo<FullRecipeViewModel>(this.Mapper.ConfigurationProvider)
                                    .SingleOrDefaultAsync();
 
                 this.Logger.LogDebug(new EventId(), $"Returned recipe '{result.Name} ({result.Id})'");
@@ -96,9 +95,5 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region PROPERTIES
         #endregion
-
-
-
-
     }
 }

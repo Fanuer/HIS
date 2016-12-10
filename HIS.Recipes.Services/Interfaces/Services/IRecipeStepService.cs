@@ -6,7 +6,7 @@ using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Recipes.Services.Interfaces.Services
 {
-    internal interface IRecipeStepService: IDisposable
+    public interface IRecipeStepService: IDisposable
     {
         /// <summary>
         /// Returns a steps of a given recipe

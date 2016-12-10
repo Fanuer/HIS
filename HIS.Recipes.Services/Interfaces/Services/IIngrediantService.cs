@@ -10,7 +10,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
     /// <summary>
     /// Grants access to ingrediant data
     /// </summary>
-    internal interface IIngrediantService
+    public interface IIngrediantService:IDisposable
     {
         /// <summary>
         /// Returns a list of all ingrediants

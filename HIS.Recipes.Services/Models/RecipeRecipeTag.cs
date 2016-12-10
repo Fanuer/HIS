@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace HIS.Recipes.Services.Models
 {
+    [Table("RecipeRecipeTags")]
     internal class RecipeRecipeTag
     {
 
@@ -28,10 +29,18 @@ namespace HIS.Recipes.Services.Models
             if (recipe == null) { throw new ArgumentNullException(nameof(recipe)); }
             if (tag== null) { throw new ArgumentNullException(nameof(tag)); }
 
-            this.Recipe = recipe;
             this.RecipeId = recipe.Id;
-            this.RecipeTag = tag;
             this.RecipeTagId = tag.Id;
+        }
+
+        public RecipeRecipeTag(int recipeId, int tagId)
+        {
+            if (recipeId == default(int)) { throw new ArgumentNullException(nameof(recipeId)); }
+            if (tagId == default(int)) { throw new ArgumentNullException(nameof(tagId)); }
+
+            this.RecipeId = recipeId;
+            this.RecipeTagId = tagId;
+
         }
         #endregion
 
@@ -39,11 +48,8 @@ namespace HIS.Recipes.Services.Models
         #endregion
 
         #region PROPERTIES
-        [Key, Column(Order = 0)]
         public int RecipeId { get; set; }
         public Recipe Recipe { get; set; }
-
-        [Key, Column(Order = 1)]
         public int RecipeTagId { get; set; }
         public RecipeTag RecipeTag { get; set; }
         #endregion

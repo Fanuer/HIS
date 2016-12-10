@@ -131,8 +131,8 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Images, x => x.Ignore());
 
             this.CreateMap<Recipe, ShortRecipeViewModel>()
-                .ForMember(x => x.ImageUrl, x => x.MapFrom(y => y.Images.FirstOrDefault() != null ? y.Images.FirstOrDefault().Url : null))
-                .ForMember(x => x.Tags, x => x.MapFrom(y => y.Tags != null ? y.Tags.Select(tag => tag.RecipeTag.Name) : null))
+                .ForMember(x => x.ImageUrl, x => x.MapFrom(y => y.Images.First().Url))
+                .ForMember(x => x.Tags, x => x.MapFrom(y => y.Tags.Select(tag => tag.RecipeTag.Name)))
                 .ForMember(x => x.Url, x => x.Ignore());
 
             this.CreateMap<Recipe, FullRecipeViewModel>()
@@ -165,7 +165,7 @@ namespace HIS.Recipes.Services.Configs
         private void IngrediantConfiguration()
         {
             this.CreateMap<Ingrediant, IngrediantStatisticViewModel>()
-                .ForMember(x=>x.NumberOfRecipes, y=>y.MapFrom(x=> x.RecipeIngrediants.Count))
+                .ForMember(x=>x.NumberOfRecipes, y=>y.MapFrom(x=> x.Recipes.Count))
                 .ForMember(x=>x.Url, x=>x.Ignore());
 
             this.CreateMap<RecipeIngrediant, IngrediantViewModel>()
@@ -174,13 +174,13 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Unit, y => y.MapFrom(x => x.CookingUnit))
                 .ForMember(x => x.Url, y => y.Ignore());
 
-            this.CreateMap<string, NamedViewModel>()
+            this.CreateMap<string, Ingrediant>()
                 .ForMember(x => x.Name, y => y.MapFrom(x => x))
                 .ForMember(x => x.Id, y => y.UseValue(0))
-                .ForMember(x => x.Url, y => y.Ignore());
-            
+                .ForMember(x=>x.Recipes, x=>x.Ignore());
+
             this.CreateMap<NamedViewModel, Ingrediant>()
-                .ForMember(x=>x.RecipeIngrediants, x=>x.Ignore());
+                .ForMember(x=>x.Recipes, x=>x.Ignore());
 
             this.CreateMap<Ingrediant, NamedViewModel>()
                 .ForMember(x=>x.Url, x=>x.Ignore());

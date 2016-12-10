@@ -14,6 +14,7 @@ namespace HIS.Recipes.WebApi
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.keys.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -28,9 +29,8 @@ namespace HIS.Recipes.WebApi
             services.AddMvc();
             services.AddOptions();
 
-            HIS.Recipes.Services.Configs.ServiceConfiguration.AddServices(services);
-            
             services.AddAutoMapper();
+            Services.Configs.ServiceConfiguration.AddServices(services, Configuration, "DefaultConnection");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +45,6 @@ namespace HIS.Recipes.WebApi
                 ScopeName = "Robot",
                 RequireHttpsMetadata = false
             });
-
 
             app.UseMvc();
         }

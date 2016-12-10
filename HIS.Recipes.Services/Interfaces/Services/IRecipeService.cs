@@ -6,7 +6,7 @@ using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Recipes.Services.Interfaces.Services
 {
-    internal interface IRecipeService: IDisposable
+    public interface IRecipeService: IDisposable
     {
         /// <summary>
         /// Retunrs a collection of recipes

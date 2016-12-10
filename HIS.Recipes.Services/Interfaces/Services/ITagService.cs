@@ -6,7 +6,7 @@ using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Recipes.Services.Interfaces.Services
 {
-    internal interface ITagService
+    public interface ITagService
     {
         /// <summary>
         /// Get all Tags

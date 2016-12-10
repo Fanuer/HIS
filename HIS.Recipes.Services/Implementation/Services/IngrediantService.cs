@@ -42,8 +42,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 result = this.Repository
                     .GetAll()
-                    .Include(x => x.RecipeIngrediants)
-                    .ProjectTo<IngrediantStatisticViewModel>();
+                    .ProjectTo<IngrediantStatisticViewModel>(Mapper.ConfigurationProvider);
 
                 this.Logger.LogDebug(new EventId(), $"Returned all ingrediants");
             }
@@ -63,11 +62,11 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 result = this.Repository
                     .GetAll()
-                    .Include(x => x.RecipeIngrediants)
-                    .SelectMany(x => x.RecipeIngrediants)
+                    .Include(x => x.Recipes)
+                    .SelectMany(x => x.Recipes)
                     .Where(x => x.RecipeId.Equals(recipeId))
                     .Include(x => x.Ingrediant)
-                    .ProjectTo<IngrediantViewModel>();
+                    .ProjectTo<IngrediantViewModel>(this.Mapper.ConfigurationProvider);
 
                 this.Logger.LogDebug(new EventId(), $"Returned all ingrediants for recipe '{recipeId}'");
             }
@@ -87,20 +86,19 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 if (model == null){ throw new ArgumentNullException(nameof(model)); }
 
-                var ingrediant = await Repository.FindAsync(model.IngrediantId, x => x.RecipeIngrediants);
+                var ingrediant = await Repository.FindAsync(model.IngrediantId, x => x.Recipes);
                 if (ingrediant== null)
                 {
                     throw new DataObjectNotFoundException($"No Ingrediant with the id {model.IngrediantId} found");
                 }
-                var recipeIngrediant = ingrediant.RecipeIngrediants.FirstOrDefault(x => x.RecipeId.Equals(model.RecipeId));
+                var recipeIngrediant = ingrediant.Recipes.FirstOrDefault(x => x.RecipeId.Equals(model.RecipeId));
                 if (recipeIngrediant == null)
                 {
-                    ingrediant.RecipeIngrediants.Add(new RecipeIngrediant()
+                    ingrediant.Recipes.Add(new RecipeIngrediant()
                     {
                         RecipeId = model.RecipeId,
                         Amount = model.Amount,
                         CookingUnit = model.Unit,
-                        Ingrediant = ingrediant,
                         IngrediantId = ingrediant.Id
                     });
                 }
@@ -125,11 +123,11 @@ namespace HIS.Recipes.Services.Implementation.Services
         {
             try
             {
-                var ingrediant = await Repository.FindAsync(ingrediantId, x => x.RecipeIngrediants);
-                var recipeIngrediant = ingrediant.RecipeIngrediants.FirstOrDefault(x => x.RecipeId.Equals(recipeId));
+                var ingrediant = await Repository.FindAsync(ingrediantId, x => x.Recipes);
+                var recipeIngrediant = ingrediant.Recipes.FirstOrDefault(x => x.RecipeId.Equals(recipeId));
                 if (recipeIngrediant != null)
                 {
-                    ingrediant.RecipeIngrediants.Remove(recipeIngrediant);
+                    ingrediant.Recipes.Remove(recipeIngrediant);
                     Logger.LogDebug($"Removed '{ingrediant.Name}({ingrediantId})' from recipe '{recipeId}' successfully");
                 }
                 else
@@ -148,9 +146,5 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region PROPERTIES
         #endregion
-
-
-
-
     }
 }

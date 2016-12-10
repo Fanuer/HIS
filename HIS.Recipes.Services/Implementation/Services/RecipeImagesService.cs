@@ -173,7 +173,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 result = this.Repository
                             .GetAll()
                             .Where(x => x.RecipeId.Equals(recipeId))
-                            .ProjectTo<RecipeImageViewModel>();
+                            .ProjectTo<RecipeImageViewModel>(this.Mapper.ConfigurationProvider);
 
                 this.Logger.LogDebug(new EventId(), $"Returned all images of recipe {recipeId}");
             }

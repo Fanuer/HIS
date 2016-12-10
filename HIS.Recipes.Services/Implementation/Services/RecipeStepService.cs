@@ -52,7 +52,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                     .GetAll()
                     .Where(x => x.RecipeId.Equals(recipeId))
                     .OrderBy(x => x.Order)
-                    .ProjectTo<StepViewModel>();
+                    .ProjectTo<StepViewModel>(this.Mapper.ConfigurationProvider);
 
                 this.Logger.LogDebug(new EventId(), $"Returned all steps of recipe {recipeId}");
             }

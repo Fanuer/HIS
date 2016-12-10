@@ -4,43 +4,20 @@ using System.Threading.Tasks;
 using HIS.Recipes.Services.DB;
 using HIS.Recipes.Services.Implementation.Repositories;
 using HIS.Recipes.Services.Models;
+using HIS.Recipes.Services.Tests.Helper;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace HIS.Recipes.Services.Tests.RepositoryTests
 {
-    public class RecipeRepositoryTests : IDisposable
+    public class RecipeRepositoryTests : TestBase
     {
-        #region CONST
-        #endregion
-
-        #region FIELDS
-        bool _disposed;
-        #endregion
-
-        #region CTOR
-        public RecipeRepositoryTests()
-        {
-
-        }
-        ~RecipeRepositoryTests()
-        {
-            Dispose(false);
-        }
-        #endregion
-
-        #region METHODS
-
-        #region Tests
-
         [Fact]
         public async Task SearchRecipe()
         {
-
-            // Use a separate instance of the context to verify correct data was saved to database
-            await this.Intialize();
-            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
-            var input = this.TestData.Recipes.First();
+            await this.InitializeAsync();
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var input = this.DbContext.TestDataGenerator.Recipes.First();
             var output = await repository.FindAsync(input.Id);
 
             Assert.NotNull(output);
@@ -51,8 +28,8 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
         [Fact]
         public async Task CreateNewRecipe()
         {
-            await Intialize();
-            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
+            await InitializeAsync();
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
 
             var input = new Recipe()
             {
@@ -66,24 +43,24 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             Assert.NotNull(output);
             Assert.NotEqual(0, output.Id);
 
-            Assert.Equal(this.TestData.Recipes.Count +1 , this.Context.Recipes.Count());
-            var result = await this.Context.Recipes.FindAsync(output.Id);
+            Assert.Equal(this.DbContext.TestDataGenerator.Recipes.Count +1 , this.DbContext.TestDataGenerator.Recipes.Count());
+            var result = await this.DbContext.Recipes.FindAsync(output.Id);
             Assert.NotNull(result);
         }
 
         [Fact]
         public async Task DeleteRecipe()
         {
-            await Intialize();
-            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
+            await InitializeAsync();
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
 
-            var input = this.TestData.Recipes.First();
+            var input = this.DbContext.TestDataGenerator.Recipes.First();
             var output = await repository.RemoveAsync(input);
             Assert.True(output);
 
-            var result = await this.Context.Recipes.FindAsync(input.Id);
+            var result = await this.DbContext.Recipes.FindAsync(input.Id);
             Assert.Null(result);
-            Assert.Equal(this.TestData.Recipes.Count -1, this.Context.Recipes.Count());
+            Assert.Equal(this.DbContext.TestDataGenerator.Recipes.Count -1, this.DbContext.TestDataGenerator.Recipes.Count());
         }
 
 
@@ -93,10 +70,10 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             const int newCalorien = 2;
             const string newCreator = "New User";
 
-            await Intialize();
-            var repository = new RecipeDbRepository.RecipeRepository(this.Context);
+            await InitializeAsync();
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
 
-            var input = this.TestData.Recipes.First();
+            var input = this.DbContext.TestDataGenerator.Recipes.First();
             var dbInput = await repository.FindAsync(input.Id);
             Assert.NotNull(dbInput);
 
@@ -110,65 +87,6 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             Assert.Equal(dbInput.Creator, newCreator);
             Assert.Equal(dbInput.Calories, newCalorien);
         }
-
-
-        #endregion
-
-        #region Helper
-
-        private async Task Intialize()
-        {
-            var options = new DbContextOptionsBuilder<RecipeDbContext>()
-                            .UseInMemoryDatabase("read_from_database")
-                            .Options;
-            this.Context = new RecipeDbContext(options);
-
-            this.TestData = new RepositoryTestData();
-            await this.Context.Database.EnsureDeletedAsync();
-            await this.Context.Database.EnsureCreatedAsync();
-            await this.TestData.WriteTestDataToDataBaseAsync(this.Context);
-        }
-
-        /// <summary>
-        /// Releases an returns unnessessary system resources
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed)
-                return;
-
-            if (disposing)
-            {
-                // free other managed objects that implement
-                // IDisposable only
-
-                this.Context.Database.EnsureDeleted();
-                this.Context.Dispose();
-            }
-
-            // release any unmanaged objects
-            this.Context = null;
-
-            _disposed = true;
-        }
-
-
-        #endregion
-
-        #endregion
-
-        #region PROPERTIES
-
-        private RecipeDbContext Context { get; set; }
-
-        private RepositoryTestData TestData { get; set; }
-        #endregion
 
     }
 }

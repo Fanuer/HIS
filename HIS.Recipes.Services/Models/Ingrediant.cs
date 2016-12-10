@@ -10,7 +10,7 @@ namespace HIS.Recipes.Services.Models
     {
         public Ingrediant()
         {
-            RecipeIngrediants = new HashSet<RecipeIngrediant>();
+            Recipes = new HashSet<RecipeIngrediant>();
         }
 
         /// <summary>
@@ -26,6 +26,6 @@ namespace HIS.Recipes.Services.Models
         /// <summary>
         /// A list of all recipes
         /// </summary>
-        public virtual ICollection<RecipeIngrediant> RecipeIngrediants { get; set; }
+        public virtual ICollection<RecipeIngrediant> Recipes { get; set; }
     }
 }
