@@ -7,11 +7,10 @@ using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class StepViewModel:StepCreateViewModel, IViewModelEntity<int>
+    public class StepViewModel: StepUpdateViewModel
     {
+        
         [Required]
-        public int Id { get; set; }
-        [Required]
-        public string Url { get; set; }
+        public int RecipeId { get; set; }
     }
 }

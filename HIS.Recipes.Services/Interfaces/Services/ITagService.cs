@@ -6,13 +6,13 @@ using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Recipes.Services.Interfaces.Services
 {
-    public interface ITagService
+    public interface ITagService:IDisposable
     {
         /// <summary>
         /// Get all Tags
         /// </summary>
         /// <returns></returns>
-        IQueryable<NamedViewModel> GetTagsAsync();
+        IQueryable<NamedViewModel> GetTags();
         
         /// <summary>
         /// Updates a database entity with the given data from a view model
@@ -33,5 +33,39 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="id">entity id</param>
         /// <returns></returns>
         Task RemoveAsync(int id);
+
+        /// <summary>
+        /// Adds a Tag to a recipe
+        /// </summary>
+        /// <param name="recipeId">Id of a recipe</param>
+        /// <param name="tagName">tag name</param>
+        /// <returns></returns>
+        Task AddTagToRecipeAsync(int recipeId, string tagName);
+
+        /// <summary>
+        /// Adds a Tag to a recipe
+        /// </summary>
+        /// <param name="recipeId">Id of a recipe</param>
+        /// <param name="tagId">Id of a tag entry</param>
+        /// <returns></returns>
+        Task AddTagToRecipeAsync(int recipeId, int tagId);
+
+
+        /// <summary>
+        /// Removes a Tag to a recipe
+        /// </summary>
+        /// <param name="recipeId">Id of a recipe</param>
+        /// <param name="tagId">Id of a tag entry</param>
+        /// <returns></returns>
+        Task RemoveTagFromRecipeAsync(int recipeId, int tagId);
+
+
+        /// <summary>
+        /// Removes a Tag to a recipe
+        /// </summary>
+        /// <param name="recipeId">Id of a recipe</param>
+        /// <param name="tagName">tag name</param>
+        /// <returns></returns>
+        Task RemoveTagFromRecipeAsync(int recipeId, string tagName);
     }
 }

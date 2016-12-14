@@ -28,7 +28,7 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region CTOR
 
-        protected RecipeImagesService(IDbImageRepository rep, IImageService imageService, IMapper mapper, ILoggerFactory loggerFactory)
+        internal RecipeImagesService(IDbImageRepository rep, IImageService imageService, IMapper mapper, ILoggerFactory loggerFactory)
         {
             if (rep == null)
             {
@@ -84,9 +84,12 @@ namespace HIS.Recipes.Services.Implementation.Services
                 }
                 if (!existingElement.Filename.Equals(data.FileName))
                 {
-                    await this.RemoveAsync(id);
-                    var newImage = await this.AddAsync(existingElement.RecipeId, data);
-                    Logger.LogInformation($"Recipe {recipeId}: Image updated from '{existingElement?.Filename} ({existingElement?.Id})' to '{newImage?.Filename} ({existingElement?.Id})'");
+                    var oldFileName = existingElement.Filename;
+                    await this.ImageService.RemoveImageAsync(existingElement.RecipeId, existingElement.Filename);
+                    existingElement.Filename = data.FileName;
+                    existingElement.Url = await this.ImageService.UploadImageAsync(existingElement.RecipeId, data);
+                    await Repository.UpdateAsync(existingElement);
+                    Logger.LogInformation($"Recipe {recipeId}: Image updated from '{oldFileName}' to '{existingElement?.Filename}'");
                 }
                 else
                 {

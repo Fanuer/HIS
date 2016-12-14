@@ -39,7 +39,7 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region METHODS
 
-        public IQueryable<NamedViewModel> GetTagsAsync()
+        public IQueryable<NamedViewModel> GetTags()
         {
             IQueryable<NamedViewModel> result;
             try
@@ -75,50 +75,82 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         public async Task AddTagToRecipeAsync(int recipeId, string tagName)
         {
+            var tag = await this.AddAsync(tagName);
+            await AddTagToRecipeAsync(recipeId, tag.Id);
+        }
+
+        public async Task AddTagToRecipeAsync(int recipeId, int tagId)
+        {
+            var dbTag = await this.Repository.FindAsync(tagId, x => x.Recipes);
+            await this.AddTagToRecipeAsync(recipeId, dbTag);
+        }
+
+        public async Task RemoveTagFromRecipeAsync(int recipeId, int tagId)
+        {
+            var tag = await this.Repository.FindAsync(tagId, x=>x.Recipes);
+            await RemoveTagFromRecipeAsync(recipeId, tag);
+        }
+
+        public async Task RemoveTagFromRecipeAsync(int recipeId, string tagName)
+        {
+            if (String.IsNullOrEmpty(tagName)){throw new ArgumentNullException(nameof(tagName));}
+            var tag = await this.Repository.GetAll().Include(x=>x.Recipes).FirstOrDefaultAsync(x => x.Name.Equals(tagName, StringComparison.CurrentCultureIgnoreCase));
+            await RemoveTagFromRecipeAsync(recipeId, tag);
+        }
+
+        private async Task AddTagToRecipeAsync(int recipeId, RecipeTag tag)
+        {
             try
             {
-                var tag = await this.AddAsync(tagName);
-                var dbTag = await this.Repository.FindAsync(tag.Id, x=>x.Recipes);
-
-                var recipe = await _recipeRep.FindAsync(recipeId);
+                if (tag == null) { throw new ArgumentNullException(nameof(tag)); }
+                var recipe = await _recipeRep.FindAsync(recipeId, x => x.Tags);
                 if (recipe == null)
                 {
-                    throw new DataObjectNotFoundException($"No Recipe with id {recipeId} found to add Tag '{tagName}'");
+                    throw new DataObjectNotFoundException($"No Recipe with id {recipeId} found to add Tag '{tag.Name}'");
                 }
-
-                dbTag.Recipes.Add(new RecipeRecipeTag(recipeId, dbTag.Id));
-                await this.Repository.SaveChangesAsync();
-                Logger.LogInformation(new EventId(), $"Tag '{tagName}' added to recipe '{recipe.Name}({recipeId})'");
+                if (recipe.Tags.All(x => x.RecipeTagId != tag.Id))
+                {
+                    tag.Recipes.Add(new RecipeRecipeTag(recipeId, tag.Id));
+                    await this.Repository.SaveChangesAsync();
+                    Logger.LogDebug(new EventId(), $"Tag '{tag.Name}' added to recipe '{recipe.Name}({recipeId})'");
+                }
+                else
+                {
+                    Logger.LogWarning(new EventId(), $"Tag '{tag.Name}' already available in recipe '{recipe.Name}({recipeId})'");
+                }
             }
             catch (Exception e)
             {
-                var message = $"An Error occurs while adding tag '{tagName}' from recipe {recipeId}";
+                var message = $"An Error occurs while adding tag '{tag?.Name}' from recipe {recipeId}";
                 Logger.LogError(new EventId(), e, message);
                 throw new Exception(message, e);
             }
         }
 
-        public async Task RemoveTagToRecipeAsync(int recipeId, string tagName)
+        private async Task RemoveTagFromRecipeAsync(int recipeId, RecipeTag tag)
         {
             try
             {
-                var dbTag = await Repository.GetAll().Include(x => x.Recipes).SingleOrDefaultAsync(x => x.Name.Equals(tagName));
-
-                var recipeTag = dbTag?.Recipes.FirstOrDefault(x => x.RecipeId.Equals(recipeId) && x.RecipeTagId.Equals(dbTag.Id));
+                if (tag == null) { throw new ArgumentNullException(nameof(tag));}
+                
+                var recipeTag = tag?.Recipes.FirstOrDefault(x => x.RecipeId.Equals(recipeId) && x.RecipeTagId.Equals(tag.Id));
                 if (recipeTag != null)
                 {
-                    dbTag.Recipes.Remove(recipeTag);
+                    tag.Recipes.Remove(recipeTag);
                     await this.Repository.SaveChangesAsync();
-                    this.Logger.LogInformation($"Removed tag '{tagName}' from recipe '{recipeTag.Recipe.Name}({recipeTag.RecipeId})'");
+                    this.Logger.LogDebug($"Removed tag '{tag.Name}' from recipe '{recipeTag.RecipeId}'");
+                }
+                else
+                {
+                    this.Logger.LogWarning($"Tried removing tag '{tag.Name}' from recipe '{recipeId}', but was not found");
                 }
             }
             catch (Exception e)
             {
-                var message = $"An Error occurs while removing tag '{tagName}' from recipe {recipeId}";
+                var message = $"An Error occurs while removing tag '{tag?.Name}' from recipe {recipeId}";
                 Logger.LogError(new EventId(), e, message);
                 throw new Exception(message, e);
             }
-            
         }
 
         private async Task<NamedViewModel> GetTagByNameAsync(string tagName)

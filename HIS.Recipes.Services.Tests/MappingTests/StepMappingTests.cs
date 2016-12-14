@@ -19,7 +19,6 @@ namespace HIS.Recipes.Services.Tests.MappingTests
 
             var input = new StepCreateViewModel()
             {
-                RecipeId = 1,
                 Order = 0,
                 Description = "Test Description"
             };
@@ -29,7 +28,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(input.Description, output.Description);
             Assert.Equal(input.Order, output.Order);
 
-            Assert.Equal(input.RecipeId, output.RecipeId);
+            Assert.Equal(0, output.RecipeId);
             Assert.Null(output.Recipe);
         }
 
@@ -51,7 +50,6 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(input.Description, output.Description);
             Assert.Equal(input.Order, output.Order);
             Assert.Equal(input.RecipeId, output.RecipeId);
-            Assert.Null(output.Url);
         }
 
         [Fact]

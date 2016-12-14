@@ -184,7 +184,6 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(firstInputStep.Order, firstOutputStep.Order);
             Assert.Equal(firstInputStep.RecipeId, firstOutputStep.RecipeId);
             Assert.Equal(firstInputStep.Id, firstOutputStep.Id);
-            Assert.Null(firstOutputStep.Url);
 
             Assert.NotNull(output.Source);
             Assert.Equal(input.Source.Source.GetSourceType(), output.Source.Type);

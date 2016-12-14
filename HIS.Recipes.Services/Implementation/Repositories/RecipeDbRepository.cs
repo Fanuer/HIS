@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HIS.Data.Base.MSSql;
+using HIS.Helpers.Exceptions;
 using HIS.Recipes.Services.DB;
 using HIS.Recipes.Services.Interfaces.Repositories;
 using HIS.Recipes.Services.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HIS.Recipes.Services.Implementation.Repositories
 {
@@ -75,6 +77,23 @@ namespace HIS.Recipes.Services.Implementation.Repositories
         internal class StepRepository : GenericDbRepository<RecipeStep, int>, IStepRepository
         {
             public StepRepository(RecipeDbContext context) : base(context) { }
+            public async Task UpdateAllAsync(int recipeId, ICollection<string> entries)
+            {
+                if (entries == null) { throw new ArgumentNullException(nameof(entries));}
+                var recipe = await DbContext.Set<Recipe>().Include(x=>x.Steps).FirstOrDefaultAsync();
+                if (recipe == null) { throw new DataObjectNotFoundException($"No recipe with the given id '{recipeId}'found"); }
+
+                if (entries.Any()) 
+                {
+                    recipe.Steps.Clear();
+                    for (int i = 0; i < entries.Count(); i++)
+                    {
+                        var entry = entries.ElementAt(i);
+                        recipe.Steps.Add(new RecipeStep() {Order = i+1, Description = entry, RecipeId = recipeId});
+                    }
+                    await SaveChangesAsync();
+                }
+            }
         }
         internal class CookbookSourceRepository : GenericDbRepository<RecipeCookbookSource, int>, ICookbookSourceRepository
         {

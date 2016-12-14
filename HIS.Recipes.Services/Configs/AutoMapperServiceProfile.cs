@@ -47,8 +47,7 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Id, x => x.UseValue(0))
                 .ForMember(x => x.Recipe, x => x.Ignore());
 
-            this.CreateMap<RecipeStep, StepViewModel>()
-                .ForMember(x => x.Url, x => x.Ignore());
+            this.CreateMap<RecipeStep, StepViewModel>();
             this.CreateMap<StepViewModel, RecipeStep>()
                 .ForMember(x => x.Recipe, x => x.Ignore());
         }

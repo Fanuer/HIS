@@ -13,7 +13,9 @@ namespace HIS.Recipes.Models.ViewModels
         public int Id { get; set; }
         [Required]
         public string Url { get; set; }
-
+        [Required]
         public string Filename { get; set; }
+        [Required]
+        public int RecipeId { get; set; }
     }
 }

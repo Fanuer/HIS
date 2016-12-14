@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class StepCreateViewModel
+    public class StepUpdateViewModel : StepCreateViewModel
     {
-        public int Order { get; set; }
-
         [Required]
-        public string Description { get; set; }
+        public int Id { get; set; }
     }
 }
