@@ -121,6 +121,7 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Url, x => x.Ignore());
 
             this.CreateMap<RecipeUpdateViewModel, Recipe>()
+                .ForMember(x => x.Creator, x => x.Ignore())
                 .ForMember(x => x.CookedCounter, x => x.Ignore())
                 .ForMember(x => x.LastTimeCooked, x => x.Ignore())
                 .ForMember(x => x.SourceId, x => x.Ignore())
@@ -152,7 +153,7 @@ namespace HIS.Recipes.Services.Configs
                     Amount = ingrediant.Amount,
                     Unit = ingrediant.CookingUnit
                 })))
-                .ForMember(x => x.Type, y => y.MapFrom(x => new RecipeSourceShortInfoViewModel()
+                .ForMember(x => x.Source, y => y.MapFrom(x => new RecipeSourceShortInfoViewModel()
                 {
                     Id = x.Source.SourceId,
                     Name = x.Source.Source.Name,
@@ -172,6 +173,11 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Id, y => y.MapFrom(x => x.IngrediantId))
                 .ForMember(x => x.Name, y => y.MapFrom(x => x.Ingrediant.Name))
                 .ForMember(x => x.Unit, y => y.MapFrom(x => x.CookingUnit))
+                .ForMember(x => x.Url, y => y.Ignore());
+
+            this.CreateMap<string, NamedViewModel>()
+                .ForMember(x => x.Name, y => y.MapFrom(x => x))
+                .ForMember(x => x.Id, y => y.UseValue(0))
                 .ForMember(x => x.Url, y => y.Ignore());
 
             this.CreateMap<string, Ingrediant>()

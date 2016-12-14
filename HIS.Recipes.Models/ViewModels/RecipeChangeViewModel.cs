@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class RecipeCreationViewModel: RecipeChangeViewModel
+    public abstract class RecipeChangeViewModel
     {
-        
         [Required]
-        public string Creator { get; set; }
-        
+        public string Name { get; set; }
+        [Required]
+        public int NumberOfServings { get; set; }
+
+        public int Calories { get; set; }
     }
 }

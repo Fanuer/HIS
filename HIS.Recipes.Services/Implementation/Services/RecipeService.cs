@@ -68,7 +68,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                                    .Include(x=>x.Source)
                                         .ThenInclude(x=>x.Source)
                                    .ProjectTo<FullRecipeViewModel>(this.Mapper.ConfigurationProvider)
-                                   .SingleOrDefaultAsync();
+                                   .SingleOrDefaultAsync(x=>x.Id.Equals(recipeId));
 
                 this.Logger.LogDebug(new EventId(), $"Returned recipe '{result.Name} ({result.Id})'");
             }

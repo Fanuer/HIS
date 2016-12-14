@@ -128,6 +128,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 if (recipeIngrediant != null)
                 {
                     ingrediant.Recipes.Remove(recipeIngrediant);
+                    await Repository.SaveChangesAsync();
                     Logger.LogDebug($"Removed '{ingrediant.Name}({ingrediantId})' from recipe '{recipeId}' successfully");
                 }
                 else

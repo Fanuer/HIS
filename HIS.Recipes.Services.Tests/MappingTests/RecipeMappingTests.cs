@@ -71,7 +71,6 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.IsType<RecipeUpdateViewModel>(output);
 
             Assert.Equal(input.Name, output.Name);
-            Assert.Equal(input.Creator, output.Creator);
             Assert.Equal(input.Calories, output.Calories);
             Assert.Equal(input.NumberOfServings, output.NumberOfServings);
             Assert.Equal(input.Id, output.Id);
@@ -88,7 +87,6 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.IsType<Recipe>(output);
 
             Assert.Equal(input.Name, output.Name);
-            Assert.Equal(input.Creator, output.Creator);
             Assert.Equal(input.Calories, output.Calories);
             Assert.Equal(input.NumberOfServings, output.NumberOfServings);
             Assert.Equal(input.Id, output.Id);
@@ -188,11 +186,11 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(firstInputStep.Id, firstOutputStep.Id);
             Assert.Null(firstOutputStep.Url);
 
-            Assert.NotNull(output.Type);
-            Assert.Equal(input.Source.Source.GetSourceType(), output.Type.Type);
-            Assert.Equal(input.Source.Page, output.Type.Page);
-            Assert.Equal(input.Source.SourceId, output.Type.Id);
-            Assert.Equal(input.Source.Source.Name, output.Type.Name);
+            Assert.NotNull(output.Source);
+            Assert.Equal(input.Source.Source.GetSourceType(), output.Source.Type);
+            Assert.Equal(input.Source.Page, output.Source.Page);
+            Assert.Equal(input.Source.SourceId, output.Source.Id);
+            Assert.Equal(input.Source.Source.Name, output.Source.Name);
 
         }
 
@@ -320,15 +318,14 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                     Name = "Old Recipe",
                     Url = "http://www.webservice.de/recipes/1",
                     Calories = Recipe.Calories,
-                    NumberOfServings = Recipe.NumberOfServings,
-                    Creator = Recipe.Creator
+                    NumberOfServings = Recipe.NumberOfServings
                 };
                 CreationModel = new RecipeCreationViewModel()
                 {
                     Name = UpdateModel.Name,
                     Calories = UpdateModel.Calories,
                     NumberOfServings = UpdateModel.NumberOfServings,
-                    Creator = UpdateModel.Creator
+                    Creator = Recipe.Creator
                 };
 
             }

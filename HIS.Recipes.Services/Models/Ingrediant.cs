@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HIS.Data.Base.Interfaces.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HIS.Recipes.Services.Models
 {
@@ -22,6 +23,7 @@ namespace HIS.Recipes.Services.Models
         /// <summary>
         /// Name of the Ingrediant
         /// </summary>
+        [Required]
         public string Name { get; set; }
         /// <summary>
         /// A list of all recipes

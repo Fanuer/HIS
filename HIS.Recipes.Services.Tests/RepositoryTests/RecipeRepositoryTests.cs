@@ -17,13 +17,12 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
         {
             await this.InitializeAsync();
             var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
-            var input = this.DbContext.TestDataGenerator.Recipes.First();
+            var input = this.TestData.Recipes.First();
             var output = await repository.FindAsync(input.Id);
 
             Assert.NotNull(output);
             Assert.Equal(input.Id, output.Id);
         }
-
 
         [Fact]
         public async Task CreateNewRecipe()
@@ -43,7 +42,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             Assert.NotNull(output);
             Assert.NotEqual(0, output.Id);
 
-            Assert.Equal(this.DbContext.TestDataGenerator.Recipes.Count +1 , this.DbContext.TestDataGenerator.Recipes.Count());
+            Assert.Equal(this.TestData.Recipes.Count +1 , this.DbContext.Recipes.Count());
             var result = await this.DbContext.Recipes.FindAsync(output.Id);
             Assert.NotNull(result);
         }
@@ -53,16 +52,15 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
         {
             await InitializeAsync();
             var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
-
-            var input = this.DbContext.TestDataGenerator.Recipes.First();
+            
+            var input = this.TestData.Recipes.First();
             var output = await repository.RemoveAsync(input);
             Assert.True(output);
 
-            var result = await this.DbContext.Recipes.FindAsync(input.Id);
+            var result = await this.DbContext.Recipes.AsNoTracking().FirstOrDefaultAsync(x=>x.Id.Equals(input.Id));
             Assert.Null(result);
-            Assert.Equal(this.DbContext.TestDataGenerator.Recipes.Count -1, this.DbContext.TestDataGenerator.Recipes.Count());
+            Assert.Equal(this.TestData.Recipes.Count -1, this.DbContext.Recipes.Count());
         }
-
 
         [Fact]
         public async Task UpdateRecipe()
@@ -73,7 +71,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             await InitializeAsync();
             var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
 
-            var input = this.DbContext.TestDataGenerator.Recipes.First();
+            var input = this.TestData.Recipes.First();
             var dbInput = await repository.FindAsync(input.Id);
             Assert.NotNull(dbInput);
 
@@ -87,6 +85,5 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             Assert.Equal(dbInput.Creator, newCreator);
             Assert.Equal(dbInput.Calories, newCalorien);
         }
-
     }
 }

@@ -83,7 +83,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 {
                     throw new ArgumentNullException(nameof(model));
                 }
-                if (id.Equals(model.Id))
+                if (!id.Equals(model.Id))
                 {
                     throw new IdsNotIdenticalException();
                 }

@@ -6,14 +6,25 @@ using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class FullRecipeViewModel:RecipeUpdateViewModel 
+    public class FullRecipeViewModel:RecipeCreationViewModel, IViewModelEntity<int>
     {
+        public FullRecipeViewModel()
+        {
+            Images = new List<NamedViewModel>();
+            Tags = new List<NamedViewModel>();
+            Steps = new List<StepViewModel>();
+            Ingrediants = new List<RecipeIngrediantViewModel>();
+            Source = new RecipeSourceShortInfoViewModel();
+        }
+
         public int CookedCounter { get; set; }
         public DateTime LastTimeCooked { get; set; }
         public IEnumerable<NamedViewModel> Images { get; set; }
         public IEnumerable<NamedViewModel> Tags { get; set; }
         public IEnumerable<StepViewModel> Steps { get; set; }
         public IEnumerable<RecipeIngrediantViewModel> Ingrediants { get; set; }
-        public RecipeSourceShortInfoViewModel Type { get; set; }
+        public RecipeSourceShortInfoViewModel Source { get; set; }
+        public int Id { get; set; }
+        public string Url { get; set; }
     }
 }

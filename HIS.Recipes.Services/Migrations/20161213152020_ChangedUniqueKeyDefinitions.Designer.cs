@@ -9,9 +9,10 @@ using HIS.Recipes.Models.Enums;
 namespace HIS.Recipes.Services.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    partial class RecipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161213152020_ChangedUniqueKeyDefinitions")]
+    partial class ChangedUniqueKeyDefinitions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")

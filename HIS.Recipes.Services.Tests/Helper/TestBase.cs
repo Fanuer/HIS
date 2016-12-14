@@ -31,8 +31,10 @@ namespace HIS.Recipes.Services.Tests.Helper
                 .UseInMemoryDatabase("read_from_database")
                 .Options;
             this.DbContext = new RecipeDbContext(options);
-            await this.DbContext.TestDataGenerator.CreateTestDataAsync();
 
+            var testDataCreationContext = new RecipeDbContext(options);
+            this.TestData = new RepositoryTestData(testDataCreationContext);
+            await this.TestData.CreateTestDataAsync(RepositoryTestData.TestDataRemoveOption.NoRemoval, false);
         }
 
         /// <summary>
@@ -51,7 +53,13 @@ namespace HIS.Recipes.Services.Tests.Helper
 
             if (disposing)
             {
-                this.DbContext.Dispose();
+                if (this.TestData != null)
+                {
+                    this.TestData.TestDataCreated = false;
+                }
+                this.TestData?.Context.Database.EnsureDeleted();
+                this.TestData?.Dispose();
+                this.DbContext?.Dispose();
             }
 
             this.DbContext = null;
@@ -64,6 +72,7 @@ namespace HIS.Recipes.Services.Tests.Helper
         #region PROPERTIES
 
         internal RecipeDbContext DbContext { get; private set; }
+        internal RepositoryTestData TestData { get; private set; }
         #endregion
     }
 }
