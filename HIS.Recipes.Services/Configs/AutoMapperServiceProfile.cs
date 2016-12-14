@@ -95,12 +95,12 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Url, x => x.Ignore());
 
             this.CreateMap<RecipeCookbookSource, CookbookSourceViewModel>()
-                .ConvertUsing<CookbookSourceConverter>();
+                .ForMember(x=>x.Recipes,x=>x.MapFrom(y=>y.RecipeSourceRecipes));
 
             this.CreateMap<RecipeBaseSource, SourceListEntryViewModel>()
                 .ForMember(x=>x.Url, x=>x.Ignore())
                 .ForMember(x=>x.Type, x=>x.MapFrom(m => m.GetSourceType()))
-                .ForMember(x=>x.CountRecipes, x=>x.MapFrom(m => m.RecipeSourceRecipes != null ? m.RecipeSourceRecipes.Count : 0));
+                .ForMember(x=>x.CountRecipes, x=>x.MapFrom(m => m.RecipeSourceRecipes.Count()));
     }
 
         private void RecipeConfiguration()

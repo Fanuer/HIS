@@ -6,7 +6,7 @@ using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Recipes.Services.Interfaces.Services
 {
-    public interface ISourceService
+    public interface ISourceService:IDisposable
     {
         /// <summary>
         /// Returns all recipe source entries

@@ -29,7 +29,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         private ILogger<SourceService> _log;
         private IMapper _mapper;
         private IRecipeSourceRepository _rep;
-        private readonly IRecipeRepository _recipeRep;
+        private IRecipeRepository _recipeRep;
 
         #endregion
 
@@ -81,6 +81,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 result = this._rep.CookbookSources
                             .GetAll()
                             .Include(x => x.RecipeSourceRecipes)
+                                .ThenInclude(x=>x.Recipe)
                             .ProjectTo<CookbookSourceViewModel>(this._mapper.ConfigurationProvider);
                 this._log.LogDebug(new EventId(), $"Returned all cookbooks");
             }
@@ -195,11 +196,13 @@ namespace HIS.Recipes.Services.Implementation.Services
             if (disposing)
             {
                 this._rep.Dispose();
+                this._recipeRep.Dispose();
             }
 
             this._log = null;
             this._mapper = null;
             this._rep = null;
+            this._recipeRep = null;
             _disposed = true;
         }
 
