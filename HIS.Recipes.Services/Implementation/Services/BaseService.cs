@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace HIS.Recipes.Services.Implementation.Services
 {
-    internal abstract class BaseService<T, TDbEntity, TViewModel, TCreationViewModel> : IDisposable
+    internal class BaseService<T, TDbEntity, TViewModel, TCreationViewModel> : IDisposable
         where T : class, IRepositoryFindSingle<TDbEntity, int>, IRepositoryUpdate<TDbEntity, int>,
         IRepositoryAddAndDelete<TDbEntity, int>, IDisposable
         where TDbEntity : class, IEntity<int>
@@ -35,7 +35,7 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region CTOR
 
-        protected BaseService(T rep, IMapper mapper, ILogger logger, string entityName)
+        internal BaseService(T rep, IMapper mapper, ILogger logger, string entityName)
         {
             if (rep == null)
             {

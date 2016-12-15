@@ -25,6 +25,12 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <returns></returns>
         Task RemoveSourceAsync(int id);
         /// <summary>
+        /// Creates a new Cookbook
+        /// </summary>
+        /// <param name="creationModel">data of new source</param>
+        /// <returns></returns>
+        Task<CookbookSourceViewModel> AddCookbookAsync(CookbookSourceCreationViewModel creationModel);
+        /// <summary>
         /// Updates a cookbook
         /// </summary>
         /// <param name="sourceId">id of the db entry</param>
@@ -32,7 +38,14 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <returns></returns>
         Task UpdateCookbookAsync(int sourceId, CookbookSourceViewModel source);
         /// <summary>
-        /// Creates or updates a web source
+        /// Creates a web source
+        /// </summary>
+        /// <param name="recipeId">owning recipe id</param>
+        /// <param name="source">new Data</param>
+        /// <returns></returns>
+        Task<WebSourceViewModel> AddWebSourceAsync(int recipeId, WebSourceCreationViewModel source);
+        /// <summary>
+        /// Updates a web source
         /// </summary>
         /// <param name="recipeId">owning recipe id</param>
         /// <param name="sourceId">web source id</param>
@@ -47,12 +60,5 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="page">Page within the cookbook</param>
         /// <returns></returns>
         Task<CookbookSourceViewModel> UpdateRecipeOnCookbookAsync(int recipeId, int sourceId, int page);
-        /// <summary>
-        /// Removes a recipe from a cookbook source
-        /// </summary>
-        /// <param name="recipeId">id of the recipe</param>
-        /// <param name="sourceId">id of the cookbook</param>
-        /// <returns></returns>
-        Task RemoveRecipeFromCookbookAsync(int recipeId, int sourceId);
     }
 }

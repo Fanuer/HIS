@@ -17,10 +17,11 @@ using Microsoft.Extensions.Logging;
 
 namespace HIS.Recipes.Services.Implementation.Services
 {
-    internal class SourceService : ISourceService, IDisposable
+    internal class SourceService : ISourceService
     {
 
         #region CONST
+
         #endregion
 
         #region FIELDS
@@ -30,6 +31,8 @@ namespace HIS.Recipes.Services.Implementation.Services
         private IMapper _mapper;
         private IRecipeSourceRepository _rep;
         private IRecipeRepository _recipeRep;
+        private readonly BaseService<ICookbookSourceRepository, RecipeCookbookSource, CookbookSourceViewModel, CookbookSourceCreationViewModel> _cookbookAdapter;
+        private readonly BaseService<IWebSourceRepository, RecipeUrlSource, WebSourceViewModel, WebSourceCreationViewModel> _webSourceAdapter;
 
         #endregion
 
@@ -41,12 +44,15 @@ namespace HIS.Recipes.Services.Implementation.Services
             this._mapper = mapper;
             this._rep = rep;
             this._recipeRep = recipeRep;
+            this._cookbookAdapter = new BaseService<ICookbookSourceRepository, RecipeCookbookSource, CookbookSourceViewModel, CookbookSourceCreationViewModel>(_rep.CookbookSources, mapper, this._log, "cookbook source");
+            this._webSourceAdapter = new BaseService<IWebSourceRepository, RecipeUrlSource, WebSourceViewModel, WebSourceCreationViewModel>(_rep.WebSources, mapper, _log, "web source");
         }
 
         ~SourceService()
         {
             Dispose(false);
         }
+
         #endregion
 
         #region METHODS
@@ -58,9 +64,9 @@ namespace HIS.Recipes.Services.Implementation.Services
             try
             {
                 result = this._rep.BaseSources
-                            .GetAll()
-                            .Include(x => x.RecipeSourceRecipes)
-                            .ProjectTo<SourceListEntryViewModel>(this._mapper.ConfigurationProvider);
+                    .GetAll()
+                    .Include(x => x.RecipeSourceRecipes)
+                    .ProjectTo<SourceListEntryViewModel>(this._mapper.ConfigurationProvider);
                 this._log.LogDebug(new EventId(), $"Returned all sources");
             }
             catch (Exception e)
@@ -68,7 +74,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 this._log.LogError(new EventId(), e, $"Error on returning all sources");
                 throw new Exception($"Error on returning all sources");
             }
-        
+
             return result;
         }
 
@@ -79,10 +85,10 @@ namespace HIS.Recipes.Services.Implementation.Services
             try
             {
                 result = this._rep.CookbookSources
-                            .GetAll()
-                            .Include(x => x.RecipeSourceRecipes)
-                                .ThenInclude(x=>x.Recipe)
-                            .ProjectTo<CookbookSourceViewModel>(this._mapper.ConfigurationProvider);
+                    .GetAll()
+                    .Include(x => x.RecipeSourceRecipes)
+                    .ThenInclude(x => x.Recipe)
+                    .ProjectTo<CookbookSourceViewModel>(this._mapper.ConfigurationProvider);
                 this._log.LogDebug(new EventId(), $"Returned all cookbooks");
             }
             catch (Exception e)
@@ -92,6 +98,11 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
 
             return result;
+        }
+
+        public async Task<CookbookSourceViewModel> AddCookbookAsync(CookbookSourceCreationViewModel creationModel)
+        {
+            return await this._cookbookAdapter.AddAsync(creationModel);
         }
 
         public async Task RemoveSourceAsync(int id)
@@ -108,29 +119,53 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
             catch (Exception e)
             {
-                _log.LogError(new EventId(), e, $"An Error occured while deleting the Source '{id}'");
-                throw new Exception($"An Error occured while deleting the Source '{id}'");
+                var message = $"An Error occured while deleting the Source '{id}'";
+                _log.LogError(new EventId(), e, message);
+                throw new Exception(message);
             }
         }
 
         public async Task UpdateCookbookAsync(int id, CookbookSourceViewModel model)
         {
-            await this.UpdateAsync<ICookbookSourceRepository, RecipeCookbookSource, int, CookbookSourceViewModel>(this._rep.CookbookSources, id, model, "cookbook");
+            await this._cookbookAdapter.UpdateAsync(id, model);
+        }
+
+        public async Task<WebSourceViewModel> AddWebSourceAsync(int recipeId, WebSourceCreationViewModel source)
+        {
+            WebSourceViewModel result = null;
+            try
+            {
+                if (source == null) { throw new ArgumentNullException(nameof(source)); }
+                result = await this._webSourceAdapter.AddAsync(new WebSourceCreationViewModel() { Name = source.Name, SourceUrl = source.SourceUrl });
+                var dbsource = await this._rep.WebSources.FindAsync(result.Id, x => x.RecipeSourceRecipes);
+                var recipe = await this._recipeRep.FindAsync(recipeId, x => x.Source);
+                if (recipe == null)
+                {
+                    throw new DataObjectNotFoundException($"No Recipe with id '{recipeId}' found");
+                }
+                recipe.Source = new RecipeSourceRecipe() { RecipeId = recipeId, SourceId = dbsource.Id };
+                await this._recipeRep.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                var message = "An error on creating a web source";
+                _log.LogError(new EventId(), e, message);
+                throw new Exception(message);
+            }
+            return result;
         }
 
         public async Task UpdateWebSourceAsync(int recipeId, int sourceId, WebSourceViewModel source)
         {
-            await this.UpdateAsync<IWebSourceRepository, RecipeUrlSource, int, WebSourceViewModel>(this._rep.WebSources, sourceId, source, "web source");
-            var dbsource = await this._rep.WebSources.FindAsync(sourceId);
-
-            var recipe = await this._recipeRep.FindAsync(recipeId, x=>x.Source);
-            if (!recipe.SourceId.Equals(sourceId))
+            await this._webSourceAdapter.UpdateAsync(sourceId, source);
+            var dbsource = await this._rep.WebSources.FindAsync(sourceId, x => x.RecipeSourceRecipes);
+            var recipe = await this._recipeRep.FindAsync(recipeId, x => x.Source);
+            if (recipe == null)
             {
-                recipe.SourceId = sourceId;
-                recipe.Source.Recipe = recipe;
-                recipe.Source.Source = dbsource;
-                await this._recipeRep.SaveChangesAsync();
+                throw new DataObjectNotFoundException($"No Recipe with id '{recipeId}' found");
             }
+            recipe.Source = new RecipeSourceRecipe() { RecipeId = recipeId, SourceId = dbsource.Id };
+            await this._recipeRep.SaveChangesAsync();
         }
 
         public async Task<CookbookSourceViewModel> UpdateRecipeOnCookbookAsync(int recipeId, int sourceId, int page)
@@ -205,44 +240,6 @@ namespace HIS.Recipes.Services.Implementation.Services
             this._recipeRep = null;
             _disposed = true;
         }
-
-        private async Task UpdateAsync<T, TEntity, TId, TVM>(T repository, TId id, TVM model, string entityName)
-    where T : class, IRepositoryUpdate<TEntity, TId>, IRepositoryFindSingle<TEntity, TId>
-    where TEntity : class, IEntity<TId>
-    where TVM : IViewModelEntity<TId>
-        {
-            try
-            {
-                if (id.Equals(0))
-                {
-                    throw new ArgumentNullException(nameof(id));
-                }
-                if (model == null)
-                {
-                    throw new ArgumentNullException(nameof(model));
-                }
-                if (id.Equals(model.Id))
-                {
-                    throw new IdsNotIdenticalException();
-                }
-
-                var existingElement = await repository.FindAsync(id);
-                var newObject = Mapper.Map(model, existingElement);
-                var updateResult = await repository.UpdateAsync(newObject);
-                _log.LogDebug(new EventId(), updateResult ? $"{entityName} {id} successfully updated" : $"No need to update step {id}");
-            }
-            catch (DbUpdateConcurrencyException e)
-            {
-                _log.LogWarning(new EventId(), e, $"No {entityName} with id {id} found");
-                throw new DataObjectNotFoundException();
-            }
-            catch (Exception e)
-            {
-                _log.LogError(new EventId(), e, $"An Error occured while updating a {entityName}");
-                throw new Exception($"An Error occured while updating a {entityName}");
-            }
-        }
-
         
         #endregion
 
