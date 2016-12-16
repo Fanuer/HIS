@@ -181,17 +181,6 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
             }
         }
 
-        [Fact]
-        public async Task Remove()
-        {
-            await InitializeAsync();
-            using (var service = this.GetService())
-            {
-
-            }
-        }
-
-
         private ISourceService GetService()
         {
             var baseSourceRep = new RecipeDbRepository.BaseSourceRepository(this.DbContext);

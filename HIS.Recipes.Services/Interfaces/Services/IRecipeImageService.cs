@@ -10,7 +10,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
     /// <summary>
     /// Access to recipe images
     /// </summary>
-    interface IRecipeImageService : IDisposable
+    public interface IRecipeImageService : IDisposable
     {
         /// <summary>
         /// Updates a database entity with the given data from a view model

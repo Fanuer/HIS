@@ -70,6 +70,11 @@ namespace HIS.Recipes.Services.Implementation.Services
                                    .ProjectTo<FullRecipeViewModel>(this.Mapper.ConfigurationProvider)
                                    .SingleOrDefaultAsync(x=>x.Id.Equals(recipeId));
 
+                if (result == null)
+                {
+                    throw new DataObjectNotFoundException("No Recipe with the given id found");
+                }
+
                 this.Logger.LogDebug(new EventId(), $"Returned recipe '{result.Name} ({result.Id})'");
             }
             catch (Exception e)

@@ -101,7 +101,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             catch (DbUpdateConcurrencyException e)
             {
                 Logger.LogWarning(new EventId(), e, $"No recipe image with id {id} found");
-                throw new DataObjectNotFoundException();
+                throw new DataObjectNotFoundException($"No recipe image with id {id} found");
             }
             catch (Exception e)
             {
@@ -199,9 +199,14 @@ namespace HIS.Recipes.Services.Implementation.Services
             try
             {
                 var dataobject = await this.Repository.FindAsync(imageId);
+                if (dataobject == null)
+                {
+                    throw new DataObjectNotFoundException($"No image with the given id '{imageId}' found");
+                }
                 result = Mapper.Map<RecipeImageViewModel>(dataobject);
                 this.Logger.LogDebug(new EventId(), $"Returned iamge '{imageId}' of recipe {dataobject.RecipeId}");
             }
+
             catch (Exception e)
             {
                 this.Logger.LogError(new EventId(), e, $"Error on receiving image '{imageId}'");

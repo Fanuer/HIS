@@ -97,7 +97,11 @@ namespace HIS.Recipes.Services.Implementation.Services
             catch (DbUpdateConcurrencyException e)
             {
                 Logger.LogWarning(new EventId(), e, $"No {_entityName} with id {id} found");
-                throw new DataObjectNotFoundException();
+                throw new DataObjectNotFoundException($"No {_entityName} with id {id} found");
+            }
+            catch (IdsNotIdenticalException e)
+            {
+                throw e;
             }
             catch (Exception e)
             {
