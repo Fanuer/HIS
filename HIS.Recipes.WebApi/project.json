@@ -2,10 +2,12 @@
   "dependencies": {
     "AutoMapper": "5.2.0",
     "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
+    "HIS.Helpers.Web": "1.0.0-*",
     "HIS.Recipes.Models": "1.0.0-*",
     "HIS.Recipes.Services": "1.0.0-*",
     "IdentityServer4.AccessTokenValidation": "1.0.1-rc2",
     "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Mvc.Versioning": "1.0.3",
     "Microsoft.AspNetCore.Routing": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",

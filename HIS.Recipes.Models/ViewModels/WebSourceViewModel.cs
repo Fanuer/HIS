@@ -9,6 +9,7 @@ namespace HIS.Recipes.Models.ViewModels
 {
     public class WebSourceViewModel:WebSourceCreationViewModel, IViewModelEntity<int>
     {
+        [Range(0, int.MaxValue)]
         [Required]
         public int Id { get; set; }
         public string Url { get; set; }

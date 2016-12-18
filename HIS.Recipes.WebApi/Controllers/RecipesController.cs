@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using AutoMapper;
 using HIS.Helpers.Exceptions;
 using HIS.Recipes.Models.ViewModels;
+using HIS.Recipes.Services.Interfaces.Repositories;
 using HIS.Recipes.Services.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.WebEncoders.Testing;
 
 namespace HIS.Recipes.WebApi.Controllers
 {
@@ -18,7 +22,8 @@ namespace HIS.Recipes.WebApi.Controllers
     /// </summary>
     /// <response code="500">An internal error occurs while performing the action</response>
     //[Authorize]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class RecipesController : Controller
     {
         #region CONST
@@ -29,6 +34,7 @@ namespace HIS.Recipes.WebApi.Controllers
 
         private readonly ILogger<RecipesController> _logger;
         private readonly IRecipeService _service;
+        private readonly IServiceProvider _provider;
 
         #endregion
 
@@ -39,10 +45,11 @@ namespace HIS.Recipes.WebApi.Controllers
         /// </summary>
         /// <param name="loggerFactory">factory to create a logger</param>
         /// <param name="service">service which grants acces to a recipe store</param>
-        public RecipesController(ILoggerFactory loggerFactory, IRecipeService service)
+        public RecipesController(ILoggerFactory loggerFactory, IRecipeService service, IServiceProvider provider)
         {
             _logger = loggerFactory.CreateLogger<RecipesController>();
             _service = service;
+            _provider = provider;
         }
 
         #endregion
@@ -72,15 +79,8 @@ namespace HIS.Recipes.WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetRecipeAsync(int id)
         {
-            try
-            {
-                var result = await this._service.GetRecipeAsync(id);
-                return Ok(result);
-            }
-            catch (DataObjectNotFoundException e)
-            {
-                return this.NotFound(e.Message);
-            }
+            var result = await this._service.GetRecipeAsync(id);
+            return Ok(result);
         }
 
         /// <summary>
@@ -94,24 +94,9 @@ namespace HIS.Recipes.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRecipeAsync([FromBody] RecipeCreationViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var result = await _service.AddAsync(model);
-                return CreatedAtRoute("GetRecipeById", new {id = result.Id}, result);
-            }
-            catch (DataObjectNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            var result = await _service.AddAsync(model);
+            result.Url = this.Url.RouteUrl("GetRecipeById", new { id = result.Id });
+            return CreatedAtRoute("GetRecipeById", new { id = result.Id }, result);
         }
 
         /// <summary>
@@ -125,28 +110,8 @@ namespace HIS.Recipes.WebApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateRecipeAsync(int id, [FromBody] RecipeUpdateViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                await _service.UpdateAsync(id, model);
-                return Ok();
-            }
-            catch (IdsNotIdenticalException e)
-            {
-                ModelState.AddModelError("id", e.Message);
-                return BadRequest(ModelState);
-            }
-            catch (DataObjectNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            await _service.UpdateAsync(id, model);
+            return NoContent();
         }
 
         /// <summary>
@@ -157,19 +122,8 @@ namespace HIS.Recipes.WebApi.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteRecipeAsync(int id)
         {
-            try
-            {
-                await _service.RemoveAsync(id);
-            }
-            catch (DataObjectNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-            return Ok();
+            await _service.RemoveAsync(id);
+            return NoContent();
         }
 
 

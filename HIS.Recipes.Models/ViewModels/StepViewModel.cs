@@ -9,7 +9,7 @@ namespace HIS.Recipes.Models.ViewModels
 {
     public class StepViewModel: StepUpdateViewModel
     {
-        
+        [Range(0, int.MaxValue)]
         [Required]
         public int RecipeId { get; set; }
     }

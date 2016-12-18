@@ -28,7 +28,7 @@ namespace HIS.Recipes.Services.Implementation.Services
 
         #region CTOR
 
-        internal RecipeImagesService(IDbImageRepository rep, IImageService imageService, IMapper mapper, ILoggerFactory loggerFactory)
+        public RecipeImagesService(IDbImageRepository rep, IImageService imageService, IMapper mapper, ILoggerFactory loggerFactory)
         {
             if (rep == null)
             {
@@ -46,10 +46,11 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 throw new ArgumentNullException(nameof(imageService));
             }
+            this.ImageService = imageService;
             Repository = rep;
             Mapper = mapper;
             Logger = loggerFactory.CreateLogger<RecipeImagesService>();
-            this.ImageService = imageService;
+            
         }
 
         ~RecipeImagesService()
@@ -74,13 +75,13 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 if (id.Equals(0)) { throw new ArgumentNullException(nameof(id)); }
                 if (data == null) { throw new ArgumentNullException(nameof(data)); }
-                
+
                 var existingElement = await this.Repository.FindAsync(id);
-                
+
                 // image must be from given recipe
                 if (!existingElement.RecipeId.Equals(recipeId))
                 {
-                    throw new DataObjectNotFoundException();
+                    throw new DataObjectNotFoundException($"No Recipe with the id {recipeId} found");
                 }
                 if (!existingElement.Filename.Equals(data.FileName))
                 {
@@ -102,6 +103,10 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 Logger.LogWarning(new EventId(), e, $"No recipe image with id {id} found");
                 throw new DataObjectNotFoundException($"No recipe image with id {id} found");
+            }
+            catch (DataObjectNotFoundException e)
+            {
+                throw e;
             }
             catch (Exception e)
             {

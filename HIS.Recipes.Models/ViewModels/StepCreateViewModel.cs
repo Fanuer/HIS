@@ -8,6 +8,7 @@ namespace HIS.Recipes.Models.ViewModels
 {
     public class StepCreateViewModel
     {
+        [Range(0, int.MaxValue)]
         public int Order { get; set; }
 
         [Required]

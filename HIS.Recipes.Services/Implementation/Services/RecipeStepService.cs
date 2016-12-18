@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using HIS.Helpers.Exceptions;
+using HIS.Recipes.Models.Enums;
 using HIS.Recipes.Models.ViewModels;
 using HIS.Recipes.Services.Interfaces.Repositories;
 using HIS.Recipes.Services.Interfaces.Services;
@@ -68,7 +69,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <summary>
         /// Returns a Steps of a given recipe
         /// </summary>
-        /// <param name="recipeId"></param>
+        /// <param name="recipeId">Id of the owning recipe</param>
         /// <returns></returns>
         public IQueryable<StepViewModel> GetStepsForRecipe(int recipeId)
         {
@@ -87,6 +88,40 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 this.Logger.LogError(new EventId(), e, $"Error on receiving steps for recipe {recipeId}");
                 throw new Exception($"Error on receiving steps for recipe {recipeId}");
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Searches a step of a recipe
+        /// </summary>
+        /// <param name="recipeId">Id of the owning Recipe</param>
+        /// <param name="stepId">Id of a step</param>
+        /// <param name="direction">To provide navigation you define if the step of the given id or one of its neighbors</param>
+        /// <returns>Returns one step of a recipe</returns>
+        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep)
+        {
+            StepViewModel result = null;
+            var steps = await this.GetStepsForRecipe(recipeId).ToListAsync();
+            var step = steps.SingleOrDefault(x => x.Id.Equals(stepId));
+            if (step == null)
+            {
+                throw new DataObjectNotFoundException($"No step with the id {stepId} was found");
+            }
+            var stepIndex = steps.IndexOf(step);
+            switch (direction)
+            {
+                case StepDirection.ThisStep:
+                    result = step;
+                    break;
+                case StepDirection.Next:
+                    result = steps.ElementAtOrDefault(stepIndex +1) ?? steps.Last(); 
+                    break;
+                case StepDirection.Previous:
+                    result = steps.ElementAtOrDefault(stepIndex -1) ?? steps.First();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
             return result;
         }

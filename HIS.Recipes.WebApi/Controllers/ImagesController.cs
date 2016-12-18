@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 using HIS.Helpers.Exceptions;
 using HIS.Recipes.Models.ViewModels;
 using HIS.Recipes.Services.Interfaces.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace HIS.Recipes.WebApi.Controllers
 {
     /// <summary>
-    /// Grants acces to recipe images
+    /// Grants access to recipe images
     /// </summary>
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}")]
     public class ImagesController : Controller
     {
         #region CONST
@@ -25,7 +27,6 @@ namespace HIS.Recipes.WebApi.Controllers
         #region FIELDS
 
         private readonly IRecipeImageService _service;
-        private readonly ILogger<ImagesController> _logger;
 
         #endregion
 
@@ -34,11 +35,9 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <summary>
         /// Creates an ImageController, which grants access to images within the recipe management
         /// </summary>
-        /// <param name="loggerFactory"></param>
-        /// <param name="service"></param>
-        public ImagesController(LoggerFactory loggerFactory, IRecipeImageService service)
+        /// <param name="service">service grants access to the image store</param>
+        public ImagesController(IRecipeImageService service)
         {
-            _logger = loggerFactory.CreateLogger<ImagesController>();
             _service = service;
         }
 
@@ -52,18 +51,11 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <returns></returns>
         /// <response code="200">Images of a recipe</response>
         /// <response code="404">If recipe with the given id is not found</response>
-        [HttpGet("api/recipes/{recipeId:int}/images")]
+        [HttpGet("Recipes/{recipeId:int}/Images")]
         [ProducesResponseType(typeof(IEnumerable<RecipeImageViewModel>), (int)HttpStatusCode.OK)]
         public IActionResult GetRecipeImages(int recipeId)
         {
-            try
-            {
-                return Ok(_service.GetImages(recipeId));
-            }
-            catch (DataObjectNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            return Ok(_service.GetImages(recipeId));
         }
 
         /// <summary>
@@ -74,24 +66,70 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <returns></returns>
         /// <response code="200">Returns one recipe image</response>
         /// <response code="404">If recipe with the given id is not found</response>
-        [HttpGet("api/recipes/{recipeId:int}/images/{imageId:int}")]
+        [HttpGet("Recipes/{recipeId:int}/Images/{imageId:int}", Name = "GetImageById")]
         [ProducesResponseType(typeof(RecipeImageViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetRecipeImage(int recipeId, int imageId)
         {
-            try
+            var result = await _service.GetImage(imageId);
+            if (!result.RecipeId.Equals(recipeId))
             {
-                var result = await _service.GetImage(imageId);
-                if (!result.RecipeId.Equals(recipeId))
-                {
-                    ModelState.AddModelError("recipeId", "The recipe does not contain an image with the given iamge id");
-                }
-                return Ok(result);
+                ModelState.AddModelError("recipeId", "The recipe does not contain an image with the given image id");
             }
-            catch (DataObjectNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            return Ok(result);
         }
+
+        /// <summary>
+        /// Creates a new Image
+        /// </summary>
+        /// <param name="recipeId">Id of the owning recipe</param>
+        /// <param name="imageData">data of a new image</param>
+        /// <returns></returns>
+        /// <response code="201">Returns one recipe image</response>
+        /// <response code="404">If recipe with the given id is not found</response>
+        [HttpPost("Recipes/{recipeId:int}/Images")]
+        [ProducesResponseType(typeof(RecipeImageViewModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> CreateImageAsync(int recipeId, [FromBody]IFormFile imageData)
+        {
+            var result = await _service.AddAsync(recipeId, imageData);
+            return CreatedAtRoute("GetImageById", new { recipeId , imageId = result.Id},  result);
+        }
+
+        /// <summary>
+        /// Updates an existing Image
+        /// </summary>
+        /// <param name="recipeId">Id of the owning recipe</param>
+        /// <param name="id">Image id</param>
+        /// <param name="imageData">Data of an image</param>
+        /// <returns></returns>
+        /// <response code="204">Ater update was successfully</response>
+        /// <response code="404">If recipe or image with the given id is not found</response>
+        /// <response code="400">If given data were invalid</response>
+        [HttpPut("Recipes/{recipeId:int}/Images/{id:int}")]
+        [ProducesResponseType(typeof(RecipeImageViewModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UpdateImageAsync(int recipeId, int id, [FromBody]IFormFile imageData)
+        {
+            await _service.UpdateAsync(recipeId, id, imageData);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Removes an existing image
+        /// </summary>
+        /// <param name="recipeId">Id of the owning recipe</param>
+        /// <param name="id">Id of the image to remove</param>
+        /// <returns></returns>
+        [HttpDelete("Recipes/{recipeId:int}/Images/{imageId:int}")]
+        public async Task<IActionResult> DeleteImageAsync(int recipeId, int id)
+        {
+            if (await this._service.GetImages(recipeId).AllAsync(x => !x.Id.Equals(id)))
+            {
+                return NotFound($"No step with the id {id} found for recipe {recipeId}");
+            }
+
+            await _service.RemoveAsync(id);
+            return NoContent();
+        }
+
         #endregion
 
         #region PROPERTIES

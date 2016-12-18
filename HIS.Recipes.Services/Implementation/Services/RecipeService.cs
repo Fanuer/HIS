@@ -75,6 +75,11 @@ namespace HIS.Recipes.Services.Implementation.Services
                     throw new DataObjectNotFoundException("No Recipe with the given id found");
                 }
 
+                result.Steps = result.Steps.OrderBy(x => x.Order);
+                result.Images = result.Images.OrderBy(x => x.Id);
+                result.Tags = result.Tags.OrderBy(x => x.Name);
+
+
                 this.Logger.LogDebug(new EventId(), $"Returned recipe '{result.Name} ({result.Id})'");
             }
             catch (Exception e)

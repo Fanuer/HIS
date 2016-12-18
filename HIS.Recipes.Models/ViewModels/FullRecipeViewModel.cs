@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using HIS.Data.Base.Interfaces.Models;
@@ -17,6 +18,7 @@ namespace HIS.Recipes.Models.ViewModels
             Source = new RecipeSourceShortInfoViewModel();
         }
 
+        [Range(0, int.MaxValue)]
         public int CookedCounter { get; set; }
         public DateTime LastTimeCooked { get; set; }
         public IEnumerable<NamedViewModel> Images { get; set; }
@@ -24,6 +26,8 @@ namespace HIS.Recipes.Models.ViewModels
         public IEnumerable<StepViewModel> Steps { get; set; }
         public IEnumerable<RecipeIngrediantViewModel> Ingrediants { get; set; }
         public RecipeSourceShortInfoViewModel Source { get; set; }
+        [Required]
+        [Range(0, int.MaxValue)]
         public int Id { get; set; }
         public string Url { get; set; }
     }

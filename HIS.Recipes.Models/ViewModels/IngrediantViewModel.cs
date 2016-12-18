@@ -16,6 +16,7 @@ namespace HIS.Recipes.Models.ViewModels
         /// Amount of an ingrediant within a recipe
         /// </summary>
         [Required]
+        [Range(0, int.MaxValue)]
         public int Amount { get; set; }
         /// <summary>
         /// Cooking unit of the ingrediant

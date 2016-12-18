@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HIS.Recipes.Models.Enums;
 using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Recipes.Services.Interfaces.Services
@@ -44,5 +45,14 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// <param name="model">new steps</param>
         /// <returns></returns>
         Task UpdateAllStepsAsync(int recipeId, ICollection<string> model);
+
+        /// <summary>
+        /// Searches a step of a recipe
+        /// </summary>
+        /// <param name="recipeId">Id of the owning Recipe</param>
+        /// <param name="stepId">Id of a step</param>
+        /// <param name="direction">To provide navigation you define if the step of the given id or one of its neighbors</param>
+        /// <returns>Returns one step of a recipe</returns>
+        Task<StepViewModel> GetStepAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep);
     }
 }

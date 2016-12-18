@@ -13,8 +13,8 @@ namespace HIS.Recipes.Models.ViewModels
     public class NamedViewModel:IViewModelEntity<int>
     {
         [Required]
+        [Range(0, int.MaxValue)]
         public int Id { get; set; }
-        [Required]
         public string Url { get; set; }
         [Required]
         public string Name { get; set; }

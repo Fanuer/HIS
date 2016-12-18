@@ -1,7 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using AutoMapper;
+using HIS.Helpers.Web.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -25,13 +28,27 @@ namespace HIS.Recipes.WebApi
 
         public IConfigurationRoot Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(CheckForInvalidModelFilter));
+                options.Filters.Add(typeof(DataObjectNotFoundExceptionFilter));
+                options.Filters.Add(typeof(IdsNotIdenticalExceptionFilter));
+            });
+
             services.AddOptions();
             services.AddLogging();
+            services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(new DateTime(2016,12,18), 1, 0);
+            });
 
             services.AddAutoMapper();
             Services.Configs.ServiceConfiguration.AddServices(services, Configuration, "DefaultConnection");

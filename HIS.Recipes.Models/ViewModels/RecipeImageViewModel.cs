@@ -10,12 +10,13 @@ namespace HIS.Recipes.Models.ViewModels
     public class RecipeImageViewModel:IViewModelEntity<int>
     {
         [Required]
+        [Range(0, int.MaxValue)]
         public int Id { get; set; }
-        [Required]
         public string Url { get; set; }
         [Required]
         public string Filename { get; set; }
         [Required]
+        [Range(0, int.MaxValue)]
         public int RecipeId { get; set; }
     }
 }

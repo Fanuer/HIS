@@ -25,6 +25,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HIS.Helpers", "HIS.Helpers\
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HIS.Recipes.Services.Tests", "HIS.Recipes.Services.Tests\HIS.Recipes.Services.Tests.xproj", "{7E66AD28-E49F-4BC3-A1D0-9BEDE2114773}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HIS.Helpers.Web", "HIS.Helpers.Web\HIS.Helpers.Web.xproj", "{E078E5D5-8C9C-4E02-8596-D71B65708F71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{7E66AD28-E49F-4BC3-A1D0-9BEDE2114773}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E66AD28-E49F-4BC3-A1D0-9BEDE2114773}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E66AD28-E49F-4BC3-A1D0-9BEDE2114773}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E078E5D5-8C9C-4E02-8596-D71B65708F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E078E5D5-8C9C-4E02-8596-D71B65708F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E078E5D5-8C9C-4E02-8596-D71B65708F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E078E5D5-8C9C-4E02-8596-D71B65708F71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,5 +83,6 @@ Global
 		{010FA41A-5B8B-4F94-A6C1-3F23A345017B} = {2D1FE97B-B275-496D-B9C8-0D796F2BA847}
 		{23590A66-3D4F-406A-A422-32EF11F24641} = {2D1FE97B-B275-496D-B9C8-0D796F2BA847}
 		{7E66AD28-E49F-4BC3-A1D0-9BEDE2114773} = {8649F1EA-ECA5-4198-AA59-977733F5ECD1}
+		{E078E5D5-8C9C-4E02-8596-D71B65708F71} = {2D1FE97B-B275-496D-B9C8-0D796F2BA847}
 	EndGlobalSection
 EndGlobal

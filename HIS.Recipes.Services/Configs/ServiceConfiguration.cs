@@ -1,4 +1,5 @@
 ﻿using HIS.Recipes.Services.DB;
+using HIS.Recipes.Services.Implementation;
 using HIS.Recipes.Services.Implementation.Repositories;
 using HIS.Recipes.Services.Implementation.Services;
 using HIS.Recipes.Services.Interfaces.Repositories;
@@ -11,12 +12,20 @@ namespace HIS.Recipes.Services.Configs
 {
     public static class ServiceConfiguration
     {
-        public static void AddServices(IServiceCollection services, IConfigurationRoot config, string recipeDbName )
+        /// <summary>
+        /// Registers all services to the DI
+        /// </summary>
+        /// <param name="services">ServiceCollection to add the services to</param>
+        /// <param name="config">AppSettings-Configuration</param>
+        /// <param name="recipeDbName">Name of the Db ConnectionString within the AppSettings-Configuration</param>
+        /// <param name="blobStoreSectionName">Name of the Subsection within the AppSettings which stores the data for the Azure Blob Storage</param>
+        public static void AddServices(IServiceCollection services, IConfigurationRoot config, string recipeDbName, string blobStoreSectionName= "AzureBlobStorage")
         {
             
             services.AddDbContext<RecipeDbContext>(options => options.UseSqlServer(config.GetConnectionString(recipeDbName)));
 
             services.AddOptions();
+            services.Configure<AzureBlobStorageOptions>(config.GetSection(blobStoreSectionName));
 
             // Repositories
             services.AddScoped<IDbImageRepository, RecipeDbRepository.DbImageRepository>();
