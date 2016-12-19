@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using HIS.Recipes.Models.ViewModels;
 using HIS.Recipes.Services.Interfaces.Services;
@@ -43,7 +44,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <returns></returns>
         /// <response code="200">Returns a list of all available tags</response>
         [HttpGet("api/v{version:apiVersion}/[controller]")]
-        public async Task<IQueryable<IngrediantStatisticViewModel>> GetTags()
+        public async Task<IQueryable<IngrediantStatisticViewModel>> GetIngrediants()
         {
             var result = this._service.GetIngrediantList();
             await result.ForEachAsync(x => x.Url = this.Url.RouteUrl("GetIngrediantById", new { id = x.Id }));
@@ -51,42 +52,40 @@ namespace HIS.Recipes.WebApi.Controllers
         }
 
         /// <summary>
-        /// Returns one tag
+        /// Returns one ingrediant
         /// </summary>
-        /// <param name="id">Id of the Tag</param>
-        /// <response code="404">If the no tag with the given Id is found</response>
-        [HttpGet("api/v{version:apiVersion}/[controller]/{id:int}", Name = "GetTagById")]
-        public async Task<IActionResult> GetTagsAsync(int id)
+        /// <param name="id">Id of an ingrediant</param>
+        /// <response code="404">If the no ingrediant with the given Id is found</response>
+        [HttpGet("api/v{version:apiVersion}/[controller]/{id:int}", Name = "GetIngrediantById")]
+        public async Task<IActionResult> GetIngrediantAsync(int id)
         {
-            var tag = await _service.GetTags().SingleOrDefaultAsync(x => x.Id.Equals(id));
-            if (tag != null)
-            {
-                return Ok(tag);
-            }
+            var tag = await this._service.GetIngrediantList().SingleOrDefaultAsync(x => x.Id.Equals(id));
 
-            return NotFound("No Tag with the given id found");
+          if (tag == null) return NotFound("No Tag with the given id found");
+          tag.Url = this.Url.RouteUrl("GetIngrediantById", new {id = tag.Id});
+          return Ok(tag);
         }
 
         /// <summary>
-        /// Creates a new Tag
+        /// Creates a new ingrediant
         /// </summary>
-        /// <param name="model">Data of the new tag</param>
+        /// <param name="model">Data of the new Ingrediant</param>
         /// <returns></returns>
-        /// <response code="201">After Creation of the new tag</response>
+        /// <response code="201">After Creation of the new Ingrediant</response>
         /// <response code="400">If the given data are invalid</response>
         [ProducesResponseType(typeof(NamedViewModel), (int)HttpStatusCode.Created)]
         [HttpPost("api/v{version:apiVersion}/[controller]")]
-        public async Task<IActionResult> CreateRecipeAsync([FromBody] string model)
+        public async Task<IActionResult> CreateIngrediantAsync([FromBody] string model)
         {
             var result = await _service.AddAsync(model);
-            result.Url = this.Url.RouteUrl("GetTagById", new { id = result.Id });
-            return CreatedAtRoute("GetTagById", new { id = result.Id }, result);
+            result.Url = this.Url.RouteUrl("GetIngrediantById", new { id = result.Id });
+            return CreatedAtRoute("GetIngrediantById", new { id = result.Id }, result);
         }
 
         /// <summary>
-        /// Updates an available tag
+        /// Updates an available ingrediant
         /// </summary>
-        /// <param name="id">Id of the tag to change</param>
+        /// <param name="id">Id of the ingrediant to change</param>
         /// <param name="model">New tag data</param>
         /// <response code="204">After update was successfully</response>
         /// <response code="400">If the given data are invalid</response>
@@ -99,7 +98,7 @@ namespace HIS.Recipes.WebApi.Controllers
         }
 
         /// <summary>
-        /// Removes an existing tag
+        /// Removes an existing ingrediant
         /// </summary>
         /// <param name="id">Id of the tag to delete</param>
         /// <response code="204">After deletion</response>
@@ -111,105 +110,49 @@ namespace HIS.Recipes.WebApi.Controllers
         }
 
         /// <summary>
-        /// Adds a Tag to a Recipe
+        /// Returns all ingrediants of a recipe
         /// </summary>
         /// <param name="recipeId">Id of the Recipe</param>
-        /// <param name="tagId">Id of an existing Tag</param>
         /// <response code="200">After adding was successfully</response>
         /// <response code="404">If Tag or Recipe was not found by the given id</response>
-        [HttpPost, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Tags/{tagId:int}")]
-        public async Task<IActionResult> AddTagToRecipeAsync(int recipeId, int tagId)
+        [HttpGet("api/v{version:apiVersion}/Recipes/{recipeId:int}/Ingrediants")]
+        [ProducesResponseType(typeof(IQueryable<IngrediantViewModel>), (int)HttpStatusCode.OK)]
+        public IActionResult GetIngrediantsForRecipe(int recipeId)
         {
-            await _service.AddTagToRecipeAsync(recipeId, tagId);
-            return Ok();
+            return Ok(_service.GetIngrediantsForRecipe(recipeId));
         }
 
         /// <summary>
-        /// Adds a Tag to a Recipe
+        /// Updates an ingrediant of a recipe
         /// </summary>
         /// <param name="recipeId">Id of the Recipe</param>
-        /// <param name="tagName">Name of a Tag</param>
+        /// <param name="model">New Data of an ingrediant</param>
         /// <response code="200">After adding was successfully</response>
         /// <response code="404">If Recipe was not found by the given id</response>
-        [HttpPost, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Tags/{tagName}")]
-        public async Task<IActionResult> AddTagToRecipeAsync(int recipeId, string tagName)
+        [HttpPut, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Ingrediants")]
+        public async Task<IActionResult> AddTagToRecipeAsync(int recipeId, [FromBody]AlterIngrediantViewModel model)
         {
-            if (String.IsNullOrWhiteSpace(tagName))
-            {
-                ModelState.AddModelError("tagName", "Tag name must not be null or empty");
-                return BadRequest(ModelState);
-            }
-            await _service.AddTagToRecipeAsync(recipeId, tagName);
+            await _service.AddOrUpdateIngrediantToRecipeAsync(model);
             return Ok();
         }
 
         /// <summary>
-        /// Removes a Tag from a recipe
+        /// Removes an ingrediant from a recipe
         /// </summary>
         /// <param name="recipeId">Id of a Recipe</param>
-        /// <param name="tagId">Id of a Tag</param>
-        /// <response code="200">After adding was successfully</response>
-        /// <response code="404">If Recipe was not found by the given id</response>
-        [HttpDelete, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Tags/{tagId:int}")]
-        public async Task<IActionResult> RemoveTagFromRecipeAsync(int recipeId, int tagId)
+        /// <param name="ingrediantId">Id of a Ingrediant</param>
+        /// <response code="200">After removing was successfully</response>
+        /// <response code="404">If Recipe or ingrediant was not found by the given id</response>
+        [HttpDelete, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Tags/{ingrediantId:int}")]
+        public async Task<IActionResult> RemoveTagFromRecipeAsync(int recipeId, int ingrediantId)
         {
-            await _service.RemoveTagFromRecipeAsync(recipeId, tagId);
+            await _service.RemoveIngrediantFromRecipeAsync(recipeId, ingrediantId);
             return Ok();
         }
 
-        /// <summary>
-        /// Removes a Tag from a recipe
-        /// </summary>
-        /// <param name="recipeId">Id of the Recipe</param>
-        /// <param name="tagName">Name of a Tag</param>
-        /// <response code="200">After adding was successfully</response>
-        /// <response code="404">If Recipe was not found by the given id</response>
-        [HttpDelete, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Tags/{tagName}")]
-        public async Task<IActionResult> RemoveTagFromRecipeAsync(int recipeId, string tagName)
-        {
-            if (String.IsNullOrWhiteSpace(tagName))
-            {
-                ModelState.AddModelError("tagName", "Tag name must not be null or empty");
-                return BadRequest(ModelState);
-            }
-            await _service.RemoveTagFromRecipeAsync(recipeId, tagName);
-            return Ok();
-        }
         #endregion
 
         #region PROPERTIES
         #endregion
-
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
