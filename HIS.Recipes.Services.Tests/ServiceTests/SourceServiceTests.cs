@@ -53,14 +53,12 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
                 Assert.Equal(dbwebSource.Id, websource.Id);
                 Assert.Equal(dbwebSource.RecipeSourceRecipes.Count, websource.CountRecipes);
                 Assert.Equal(dbwebSource.Name, websource.Name);
-                Assert.Null(websource.Url);
 
                 var cbsource = sources.First(x => x.Type == SourceType.Cookbook);
                 var dbcbSource = dbSources.First(x => x.Id.Equals(cbsource.Id));
                 Assert.Equal(dbcbSource.Id, cbsource.Id);
                 Assert.Equal(dbcbSource.RecipeSourceRecipes.Count, cbsource.CountRecipes);
                 Assert.Equal(dbcbSource.Name, cbsource.Name);
-                Assert.Null(cbsource.Url);
 
             }
         }
@@ -115,7 +113,8 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
             using (var service = this.GetService())
             {
                 var recipe = await DbContext.Recipes.AsNoTracking().Include(x => x.Source).ThenInclude(x => x.Source).FirstAsync(x => x.Source.Source is RecipeCookbookSource);
-                var source = await service.GetSources().FirstAsync(x => x.Type == SourceType.WebSource);
+                
+                var source = await DbContext.RecipeUrlSources.FirstAsync();
 
                 var sourceModel = new WebSourceViewModel()
                 {

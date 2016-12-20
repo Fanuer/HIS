@@ -98,7 +98,6 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x=>x.Recipes,x=>x.MapFrom(y=>y.RecipeSourceRecipes));
 
             this.CreateMap<RecipeBaseSource, SourceListEntryViewModel>()
-                .ForMember(x=>x.Url, x=>x.Ignore())
                 .ForMember(x=>x.Type, x=>x.MapFrom(m => m.GetSourceType()))
                 .ForMember(x=>x.CountRecipes, x=>x.MapFrom(m => m.RecipeSourceRecipes.Count()));
     }

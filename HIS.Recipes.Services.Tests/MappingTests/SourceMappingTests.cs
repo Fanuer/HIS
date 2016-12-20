@@ -233,8 +233,6 @@ namespace HIS.Recipes.Services.Tests.MappingTests
             Assert.Equal(source.RecipeSourceRecipes.Count, output.CountRecipes);
             Assert.Equal(input.Source.GetSourceType(), output.Type);
             Assert.Equal(input.SourceId, output.Id);
-
-            Assert.Null(output.Url);
         }
 
 

@@ -8,12 +8,11 @@ using HIS.Recipes.Models.Enums;
 
 namespace HIS.Recipes.Models.ViewModels
 {
-    public class SourceListEntryViewModel:IViewModelEntity<int>
+    public class SourceListEntryViewModel
     {
         [Required]
         [Range(0, int.MaxValue)]
         public int Id { get; set; }
-        public string Url { get; set; }
         [Required]
         public string Name { get; set; }
         public SourceType Type { get; set; }
