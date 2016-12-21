@@ -76,7 +76,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <response code="400">If the given data are invalid</response>
         [ProducesResponseType(typeof(NamedViewModel), (int)HttpStatusCode.Created)]
         [HttpPost("api/v{version:apiVersion}/[controller]")]
-        public async Task<IActionResult> CreateRecipeAsync([FromBody] string model)
+        public async Task<IActionResult> CreateTagAsync([FromBody] string model)
         {
             var result = await _service.AddAsync(model);
             result.Url = this.Url.RouteUrl("GetTagById", new {id = result.Id});
@@ -92,7 +92,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <response code="400">If the given data are invalid</response>
         /// <response code="404">If no tag was found for the given id</response>
         [HttpPut("api/v{version:apiVersion}/[controller]/{id:int}")]
-        public async Task<IActionResult> UpdateRecipeAsync(int id, [FromBody]NamedViewModel  model)
+        public async Task<IActionResult> UpdateTagAsync(int id, [FromBody]NamedViewModel  model)
         {
             await _service.UpdateAsync(id, model);
             return NoContent();
@@ -104,7 +104,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <param name="id">Id of the tag to delete</param>
         /// <response code="204">After deletion</response>
         [HttpDelete("api/v{version:apiVersion}/[controller]/{id:int}")]
-        public async Task<IActionResult> DeleteRecipeAsync(int id)
+        public async Task<IActionResult> DeleteTagAsync(int id)
         {
             await _service.RemoveAsync(id);
             return NoContent();

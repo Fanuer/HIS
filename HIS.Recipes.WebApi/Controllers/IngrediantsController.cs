@@ -91,7 +91,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <response code="400">If the given data are invalid</response>
         /// <response code="404">If no tag was found for the given id</response>
         [HttpPut("api/v{version:apiVersion}/[controller]/{id:int}")]
-        public async Task<IActionResult> UpdateRecipeAsync(int id, [FromBody]NamedViewModel model)
+        public async Task<IActionResult> UpdateIngrediantAsync(int id, [FromBody]NamedViewModel model)
         {
             await _service.UpdateAsync(id, model);
             return NoContent();
@@ -103,7 +103,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <param name="id">Id of the tag to delete</param>
         /// <response code="204">After deletion</response>
         [HttpDelete("api/v{version:apiVersion}/[controller]/{id:int}")]
-        public async Task<IActionResult> DeleteRecipeAsync(int id)
+        public async Task<IActionResult> DeleteIngrediantAsync(int id)
         {
             await _service.RemoveAsync(id);
             return NoContent();
@@ -130,7 +130,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <response code="200">After adding was successfully</response>
         /// <response code="404">If Recipe was not found by the given id</response>
         [HttpPut, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Ingrediants")]
-        public async Task<IActionResult> AddTagToRecipeAsync(int recipeId, [FromBody]AlterIngrediantViewModel model)
+        public async Task<IActionResult> AddIngrediantToRecipeAsync(int recipeId, [FromBody]AlterIngrediantViewModel model)
         {
             await _service.AddOrUpdateIngrediantToRecipeAsync(model);
             return Ok();
@@ -144,7 +144,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <response code="200">After removing was successfully</response>
         /// <response code="404">If Recipe or ingrediant was not found by the given id</response>
         [HttpDelete, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Tags/{ingrediantId:int}")]
-        public async Task<IActionResult> RemoveTagFromRecipeAsync(int recipeId, int ingrediantId)
+        public async Task<IActionResult> RemoveIngrediantFromRecipeAsync(int recipeId, int ingrediantId)
         {
             await _service.RemoveIngrediantFromRecipeAsync(recipeId, ingrediantId);
             return Ok();

@@ -30,12 +30,9 @@ namespace HIS.WebApi.Auth.IdentityConfigs
 
         public static IdentityConfig GetInstance(IOptions<IdentityOptions> options)
         {
-            if (_instance == null)
-            {
-                _instance = new IdentityConfig(options);
-            }
-            return _instance;
+            return _instance ?? (_instance = new IdentityConfig(options));
         }
+
         #endregion
 
         #region PROPERTIES
