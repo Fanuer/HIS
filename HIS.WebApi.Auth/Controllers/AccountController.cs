@@ -84,7 +84,7 @@ namespace HIS.WebApi.Auth.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
+        /*
         //
         // GET: /Account/Register
         [HttpGet]
@@ -125,7 +125,7 @@ namespace HIS.WebApi.Auth.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
+        */
         //
         // POST: /Account/LogOff
         [HttpPost]
@@ -136,7 +136,7 @@ namespace HIS.WebApi.Auth.Controllers
             _logger.LogInformation(4, "User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
-
+        /*
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
@@ -225,7 +225,7 @@ namespace HIS.WebApi.Auth.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
-
+        */
         // GET: /Account/ConfirmEmail
         [HttpGet]
         [AllowAnonymous]

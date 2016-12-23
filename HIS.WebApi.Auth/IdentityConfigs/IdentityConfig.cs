@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Options;
 using HIS.WebApi.Auth.Options;
+using IdentityModel;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HIS.WebApi.Auth.IdentityConfigs
 {
@@ -15,22 +18,81 @@ namespace HIS.WebApi.Auth.IdentityConfigs
 
         #region FIELDS
 
-        private IOptions<IdentityOptions> _options;
-        private static IdentityConfig _instance;
+        private readonly IdentityOptions _options;
         #endregion
 
         #region CTOR
-        private IdentityConfig(IOptions<IdentityOptions> options)
+        public IdentityConfig(IOptions<IdentityOptions> options)
         {
-            _options = options;
+            _options = options?.Value;
         }
         #endregion
 
         #region METHODS
-
-        public static IdentityConfig GetInstance(IOptions<IdentityOptions> options)
+        public IEnumerable<ApiResource> GetApiResources()
         {
-            return _instance ?? (_instance = new IdentityConfig(options));
+            // Apöi Resources represent data endpoints
+            return new List<ApiResource>()
+            {
+                new ApiResource("recipe-api", "Api to interact with a recipe management")
+                {
+                    // include the following using claims in access token (in addition to subject id)
+                    UserClaims = {JwtClaimTypes.Name, JwtClaimTypes.Email},
+                    // secret for using introspection endpoint
+                    ApiSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("RecipeApi")).Secret) },
+                    // this API defines two scopes
+                    Scopes = new List<Scope>() {new Scope("recipeUser", "A regular User"), new Scope("recipeAdmin", "An administrative User") }
+                }, 
+                // no secret needed: all clients, known to the Auth Service call access the gateway
+                new ApiResource("gateway-resource", "Api Gateway Resource")
+            };
+        }
+
+        public IEnumerable<Client> GetClients()
+        {
+            return new List<Client>()
+            {
+                new Client()
+                {
+                    ClientId ="recipe-client",
+                    ClientName = "Recipe Service Client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("recipe-client")).Secret) },
+                    AllowedScopes = new List<string>() { "gateway-resource" } // scopes that client has access to
+                },
+                new Client()
+                {
+                    ClientId = "gateway-client",
+                    ClientName = "Api Gateway Client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("gateway-client")).Secret) },
+                    AllowedScopes = new List<string>() { "recipe-api" } // scopes that client has access to
+                },
+                new Client()
+                {
+                    ClientId = "bot-client",
+                    ClientName = "Bot Application Client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("bot-client")).Secret) },
+                    AllowedScopes = new List<string>() { "gateway-resource" }
+                },
+                new Client()
+                {
+                    ClientId = "app-client",
+                    ClientName = "app Client",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("app-client")).Secret) },
+                    AllowedScopes = new List<string>() { "gateway-resource" }
+                },
+                new Client()
+                {
+                    ClientId = "spa-client",
+                    ClientName = "Bot Application",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("spa-client")).Secret) },
+                    AllowedScopes = new List<string>() { "gateway-resource" }
+                }
+            };
         }
 
         #endregion
@@ -38,102 +100,5 @@ namespace HIS.WebApi.Auth.IdentityConfigs
         #region PROPERTIES
         
         #endregion
-        
-        // scopes define the resources in your system
-        public static IEnumerable<Scope> GetScopes()
-        {
-            return new List<Scope>
-            {
-                StandardScopes.OpenId,
-                StandardScopes.Profile,
-                StandardScopes.OfflineAccess,
-
-                new Scope
-                {
-                    Name = "HISGateway",
-                    DisplayName = "Gateway API",
-                    Description = "API for Users"
-                }
-            };
-        }
-
-        // clients want to access resources (aka scopes)
-        public static IEnumerable<Client> GetClients()
-        {
-            // client credentials client
-            return new List<Client>
-            {
-                new Client
-                {
-                    ClientId = "client",
-                    ClientName = "Client",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    AllowedScopes = { "api1" }
-                },
-
-                // resource owner password grant client
-                new Client
-                {
-                    ClientId = "ro.client",
-                    ClientName = "Resource Owner Client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    AllowedScopes = { "api1" }
-                },
-
-                // OpenID Connect hybrid flow and client credentials client (MVC)
-                new Client
-                {
-                    ClientId = "mvc",
-                    ClientName = "MVC Client",
-                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
-
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    RedirectUris = { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002" },
-
-                    AllowedScopes =
-                    {
-                        StandardScopes.OpenId.Name,
-                        StandardScopes.Profile.Name,
-                        StandardScopes.OfflineAccess.Name,
-                        "api1"
-                    }
-                },
-
-                // JavaScript Client
-                new Client
-                {
-                    ClientId = "js",
-                    ClientName = "JavaScript Client",
-                    AllowedGrantTypes = GrantTypes.Implicit,
-                    AllowAccessTokensViaBrowser = true,
-
-                    RedirectUris = { "http://localhost:5003/callback.html" },
-                    PostLogoutRedirectUris = { "http://localhost:5003/index.html" },
-                    AllowedCorsOrigins = { "http://localhost:5003" },
-
-                    AllowedScopes =
-                    {
-                        StandardScopes.OpenId.Name,
-                        StandardScopes.Profile.Name,
-                        "api1"
-                    }
-                }
-            };
-        }
     }
 }

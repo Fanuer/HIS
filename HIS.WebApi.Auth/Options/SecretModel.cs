@@ -15,8 +15,11 @@ namespace HIS.WebApi.Auth.Options
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Entitity Secret
+        /// Entity Secret
         /// </summary>
         public string Secret { get; set; }
+
+        public DateTime ExpireDate { get; set; }
+        public string Description { get; set; }
     }
 }

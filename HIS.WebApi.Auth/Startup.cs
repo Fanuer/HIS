@@ -16,6 +16,7 @@ using System.Reflection;
 using AutoMapper;
 using HIS.WebApi.Auth.IdentityConfigs;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.Extensions.DependencyModel;
 
@@ -54,24 +55,17 @@ namespace HIS.WebApi.Auth
         #endregion
 
         #region METHODS
-
-        #endregion
-
-        #region PROPERTIES
-
-        public IConfigurationRoot Configuration { get; }
-
-        #endregion
-
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container. 
         /// </summary>
         /// <param name="services">Collection to add services to</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options => options.UseSqlServer(dbConnectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -87,11 +81,14 @@ namespace HIS.WebApi.Auth
             services.AddIdentityServer()
                 //.AddTemporarySigningCredential()
                 //.AddInMemoryPersistedGrants()
-                .AddConfigurationStore( builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options => options.MigrationsAssembly(migrationsAssembly)))
-                .AddOperationalStore(builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options => options.MigrationsAssembly(migrationsAssembly)))
+                .AddConfigurationStore(builder => builder.UseSqlServer(dbConnectionString, options => options.MigrationsAssembly(migrationsAssembly)))
+                .AddOperationalStore(builder => builder.UseSqlServer(dbConnectionString, options => options.MigrationsAssembly(migrationsAssembly)))
                 .AddAspNetIdentity<ApplicationUser>();
 
             services.AddAutoMapper();
+            services.AddOptions();
+            services.Configure<IdentityOptions>(Configuration.GetSection("Identity"));
+            services.AddSingleton<IdentityConfig>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,9 +98,10 @@ namespace HIS.WebApi.Auth
         /// <param name="app">Grants access to the app to add configurations</param>
         /// <param name="env">Grants access to the app enviroment to add configurations</param>
         /// <param name="loggerFactory">Logging Factory</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        /// <param name="identityConfig">Configuration of initial auth entities</param>
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityConfig identityConfig)
         {
-            InitializeDatabase(app);
+            InitializeDatabase(app, identityConfig);
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -133,32 +131,35 @@ namespace HIS.WebApi.Auth
             });
         }
 
-        private void InitializeDatabase(IApplicationBuilder app)
+        private void InitializeDatabase(IApplicationBuilder app, IdentityConfig identityConfig)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                context.Database.Migrate();
-                if (!context.Clients.Any())
+
+#warning Nach dem naechsten Durchlauf entfernen
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+                if (!context.ApiResources.Any())
                 {
-                    foreach (var client in IdentityConfig.GetClients())
-                    {
-                        context.Clients.Add(client.ToEntity());
-                    }
+                    context.ApiResources.AddRange(identityConfig.GetApiResources().Select(x => x.ToEntity()));
                     context.SaveChanges();
                 }
-
-                if (!context.Scopes.Any())
+                if (!context.Clients.Any())
                 {
-                    foreach (var scope in IdentityConfig.GetScopes())
-                    {
-                        context.Scopes.Add(scope.ToEntity());
-                    }
+                    context.Clients.AddRange(identityConfig.GetClients().Select(x => x.ToEntity()));
                     context.SaveChanges();
                 }
             }
         }
+
+        #endregion
+
+        #region PROPERTIES
+
+        public IConfigurationRoot Configuration { get; }
+
+        #endregion
     }
 }

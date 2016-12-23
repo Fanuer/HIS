@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using AutoMapper;
+using HIS.Helpers.Options;
 using HIS.Helpers.Web.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.Swagger.Model;
 
@@ -52,6 +54,7 @@ namespace HIS.Recipes.WebApi
 
             services.AddAutoMapper();
             Services.Configs.ServiceConfiguration.AddServices(services, Configuration, "DefaultConnection");
+            services.Configure<AuthServerInfoOptions>(Configuration.GetSection("AuthServerInfo"));
 
             // Inject an implementation of ISwaggerProvider with defaulted settings applied.
             services.AddSwaggerGen();
@@ -80,16 +83,17 @@ namespace HIS.Recipes.WebApi
         /// <param name="app">App Builder</param>
         /// <param name="env">Enviroment Context</param>
         /// <param name="loggerFactory">Logger Factory</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        /// <param name="authServerInfo">Information of used auth server</param>
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IOptions<AuthServerInfoOptions> authServerInfo)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
-                Authority = "http://localhost:5000",
-                ScopeName = "Robot",
-                RequireHttpsMetadata = false
+                Authority = authServerInfo.Value.AuthServerLocation,
+                ScopeName = authServerInfo.Value.ApiName,
+                RequireHttpsMetadata = authServerInfo.Value.UseHTTPS
             });
 
             app.UseMvcWithDefaultRoute();
