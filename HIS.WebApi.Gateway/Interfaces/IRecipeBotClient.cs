@@ -13,6 +13,6 @@ namespace HIS.WebApi.Gateway.Interfaces
         Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId);
 
         Task<StepViewModel> GetStepAsyc(int recipeId, int stepId, StepDirection direction);
-        Task StartCookingAsync();
+        Task StartCookingAsync(int recipeId);
     }
 }

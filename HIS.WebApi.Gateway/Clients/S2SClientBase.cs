@@ -33,9 +33,15 @@ namespace HIS.WebApi.Gateway.Clients
 
         protected S2SClientBase(IOptions<AuthServerInfoOptions> authOptions, IOptions<ClientInfoOptions> thisOptions, ILogger logger)
         {
-            if (authOptions?.Value == null){ throw new ArgumentException(nameof(authOptions)); }
-            if (thisOptions?.Value == null){ throw new ArgumentException(nameof(thisOptions)); }
-            if (logger == null){ throw new ArgumentException(nameof(logger)); }
+            if (authOptions?.Value == null){ throw new ArgumentNullException(nameof(authOptions)); }
+            if (String.IsNullOrWhiteSpace(authOptions.Value.ApiName)){ throw new ArgumentNullException(nameof(authOptions.Value.ApiName)); }
+            if (String.IsNullOrWhiteSpace(authOptions.Value.AuthServerLocation)){ throw new ArgumentNullException(nameof(authOptions.Value.AuthServerLocation)); }
+
+            if (thisOptions?.Value == null) { throw new ArgumentException(nameof(thisOptions)); }
+            if (String.IsNullOrWhiteSpace(thisOptions.Value.ClientId)){ throw new ArgumentNullException(nameof(thisOptions.Value.ClientId)); }
+            if (String.IsNullOrWhiteSpace(thisOptions.Value.ClientSecret)){ throw new ArgumentNullException(nameof(thisOptions.Value.ClientSecret)); }
+            
+            if (logger == null){ throw new ArgumentNullException(nameof(logger)); }
 
             _authOptions = authOptions.Value;
             _clientOptions = thisOptions.Value;
@@ -152,7 +158,7 @@ namespace HIS.WebApi.Gateway.Clients
         protected async Task PutAsync(string url, params object[] args)
         {
             
-            var response = await this.PutAsync(String.Format(url, args), new StringContent(String.Empty));
+            var response = await base.PutAsync(String.Format(url, args), new StringContent(String.Empty));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PutAsync({0}) -> {1}", String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -168,7 +174,7 @@ namespace HIS.WebApi.Gateway.Clients
         protected async Task DeleteAsync(string url, params object[] args)
         {
             
-            var response = await this.DeleteAsync(String.Format(url, args));
+            var response = await base.DeleteAsync(String.Format(url, args));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("DeleteAsync({0}) -> {1}", String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -184,7 +190,7 @@ namespace HIS.WebApi.Gateway.Clients
         protected async Task<T> DeleteAsync<T>(string url, params object[] args)
         {
             
-            var response = await this.DeleteAsync(String.Format(url, args));
+            var response = await base.DeleteAsync(String.Format(url, args));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("DeleteAsync({0}) -> {1}", String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -197,7 +203,7 @@ namespace HIS.WebApi.Gateway.Clients
         protected async Task<T> PostAsync<T>(HttpContent content, string url, params object[] args)
         {
             
-            var response = await this.PostAsync(String.Format(url, args), content);
+            var response = await base.PostAsync(String.Format(url, args), content);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PostAsync<{0}>({1}) -> {2}", typeof(T).Name, String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -213,7 +219,7 @@ namespace HIS.WebApi.Gateway.Clients
         protected async Task PostAsync(HttpContent content, string url, params object[] args)
         {
             
-            var response = await this.PostAsync(String.Format(url, args), content);
+            var response = await base.PostAsync(String.Format(url, args), content);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled)

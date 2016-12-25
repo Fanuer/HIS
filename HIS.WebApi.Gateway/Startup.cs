@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HIS.Helpers.Options;
+using HIS.WebApi.Gateway.Clients;
+using HIS.WebApi.Gateway.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -46,6 +48,7 @@ namespace HIS.WebApi.Gateway
             services.Configure<ClientInfoOptions>(Configuration.GetSection("ClientInfo"));
             services.Configure<AuthServerInfoOptions>(Configuration.GetSection("AuthServerInfo"));
 
+            services.AddScoped<IRecipeBotClient, RecipeBotClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
