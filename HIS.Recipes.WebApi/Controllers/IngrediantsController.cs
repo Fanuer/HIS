@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using HIS.Recipes.Models.ViewModels;
 using HIS.Recipes.Services.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace HIS.Recipes.WebApi.Controllers
     /// <summary>
     /// Grants access to ingrediants within the recipe management
     /// </summary>
+    [Authorize]
     [ApiVersion("1.0")]
     public class IngrediantsController : Controller
     {

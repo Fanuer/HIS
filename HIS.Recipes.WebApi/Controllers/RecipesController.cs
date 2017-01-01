@@ -21,7 +21,7 @@ namespace HIS.Recipes.WebApi.Controllers
     /// Performs actions on recipes
     /// </summary>
     /// <response code="500">An internal error occurs while performing the action</response>
-    //[Authorize]
+    [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class RecipesController : Controller
@@ -34,7 +34,6 @@ namespace HIS.Recipes.WebApi.Controllers
 
         private readonly ILogger<RecipesController> _logger;
         private readonly IRecipeService _service;
-        private readonly IServiceProvider _provider;
 
         #endregion
 
@@ -45,11 +44,10 @@ namespace HIS.Recipes.WebApi.Controllers
         /// </summary>
         /// <param name="loggerFactory">factory to create a logger</param>
         /// <param name="service">service which grants acces to a recipe store</param>
-        public RecipesController(ILoggerFactory loggerFactory, IRecipeService service, IServiceProvider provider)
+        public RecipesController(ILoggerFactory loggerFactory, IRecipeService service)
         {
             _logger = loggerFactory.CreateLogger<RecipesController>();
             _service = service;
-            _provider = provider;
         }
 
         #endregion

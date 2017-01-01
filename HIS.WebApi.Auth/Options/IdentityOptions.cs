@@ -7,7 +7,7 @@ namespace HIS.WebApi.Auth.Options
 {
     public class IdentityOptions
     {
-        public List<SecretModel> ApiRecipes { get; set; }
+        public List<SecretModel> ApiResources { get; set; }
         public List<SecretModel> Clients { get; set; }
     }
 }

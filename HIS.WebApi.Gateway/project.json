@@ -20,7 +20,9 @@
     "IdentityServer4.AccessTokenValidation": "1.0.1",
     "IdentityModel": "2.1.1",
     "HIS.Recipes.Models": "1.0.0-*",
-    "HIS.Helpers": "1.0.0-*"
+    "HIS.Helpers": "1.0.0-*",
+    "Swashbuckle": "6.0.0-beta902",
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0"
   },
 
   "tools": {

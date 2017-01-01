@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HIS.Recipes.Models.Enums;
 using HIS.Recipes.Models.ViewModels;
 using HIS.Recipes.Services.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace HIS.Recipes.WebApi.Controllers
     /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}")]
+    [Authorize]
     public class StepsController : Controller
     {
 

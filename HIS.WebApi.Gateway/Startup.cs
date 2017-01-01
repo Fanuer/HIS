@@ -8,6 +8,7 @@ using HIS.WebApi.Gateway.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -45,10 +46,17 @@ namespace HIS.WebApi.Gateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.Configure<ClientInfoOptions>(Configuration.GetSection("ClientInfo"));
+            services.Configure<GatewayClientInfoOptions>(Configuration.GetSection("ClientInfo"));
             services.Configure<AuthServerInfoOptions>(Configuration.GetSection("AuthServerInfo"));
 
             services.AddScoped<IRecipeBotClient, RecipeBotClient>();
+            services.AddLogging();
+
+            services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(new DateTime(2016, 12, 18), 1, 0);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +69,6 @@ namespace HIS.WebApi.Gateway
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = authServerInfo.Value.AuthServerLocation,

@@ -105,7 +105,7 @@ namespace HIS.WebApi.Auth.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Username = model.Username };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -113,7 +113,7 @@ namespace HIS.WebApi.Auth.Controllers
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                    //await _emailSender.SendEmailAsync(model.Username, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
@@ -187,8 +187,8 @@ namespace HIS.WebApi.Auth.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
+                var email = info.Principal.FindFirstValue(ClaimTypes.Username);
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Username = email });
             }
         }
 
@@ -207,7 +207,7 @@ namespace HIS.WebApi.Auth.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Username = model.Username };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -273,7 +273,7 @@ namespace HIS.WebApi.Auth.Controllers
                 // Send an email with this link
                 //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
+                //await _emailSender.SendEmailAsync(model.Username, "Reset Password",
                 //   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
                 //return View("ForgotPasswordConfirmation");
             }
@@ -377,7 +377,7 @@ namespace HIS.WebApi.Auth.Controllers
             }
 
             var message = "Your security code is: " + code;
-            if (model.SelectedProvider == "Email")
+            if (model.SelectedProvider == "Username")
             {
                 await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
             }

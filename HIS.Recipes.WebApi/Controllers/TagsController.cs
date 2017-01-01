@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using HIS.Recipes.Models.ViewModels;
 using HIS.Recipes.Services.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace HIS.Recipes.WebApi.Controllers
     /// Grants access to tags within the recipe management
     /// </summary>
     [ApiVersion("1.0")]
+    [Authorize]
     public class TagsController : Controller
     {
         #region CONST

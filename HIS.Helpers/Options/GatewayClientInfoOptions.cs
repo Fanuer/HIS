@@ -7,6 +7,6 @@ namespace HIS.Helpers.Options
 {
     public class GatewayClientInfoOptions:ClientInfoOptions
     {
-        public string BaseUri { get; set; }
+        public Dictionary<string, string> GatewayClients { get; set; }
     }
 }

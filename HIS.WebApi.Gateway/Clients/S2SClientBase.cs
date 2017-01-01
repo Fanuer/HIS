@@ -31,20 +31,27 @@ namespace HIS.WebApi.Gateway.Clients
 
         #region CTOR
 
-        protected S2SClientBase(IOptions<AuthServerInfoOptions> authOptions, IOptions<ClientInfoOptions> thisOptions, ILogger logger)
+        protected S2SClientBase(IOptions<AuthServerInfoOptions> authOptions, IOptions<GatewayClientInfoOptions> clientOptions, ILogger logger, string apiName)
         {
+            if (String.IsNullOrWhiteSpace(apiName)) { throw new ArgumentNullException(nameof(apiName)); }
+
             if (authOptions?.Value == null){ throw new ArgumentNullException(nameof(authOptions)); }
             if (String.IsNullOrWhiteSpace(authOptions.Value.ApiName)){ throw new ArgumentNullException(nameof(authOptions.Value.ApiName)); }
             if (String.IsNullOrWhiteSpace(authOptions.Value.AuthServerLocation)){ throw new ArgumentNullException(nameof(authOptions.Value.AuthServerLocation)); }
 
-            if (thisOptions?.Value == null) { throw new ArgumentException(nameof(thisOptions)); }
-            if (String.IsNullOrWhiteSpace(thisOptions.Value.ClientId)){ throw new ArgumentNullException(nameof(thisOptions.Value.ClientId)); }
-            if (String.IsNullOrWhiteSpace(thisOptions.Value.ClientSecret)){ throw new ArgumentNullException(nameof(thisOptions.Value.ClientSecret)); }
+            if (clientOptions?.Value == null) { throw new ArgumentException(nameof(clientOptions)); }
+            if (String.IsNullOrWhiteSpace(clientOptions.Value.ClientId)){ throw new ArgumentNullException(nameof(clientOptions.Value.ClientId)); }
+            if (String.IsNullOrWhiteSpace(clientOptions.Value.ClientSecret)){ throw new ArgumentNullException(nameof(clientOptions.Value.ClientSecret)); }
             
             if (logger == null){ throw new ArgumentNullException(nameof(logger)); }
 
+            if (clientOptions?.Value?.GatewayClients == null) { throw new ArgumentNullException(nameof(clientOptions.Value.GatewayClients), "GatewayClients must be definied"); }
+            if (clientOptions.Value.GatewayClients.ContainsKey(apiName)) { throw new ArgumentNullException(nameof(clientOptions.Value.GatewayClients), $"GatewayClient '{apiName}' is not defined"); }
+
+            this.BaseAddress = new Uri(clientOptions.Value.GatewayClients[apiName]);
+
             _authOptions = authOptions.Value;
-            _clientOptions = thisOptions.Value;
+            _clientOptions = clientOptions.Value;
             this.Logger = logger;
         }
         

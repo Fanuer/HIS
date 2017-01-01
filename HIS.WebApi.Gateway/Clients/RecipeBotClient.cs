@@ -15,20 +15,17 @@ namespace HIS.WebApi.Gateway.Clients
 {
     public class RecipeBotClient:S2SClientBase, IRecipeBotClient
     {
+
         #region CONST
         #endregion
 
         #region FIELDS
-        
         #endregion
 
         #region CTOR        
         public RecipeBotClient(IOptions<AuthServerInfoOptions> authOptions, IOptions<GatewayClientInfoOptions> clientOptions, ILoggerFactory factory) 
-            : base(authOptions, clientOptions, factory.CreateLogger<RecipeBotClient>())
+            : base(authOptions, clientOptions, factory.CreateLogger<RecipeBotClient>(), "recipe-api")
         {
-            if (String.IsNullOrWhiteSpace(clientOptions?.Value?.BaseUri)){ throw new ArgumentNullException(nameof(clientOptions.Value.BaseUri)); }
-#warning muss noch in der config gesetzt werden
-            this.BaseAddress = new Uri(clientOptions.Value.BaseUri);
         }
 
         #endregion
@@ -49,7 +46,7 @@ namespace HIS.WebApi.Gateway.Clients
             return await this.GetAsync<IEnumerable<RecipeIngrediantViewModel>>($"Recipes/{recipeId}/Ingrediants");
         }
 
-        public async Task<StepViewModel> GetStepAsyc(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep)
+        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep)
         {
             return await this.GetAsync<StepViewModel>($"Recipes/{recipeId}/Steps/{stepId}" + (direction != StepDirection.ThisStep ? $"?direction={direction}" : ""));
         }

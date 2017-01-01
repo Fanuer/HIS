@@ -24,6 +24,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
         #region CTOR
         public IdentityConfig(IOptions<IdentityOptions> options)
         {
+            if (options.Value== null){ throw new ArgumentNullException(nameof(options)); }
             _options = options?.Value;
         }
         #endregion
@@ -39,7 +40,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     // include the following using claims in access token (in addition to subject id)
                     UserClaims = {JwtClaimTypes.Name, JwtClaimTypes.Email},
                     // secret for using introspection endpoint
-                    ApiSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("RecipeApi")).Secret) },
+                    ApiSecrets = new List<Secret>() {new Secret(_options.ApiResources.First(x=>x.Name.Equals("recipe-api")).Secret.Sha256()) },
                     // this API defines two scopes
                     Scopes = new List<Scope>() {new Scope("recipeUser", "A regular User"), new Scope("recipeAdmin", "An administrative User") }
                 }, 
@@ -57,7 +58,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     ClientId ="recipe-client",
                     ClientName = "Recipe Service Client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("recipe-client")).Secret) },
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("recipe-client")).Secret.Sha256()) },
                     AllowedScopes = new List<string>() { "gateway-resource" } // scopes that client has access to
                 },
                 new Client()
@@ -65,7 +66,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     ClientId = "gateway-client",
                     ClientName = "Api Gateway Client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("gateway-client")).Secret) },
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("gateway-client")).Secret.Sha256()) },
                     AllowedScopes = new List<string>() { "recipe-api" } // scopes that client has access to
                 },
                 new Client()
@@ -73,7 +74,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     ClientId = "bot-client",
                     ClientName = "Bot Application Client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("bot-client")).Secret) },
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("bot-client")).Secret.Sha256()) },
                     AllowedScopes = new List<string>() { "gateway-resource" }
                 },
                 new Client()
@@ -81,7 +82,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     ClientId = "app-client",
                     ClientName = "app Client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("app-client")).Secret) },
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("app-client")).Secret.Sha256()) },
                     AllowedScopes = new List<string>() { "gateway-resource" }
                 },
                 new Client()
@@ -89,7 +90,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     ClientId = "spa-client",
                     ClientName = "Bot Application",
                     AllowedGrantTypes = GrantTypes.Implicit,
-                    ClientSecrets = new List<Secret>() {new Secret(_options.ApiRecipes.First(x=>x.Name.Equals("spa-client")).Secret) },
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("spa-client")).Secret.Sha256()) },
                     AllowedScopes = new List<string>() { "gateway-resource" }
                 }
             };

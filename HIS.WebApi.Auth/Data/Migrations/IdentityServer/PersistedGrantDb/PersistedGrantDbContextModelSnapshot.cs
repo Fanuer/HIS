@@ -13,14 +13,16 @@ namespace HIS.WebApi.Auth.Data.Migrations.IdentityServer.PersistedGrantDb
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.1")
+                .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.PersistedGrant", b =>
                 {
-                    b.Property<string>("Key");
+                    b.Property<string>("Key")
+                        .HasAnnotation("MaxLength", 200);
 
-                    b.Property<string>("Type");
+                    b.Property<string>("Type")
+                        .HasAnnotation("MaxLength", 50);
 
                     b.Property<string>("ClientId")
                         .IsRequired()
@@ -31,9 +33,10 @@ namespace HIS.WebApi.Auth.Data.Migrations.IdentityServer.PersistedGrantDb
                     b.Property<string>("Data")
                         .IsRequired();
 
-                    b.Property<DateTime>("Expiration");
+                    b.Property<DateTime?>("Expiration");
 
-                    b.Property<string>("SubjectId");
+                    b.Property<string>("SubjectId")
+                        .HasAnnotation("MaxLength", 200);
 
                     b.HasKey("Key", "Type");
 
