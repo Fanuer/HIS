@@ -148,6 +148,17 @@ namespace HIS.Recipes.Services.Implementation.Services
             if (String.IsNullOrWhiteSpace(imageFilename)) { throw new ArgumentNullException(nameof(imageFilename)); }
             if (recipeId.Equals(0)) { throw new ArgumentNullException(nameof(recipeId)); }
 
+            imageFilename = imageFilename
+                                .Replace(" ", "_")
+                                .Replace("/", "_")
+                                .Replace("ä", "ae")
+                                .Replace("ö", "oe")
+                                .Replace("ü", "ue")
+                                .Replace("Ä", "Ae")
+                                .Replace("Ö", "Oe")
+                                .Replace("Ü", "Ue")
+                                .Replace("ß", "ss");
+
             return String.Concat(RecipeContainerPrefix, recipeId.ToString(), "_", imageFilename);
         }
 

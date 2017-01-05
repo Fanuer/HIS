@@ -19,3 +19,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("794aca04-bb1f-4e58-98b5-bfa468e1ad5a")]
 
 [assembly: InternalsVisibleTo("HIS.Recipes.Services.Tests")]
+[assembly: InternalsVisibleTo("HIS.Recipes.Console")]

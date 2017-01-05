@@ -21,7 +21,6 @@ namespace HIS.Recipes.Services.Configs
         /// <param name="blobStoreSectionName">Name of the Subsection within the AppSettings which stores the data for the Azure Blob Storage</param>
         public static void AddServices(IServiceCollection services, IConfigurationRoot config, string recipeDbName, string blobStoreSectionName= "AzureBlobStorage")
         {
-            
             services.AddDbContext<RecipeDbContext>(options => options.UseSqlServer(config.GetConnectionString(recipeDbName)));
 
             services.AddOptions();
