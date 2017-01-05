@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
+using HIS.Gateway.Services.Configs;
+using HIS.Gateway.Services.Interfaces;
 using HIS.Helpers.Options;
-using HIS.WebApi.Gateway.Clients;
-using HIS.WebApi.Gateway.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.Swagger.Model;
 
-namespace HIS.WebApi.Gateway
+namespace HIS.Gateway.WebApi
 {
     public class Startup
     {
@@ -49,7 +48,8 @@ namespace HIS.WebApi.Gateway
             services.Configure<GatewayClientInfoOptions>(Configuration.GetSection("ClientInfo"));
             services.Configure<AuthServerInfoOptions>(Configuration.GetSection("AuthServerInfo"));
 
-            services.AddScoped<IRecipeBotClient, RecipeBotClient>();
+            ServiceConfiguration.AddServices(services, Configuration);
+
             services.AddLogging();
 
             services.AddApiVersioning(o =>
@@ -57,6 +57,31 @@ namespace HIS.WebApi.Gateway
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(new DateTime(2016, 12, 18), 1, 0);
             });
+
+            #region Swagger
+
+            // Inject an implementation of ISwaggerProvider with defaulted settings applied.
+            services.AddSwaggerGen();
+
+            services.ConfigureSwaggerGen(options =>
+            {
+                options.SingleApiVersion(new Info
+                {
+                    Version = "v1",
+                    Title = "HIS API Gateway",
+                    Description = "Api Gateways to interact with Apis of the Home Information System",
+                });
+
+                //Determine base path for the application.
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+
+                //Set the comments path for the swagger json and ui.
+                var xmlPath = Path.Combine(basePath, "HIS.WebApi.Gateway.xml");
+                options.IncludeXmlComments(xmlPath);
+            });
+
+
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,11 +97,16 @@ namespace HIS.WebApi.Gateway
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = authServerInfo.Value.AuthServerLocation,
-                RequireHttpsMetadata = authServerInfo.Value.UseHTTPS,
+                RequireHttpsMetadata = authServerInfo.Value.UseHttps,
                 ApiName = authServerInfo.Value.ApiName
             });
 
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
+            // Enable middleware to serve generated Swagger as a JSON endpoint
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui assets (HTML, JS, CSS etc.)
+            app.UseSwaggerUi();
+
         }
 
         #endregion

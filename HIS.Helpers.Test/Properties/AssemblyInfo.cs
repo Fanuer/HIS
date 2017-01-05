@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HIS.Recipes.Services")]
+[assembly: AssemblyProduct("HIS.Helpers.Test")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -15,7 +15,5 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-// The following int is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("794aca04-bb1f-4e58-98b5-bfa468e1ad5a")]
-
-[assembly: InternalsVisibleTo("HIS.Recipes.Services.Tests")]
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("22c07dec-74b8-44a3-8997-c23bcbf33019")]

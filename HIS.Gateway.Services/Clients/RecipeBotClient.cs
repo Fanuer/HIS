@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using HIS.Gateway.Services.Interfaces;
 using HIS.Helpers.Options;
 using HIS.Recipes.Models.Enums;
 using HIS.Recipes.Models.ViewModels;
-using HIS.WebApi.Gateway.Interfaces;
-using HIS.WebApi.Gateway.Clients;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace HIS.WebApi.Gateway.Clients
+namespace HIS.Gateway.Services.Clients
 {
-    public class RecipeBotClient:S2SClientBase, IRecipeBotClient
+    internal class RecipeBotClient:S2SClientBase, IRecipeBotClient
     {
 
         #region CONST
@@ -46,7 +42,7 @@ namespace HIS.WebApi.Gateway.Clients
             return await this.GetAsync<IEnumerable<RecipeIngrediantViewModel>>($"Recipes/{recipeId}/Ingrediants");
         }
 
-        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep)
+        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId = -1, StepDirection direction = StepDirection.ThisStep)
         {
             return await this.GetAsync<StepViewModel>($"Recipes/{recipeId}/Steps/{stepId}" + (direction != StepDirection.ThisStep ? $"?direction={direction}" : ""));
         }

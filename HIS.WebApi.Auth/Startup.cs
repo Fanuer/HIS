@@ -97,14 +97,14 @@ namespace HIS.WebApi.Auth
         /// <param name="identityConfig">Configuration of initial auth entities</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityConfig identityConfig)
         {
-            InitializeDatabase(app, identityConfig);
-            InitialiseUsers(app);
-
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
             {
+                //InitializeDatabase(app, identityConfig);
+                //InitialiseUsers(app);
+
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseBrowserLink();
@@ -168,10 +168,10 @@ namespace HIS.WebApi.Auth
                                     throw new ArgumentException(identityError.Description);
                                 }
                             }
-                             var roleStore = new RoleStore<IdentityRole>(context);
+                            /* var roleStore = new RoleStore<IdentityRole>(context);
                             roles = roleStore.Roles.Select(x => x.Name).ToArray();
                             var addRoleTask = usermanager.AddToRolesAsync(user, roles);
-                            addRoleTask.Wait();
+                            addRoleTask.Wait();*/
                         }
                     }
                 }

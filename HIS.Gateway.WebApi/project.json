@@ -22,7 +22,8 @@
     "HIS.Recipes.Models": "1.0.0-*",
     "HIS.Helpers": "1.0.0-*",
     "Swashbuckle": "6.0.0-beta902",
-    "Microsoft.AspNetCore.Diagnostics": "1.1.0"
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
+    "HIS.Gateway.Services": "1.0.0-*"
   },
 
   "tools": {
@@ -40,7 +41,8 @@
 
   "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "xmlDoc": true
   },
 
   "runtimeOptions": {

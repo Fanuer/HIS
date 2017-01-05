@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HIS.Recipes.Models.Enums;
+using HIS.Recipes.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using HIS.Recipes.Models.ViewModels;
-using HIS.Recipes.Models.Enums;
 
-namespace HIS.WebApi.Gateway.Interfaces
+namespace HIS.Gateway.Services.Interfaces
 {
-    public interface IRecipeClient
+    public interface IRecipeClient : IS2SClient
     {
         #region Images
         /// <summary>

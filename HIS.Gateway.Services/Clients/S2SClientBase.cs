@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -13,11 +11,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
 
-namespace HIS.WebApi.Gateway.Clients
+namespace HIS.Gateway.Services.Clients
 {
-    public abstract class S2SClientBase:HttpClient
+    internal abstract class S2SClientBase:HttpClient
     {
         #region CONST
 
@@ -46,10 +43,10 @@ namespace HIS.WebApi.Gateway.Clients
             if (logger == null){ throw new ArgumentNullException(nameof(logger)); }
 
             if (clientOptions?.Value?.GatewayClients == null) { throw new ArgumentNullException(nameof(clientOptions.Value.GatewayClients), "GatewayClients must be definied"); }
-            if (clientOptions.Value.GatewayClients.ContainsKey(apiName)) { throw new ArgumentNullException(nameof(clientOptions.Value.GatewayClients), $"GatewayClient '{apiName}' is not defined"); }
+            if (!clientOptions.Value.GatewayClients.ContainsKey(apiName)) { throw new ArgumentNullException(nameof(clientOptions.Value.GatewayClients), $"GatewayClient '{apiName}' is not defined"); }
 
             this.BaseAddress = new Uri(clientOptions.Value.GatewayClients[apiName]);
-
+            this.ApiName = apiName;
             _authOptions = authOptions.Value;
             _clientOptions = clientOptions.Value;
             this.Logger = logger;
@@ -65,7 +62,7 @@ namespace HIS.WebApi.Gateway.Clients
         /// </summary>
         /// <param name="context">current HTTPContext </param>
         /// <returns></returns>
-        protected async Task SetBearerTokenAsync(HttpContext context)
+        public async Task SetBearerTokenAsync(HttpContext context)
         {
             string bearerToken;
             context.Request.Cookies.TryGetValue(AUTH_COOKIE_NAME, out bearerToken);
@@ -74,7 +71,7 @@ namespace HIS.WebApi.Gateway.Clients
             {
                 var disco = await DiscoveryClient.GetAsync(this._authOptions.AuthServerLocation);
                 var tokenClient = new TokenClient(disco.TokenEndpoint, this._clientOptions.ClientId, this._clientOptions.ClientSecret);
-                var tokenResponse = await tokenClient.RequestClientCredentialsAsync(this._authOptions.ApiName);
+                var tokenResponse = await tokenClient.RequestClientCredentialsAsync(this.ApiName);
 
                 if (tokenResponse.IsError)
                 {
@@ -308,7 +305,8 @@ namespace HIS.WebApi.Gateway.Clients
         #endregion
 
         #region PROPERTIES
-        public ILogger Logger { get; private set; }
+        public ILogger Logger { get; }
+        public string ApiName { get; }
         #endregion
 
     }

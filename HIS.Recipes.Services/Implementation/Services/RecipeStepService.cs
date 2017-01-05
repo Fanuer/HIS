@@ -18,7 +18,7 @@ namespace HIS.Recipes.Services.Implementation.Services
     /// <summary>
     /// Grants acces to recipe steps
     /// </summary>
-    internal class RecipeStepService : IRecipeStepService, IDisposable
+    internal class RecipeStepService : IRecipeStepService
     {
         #region CONST
 
@@ -103,10 +103,12 @@ namespace HIS.Recipes.Services.Implementation.Services
         {
             StepViewModel result = null;
             var steps = await this.GetStepsForRecipe(recipeId).ToListAsync();
-            var step = steps.SingleOrDefault(x => x.Id.Equals(stepId));
+
+            var step = stepId == -1 ? steps.FirstOrDefault() : steps.SingleOrDefault(x => x.Id.Equals(stepId));
             if (step == null)
             {
-                throw new DataObjectNotFoundException($"No step with the id {stepId} was found");
+                var message = stepId == -1 ? $"Recipe {recipeId} does not define any steps" : $"No step with the id {stepId} was found";
+                throw new DataObjectNotFoundException(message);
             }
             var stepIndex = steps.IndexOf(step);
             switch (direction)

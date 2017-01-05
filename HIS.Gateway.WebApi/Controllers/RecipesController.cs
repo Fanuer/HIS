@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using HIS.Gateway.Services.Interfaces;
 using HIS.Recipes.Models.Enums;
 using HIS.Recipes.Models.ViewModels;
-using HIS.WebApi.Gateway.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace HIS.WebApi.Gateway.Controllers
+namespace HIS.Gateway.WebApi.Controllers
 {
+    [Authorize]
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class RecipesController : Controller
     {
@@ -37,6 +38,7 @@ namespace HIS.WebApi.Gateway.Controllers
         [HttpGet]
         public async Task<IEnumerable<ShortRecipeViewModel>> GetRecipesAsync()
         {
+            await Client.SetBearerTokenAsync(this.HttpContext);
             return await this.Client.GetRecipes();
         }
 
@@ -49,6 +51,7 @@ namespace HIS.WebApi.Gateway.Controllers
         [HttpGet("{recipeId:int}/Ingrediants")]
         public async Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId)
         {
+            await Client.SetBearerTokenAsync(this.HttpContext);
             return await this.Client.GetRecipeIngrediantsAsync(recipeId);
         }
 
@@ -63,6 +66,7 @@ namespace HIS.WebApi.Gateway.Controllers
         [HttpGet("{recipeId:int}/Steps/{stepId:int}")]
         public async Task<StepViewModel> GetStepByIdAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep)
         {
+            await Client.SetBearerTokenAsync(this.HttpContext);
             return await this.Client.GetStepAsync(recipeId, stepId, direction);
         }
 

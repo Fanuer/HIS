@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace HIS.Recipes.Services.Tests.Helper
+namespace HIS.Helpers.Test
 {
     public class MockLogger<T>:ILogger<T>
     {

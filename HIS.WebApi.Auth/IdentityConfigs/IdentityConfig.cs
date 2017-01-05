@@ -41,8 +41,8 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     UserClaims = {JwtClaimTypes.Name, JwtClaimTypes.Email},
                     // secret for using introspection endpoint
                     ApiSecrets = new List<Secret>() {new Secret(_options.ApiResources.First(x=>x.Name.Equals("recipe-api")).Secret.Sha256()) },
-                    // this API defines two scopes
-                    Scopes = new List<Scope>() {new Scope("recipeUser", "A regular User"), new Scope("recipeAdmin", "An administrative User") }
+                    // this API allows only following scopes
+                    //Scopes = new List<Scope>() {new Scope("recipeUser", "A regular User"), new Scope("recipeAdmin", "An administrative User") }
                 }, 
                 // no secret needed: all clients, known to the Auth Service call access the gateway
                 new ApiResource("gateway-resource", "Api Gateway Resource")

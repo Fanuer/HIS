@@ -10,11 +10,18 @@ namespace HIS.Helpers.Options
     /// </summary>
     public class AuthServerInfoOptions
     {
+        /// <summary>
+        /// Base url of the Authentification Server
+        /// </summary>
         public string AuthServerLocation { get; set; }
 
-        public bool UseHTTPS { get; set; }
         /// <summary>
-        /// 
+        /// Shall HTTPS be used to communicate with the Auth Server
+        /// </summary>
+        public bool UseHttps { get; set; }
+
+        /// <summary>
+        /// Name of the Api of this service
         /// </summary>
         public string ApiName { get; set; }
     }
