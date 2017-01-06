@@ -10,7 +10,7 @@ namespace HIS.Recipes.Models.ViewModels
     public class RecipeIngrediantViewModel:NamedViewModel
     {
         [Range(0, int.MaxValue)]
-        public int Amount { get; set; }
+        public double? Amount { get; set; }
         public CookingUnit Unit { get; set; }
     }
 }

@@ -48,7 +48,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <param name="recipeId">Id of a recipe</param>
         /// <returns></returns>
         /// <response code="200">Images of a recipe</response>
-        /// <response code="404">If recipe with the given id is not found</response>
+        /// <response code="404">If recipe with the given imageId is not found</response>
         [HttpGet("Recipes/{recipeId:int}/Images")]
         [ProducesResponseType(typeof(IEnumerable<RecipeImageViewModel>), (int)HttpStatusCode.OK)]
         public IActionResult GetRecipeImages(int recipeId)
@@ -63,7 +63,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <param name="imageId">Id of an image</param>
         /// <returns></returns>
         /// <response code="200">Returns one recipe image</response>
-        /// <response code="404">If recipe with the given id is not found</response>
+        /// <response code="404">If recipe with the given imageId is not found</response>
         [HttpGet("Recipes/{recipeId:int}/Images/{imageId:int}", Name = "GetImageById")]
         [ProducesResponseType(typeof(RecipeImageViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetRecipeImage(int recipeId, int imageId)
@@ -71,7 +71,7 @@ namespace HIS.Recipes.WebApi.Controllers
             var result = await _service.GetImage(imageId);
             if (!result.RecipeId.Equals(recipeId))
             {
-                ModelState.AddModelError("recipeId", "The recipe does not contain an image with the given image id");
+                ModelState.AddModelError("recipeId", "The recipe does not contain an image with the given image imageId");
             }
             return Ok(result);
         }
@@ -83,7 +83,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <param name="imageData">data of a new image</param>
         /// <returns></returns>
         /// <response code="201">Returns one recipe image</response>
-        /// <response code="404">If recipe with the given id is not found</response>
+        /// <response code="404">If recipe with the given imageId is not found</response>
         [HttpPost("Recipes/{recipeId:int}/Images")]
         [ProducesResponseType(typeof(RecipeImageViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateImageAsync(int recipeId, [FromBody]IFormFile imageData)
@@ -96,17 +96,17 @@ namespace HIS.Recipes.WebApi.Controllers
         /// Updates an existing Image
         /// </summary>
         /// <param name="recipeId">Id of the owning recipe</param>
-        /// <param name="id">Image id</param>
+        /// <param name="imageId">Image imageId</param>
         /// <param name="imageData">Data of an image</param>
         /// <returns></returns>
         /// <response code="204">Ater update was successfully</response>
-        /// <response code="404">If recipe or image with the given id is not found</response>
+        /// <response code="404">If recipe or image with the given imageId is not found</response>
         /// <response code="400">If given data were invalid</response>
-        [HttpPut("Recipes/{recipeId:int}/Images/{id:int}")]
+        [HttpPut("Recipes/{recipeId:int}/Images/{imageId:int}")]
         [ProducesResponseType(typeof(RecipeImageViewModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UpdateImageAsync(int recipeId, int id, [FromBody]IFormFile imageData)
+        public async Task<IActionResult> UpdateImageAsync(int recipeId, int imageId, [FromBody]IFormFile imageData)
         {
-            await _service.UpdateAsync(recipeId, id, imageData);
+            await _service.UpdateAsync(recipeId, imageId, imageData);
             return NoContent();
         }
 
@@ -114,17 +114,17 @@ namespace HIS.Recipes.WebApi.Controllers
         /// Removes an existing image
         /// </summary>
         /// <param name="recipeId">Id of the owning recipe</param>
-        /// <param name="id">Id of the image to remove</param>
+        /// <param name="imageId">Id of the image to remove</param>
         /// <returns></returns>
         [HttpDelete("Recipes/{recipeId:int}/Images/{imageId:int}")]
-        public async Task<IActionResult> DeleteImageAsync(int recipeId, int id)
+        public async Task<IActionResult> DeleteImageAsync(int recipeId, int imageId)
         {
-            if (await this._service.GetImages(recipeId).AllAsync(x => !x.Id.Equals(id)))
+            if (await this._service.GetImages(recipeId).AllAsync(x => !x.Id.Equals(imageId)))
             {
-                return NotFound($"No step with the id {id} found for recipe {recipeId}");
+                return NotFound($"No step with the imageId {imageId} found for recipe {recipeId}");
             }
 
-            await _service.RemoveAsync(id);
+            await _service.RemoveAsync(imageId);
             return NoContent();
         }
 

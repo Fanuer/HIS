@@ -73,7 +73,6 @@ namespace HIS.Recipes.Services.DB
 
             modelBuilder.Entity<RecipeTag>().HasIndex(x => x.Name).IsUnique();
             modelBuilder.Entity<Ingrediant>().HasIndex(x => x.Name).IsUnique();
-            modelBuilder.Entity<RecipeSourceRecipe>().HasIndex(x => new { x.RecipeId, x.SourceId, x.Page }).IsUnique();
             modelBuilder.Entity<RecipeStep>().HasIndex(x => new { x.RecipeId, x.Order }).IsUnique();
 
             base.OnModelCreating(modelBuilder);
@@ -97,6 +96,7 @@ namespace HIS.Recipes.Services.DB
         internal DbSet<RecipeBaseSource> RecipeBaseSources { get; set; }
         internal DbSet<RecipeCookbookSource> RecipeCookbookSources { get; set; }
         internal DbSet<RecipeUrlSource> RecipeUrlSources { get; set; }
+        internal DbSet<RecipeNoSource> RecipeNoSources { get; set; }
         internal DbSet<RecipeImage> RecipeImages { get; set; }
         internal DbSet<RecipeIngrediant> RecipeIngrediants { get; set; }
         internal DbSet<RecipeRecipeTag> RecipeRecipeTags { get; set; }

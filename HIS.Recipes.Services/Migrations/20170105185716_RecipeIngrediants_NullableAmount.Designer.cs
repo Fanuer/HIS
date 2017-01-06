@@ -9,9 +9,10 @@ using HIS.Recipes.Models.Enums;
 namespace HIS.Recipes.Services.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    partial class RecipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170105185716_RecipeIngrediants_NullableAmount")]
+    partial class RecipeIngrediants_NullableAmount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
@@ -103,7 +104,8 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("IngrediantId");
 
-                    b.Property<double?>("Amount");
+                    b.Property<int?>("Amount")
+                        .IsRequired();
 
                     b.Property<int>("CookingUnit");
 
@@ -141,6 +143,9 @@ namespace HIS.Recipes.Services.Migrations
                         .IsUnique();
 
                     b.HasIndex("SourceId");
+
+                    b.HasIndex("RecipeId", "SourceId", "Page")
+                        .IsUnique();
 
                     b.ToTable("RecipeSourceRecipes");
                 });
@@ -193,16 +198,6 @@ namespace HIS.Recipes.Services.Migrations
                     b.ToTable("RecipeCookbookSource");
 
                     b.HasDiscriminator().HasValue("RecipeCookbookSource");
-                });
-
-            modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeNoSource", b =>
-                {
-                    b.HasBaseType("HIS.Recipes.Services.Models.RecipeBaseSource");
-
-
-                    b.ToTable("RecipeNoSource");
-
-                    b.HasDiscriminator().HasValue("RecipeNoSource");
                 });
 
             modelBuilder.Entity("HIS.Recipes.Services.Models.RecipeUrlSource", b =>

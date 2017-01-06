@@ -247,3 +247,4 @@ node_modules
 **/*.keys.json
 TemporaryDbContextFactory.cs
 /HIS.Recipes.Console
+/HIS.Bot.WebApi2

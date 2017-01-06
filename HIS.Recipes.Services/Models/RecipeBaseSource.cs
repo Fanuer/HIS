@@ -38,6 +38,10 @@ namespace HIS.Recipes.Services.Models
             {
                 result = SourceType.WebSource;
             }
+            else if (this is RecipeNoSource)
+            {
+                result = SourceType.NoSource;
+            }
             else
             {
                 throw new ArgumentException($"Source Type must inherit from Type '{nameof(RecipeBaseSource)}'");

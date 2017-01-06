@@ -25,6 +25,16 @@ namespace HIS.Recipes.Services.Models
             this.Tags = new HashSet<RecipeRecipeTag>();
             this.Source = new RecipeSourceRecipe();
         }
+
+        public Recipe(string name, int numberOfServings, int? calories=null, string creator = "Stefan")
+            :this()
+        {
+            Name = name;
+            NumberOfServings = numberOfServings;
+            Calories = calories;
+            Creator = creator;
+        }
+
         #endregion
 
         #region METHODS
@@ -40,7 +50,7 @@ namespace HIS.Recipes.Services.Models
         public string Name { get; set; }
         [Required]
         public int NumberOfServings { get; set; }
-        public int Calories { get; set; }
+        public int? Calories { get; set; }
         [Required]
         public string Creator { get; set; }
         public int CookedCounter { get; set; }

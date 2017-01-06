@@ -7,6 +7,7 @@ namespace HIS.Recipes.Models.Enums
 {
     public enum SourceType
     {
+        NoSource,
         Cookbook,
         WebSource
     }

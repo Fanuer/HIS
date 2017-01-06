@@ -9,9 +9,10 @@ using HIS.Recipes.Models.Enums;
 namespace HIS.Recipes.Services.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    partial class RecipeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170105195622_AmountNullableDouble")]
+    partial class AmountNullableDouble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
@@ -103,7 +104,8 @@ namespace HIS.Recipes.Services.Migrations
 
                     b.Property<int>("IngrediantId");
 
-                    b.Property<double?>("Amount");
+                    b.Property<double?>("Amount")
+                        .IsRequired();
 
                     b.Property<int>("CookingUnit");
 

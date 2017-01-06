@@ -2,6 +2,7 @@
 {
     public enum CookingUnit
     {
+        None,
         /// <summary>
         /// t or tsp. -> Teeloeffel
         /// </summary>

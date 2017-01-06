@@ -149,8 +149,8 @@ namespace HIS.Recipes.Services.Implementation.Services
             if (recipeId.Equals(0)) { throw new ArgumentNullException(nameof(recipeId)); }
 
             imageFilename = imageFilename
-                                .Replace(" ", "_")
-                                .Replace("/", "_")
+                                .Replace(" ", "-")
+                                .Replace("/", "-")
                                 .Replace("ä", "ae")
                                 .Replace("ö", "oe")
                                 .Replace("ü", "ue")

@@ -17,6 +17,7 @@ namespace HIS.Recipes.WebApi
 {
     public class Startup
     {
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -93,7 +94,7 @@ namespace HIS.Recipes.WebApi
             {
                 Authority = authServerInfo.Value.AuthServerLocation,
                 ScopeName = authServerInfo.Value.ApiName,
-                RequireHttpsMetadata = authServerInfo.Value.UseHttps
+                RequireHttpsMetadata = authServerInfo.Value.UseHttps && !env.IsDevelopment() // https only in production
             });
 
             app.UseMvcWithDefaultRoute();

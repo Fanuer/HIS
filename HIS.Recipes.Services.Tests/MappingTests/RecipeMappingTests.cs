@@ -316,7 +316,7 @@ namespace HIS.Recipes.Services.Tests.MappingTests
                     Id = 1,
                     Name = "Old Recipe",
                     Url = "http://www.webservice.de/recipes/1",
-                    Calories = Recipe.Calories,
+                    Calories = Recipe.Calories.GetValueOrDefault(),
                     NumberOfServings = Recipe.NumberOfServings
                 };
                 CreationModel = new RecipeCreationViewModel()

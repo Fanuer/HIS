@@ -17,7 +17,7 @@ namespace HIS.Recipes.Models.ViewModels
         /// </summary>
         [Required]
         [Range(0, int.MaxValue)]
-        public int Amount { get; set; }
+        public double? Amount { get; set; }
         /// <summary>
         /// Cooking unit of the ingrediant
         /// </summary>
