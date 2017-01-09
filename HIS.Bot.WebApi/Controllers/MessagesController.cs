@@ -51,37 +51,36 @@ namespace HIS.Bot.WebApi.Controllers
                 var reply = activity.CreateReply($"You sent {length} characters");
                 var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                 var peng = await connector.Conversations.ReplyToActivityWithHttpMessagesAsync(activity.Conversation.Id, activity.Id, reply, cancellationToken: token);
-                return Ok();
+                
             }
             else
             {
-                return HandleSystemMessage(activity);
+                HandleSystemMessage(activity);
             }
+            return Ok();
         }
 
         private IActionResult HandleSystemMessage(Activity activity)
         {
             switch (activity.GetActivityType())
             {
-                case "Ping":
+                case ActivityTypes.Ping:                    // An activity sent to test the security of a bot.
                     var reply = activity.CreateReply();
-                    reply.Type = "Ping";
+                    reply.Type = ActivityTypes.Ping;
 
                     return Ok();
                     break;
-                case "DeleteUserData":
-                    // Implement user deletion here
-                    // If we handle user deletion, return a real message
+                case ActivityTypes.ContactRelationUpdate:   // The bot was added to or removed from a user's contact list
                     break;
-                case "BotAddedToConversation":
+                case ActivityTypes.ConversationUpdate:      // This notification is sent when the conversation's properties change, for example the topic name, or when user joins or leaves the group
                     break;
-                case "BotRemovedFromConversation":
+                case ActivityTypes.DeleteUserData:          // A user has requested for the bot to delete any profile / user data
                     break;
-                case "UserAddedToConversation":
+                case ActivityTypes.EndOfConversation:       // End a conversation
                     break;
-                case "UserRemovedFromConversation":
+                case ActivityTypes.Trigger:                 // External system has triggered
                     break;
-                case "EndOfConversation":
+                case ActivityTypes.Typing:                  // The user or bot on the other end of the conversation is typing
                     break;
             }
 
