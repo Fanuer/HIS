@@ -60,9 +60,15 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <returns></returns>
         /// <response code="200">Returns a list of all available recipes</response>
         [HttpGet]
-        public async Task<IQueryable<ShortRecipeViewModel>> GetRecipesAsync()
+        public async Task<IQueryable<ShortRecipeViewModel>> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page=0, [FromQuery]int entriesPerPage=10)
         {
-            var result = _service.GetRecipes();
+            var page1Based = page + 1;
+
+            var result = _service
+                            .GetRecipes(searchModel)
+                            .Skip(page1Based * entriesPerPage)
+                            .Take(entriesPerPage);
+            
             await result.ForEachAsync(x => x.Url = this.Url.RouteUrl("GetRecipeById", new {id = x.Id}));
             return result;
         }

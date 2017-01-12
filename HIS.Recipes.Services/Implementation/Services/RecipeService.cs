@@ -31,17 +31,23 @@ namespace HIS.Recipes.Services.Implementation.Services
         #endregion
 
         #region METHODS
-        public IQueryable<ShortRecipeViewModel> GetRecipes()
+        public IQueryable<ShortRecipeViewModel> GetRecipes(RecipeSearchViewModel searchModel = null)
         {
             IQueryable<ShortRecipeViewModel> result = null;
             try
             {
-                result = this.Repository
-                                .GetAll()
-                                .Include(x=>x.Images)
-                                .Include(x=>x.Tags)
-                                    .ThenInclude(x=>x.RecipeTag)
-                                .ProjectTo<ShortRecipeViewModel>(this.Mapper.ConfigurationProvider);
+                var recipes = this.Repository
+                                    .GetAll()
+                                    .Include(x => x.Images)
+                                    .Include(x => x.Tags)
+                                        .ThenInclude(x => x.RecipeTag);
+
+                this.SearchForRecipes(recipes, searchModel);
+
+                result = recipes
+                            .OrderByDescending(x=>x.CookedCounter)
+                                .ThenByDescending(x=>x.LastTimeCooked)
+                            .ProjectTo<ShortRecipeViewModel>(this.Mapper.ConfigurationProvider);
                 this.Logger.LogDebug(new EventId(), $"Returned all recipes");
             }
             catch (Exception e)
@@ -50,6 +56,23 @@ namespace HIS.Recipes.Services.Implementation.Services
                 throw new Exception($"Error on receiving all recipes");
             }
             return result;
+        }
+
+        private IQueryable<Recipe> SearchForRecipes(IQueryable<Recipe> recipes, RecipeSearchViewModel searchModel)
+        {
+            if (recipes == null) { throw new ArgumentNullException(nameof(recipes)); }
+
+            if (searchModel == null) { return recipes; }
+
+            if (!String.IsNullOrWhiteSpace(searchModel.Name))
+            {
+                recipes = recipes.Where(x => x != null && x.Name != null && x.Name.ToLower().Contains(searchModel.Name.ToLower()));
+            }
+            if (searchModel.Tags != null && searchModel.Tags.Any())
+            {
+                recipes = recipes.Where(x=>x.Tags.Any(rtag=>rtag.RecipeTag.Name))
+            }
+            return recipes;
         }
 
         public async Task<FullRecipeViewModel> GetRecipeAsync(int recipeId)

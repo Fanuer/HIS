@@ -12,7 +12,7 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// Retunrs a collection of recipes
         /// </summary>
         /// <returns></returns>
-        IQueryable<ShortRecipeViewModel> GetRecipes();
+        IQueryable<ShortRecipeViewModel> GetRecipes(RecipeSearchViewModel searchModel = null);
         /// <summary>
         /// Returns all data of a recipe
         /// </summary>
