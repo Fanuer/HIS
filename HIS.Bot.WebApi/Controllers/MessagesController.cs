@@ -71,23 +71,20 @@ namespace HIS.Bot.WebApi.Controllers
             switch (incoming.GetActivityType())
             {
                 case ActivityTypes.Ping:                    // An incoming sent to test the security of a bot.
-                    /*var reply = incoming.CreateReply();
+                    var reply = incoming.CreateReply();
                     reply.Type = ActivityTypes.Ping;
-                    var connector = new ConnectorClient(new Uri(incoming.ServiceUrl));
-                    var replyMessage = incoming.CreateReply("Yo, I heard you.", "en");
-                    await SendReplyMessage(incoming, reply, token);*/
+                    await SendReplyMessage(incoming, reply, token);
                     break;
                 case ActivityTypes.ContactRelationUpdate:   // The bot was added to or removed from a user's contact list
                     if (incoming.AsContactRelationUpdateActivity().Action.Equals("add"))
                     {
-                        await SendReplyMessage("Willkommen", incoming, token);
+                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
                     }
-                    await SendReplyMessage("Willkommen", incoming, token);
                     break;
                 case ActivityTypes.ConversationUpdate:      // This notification is sent when the conversation's properties change, for example the topic name, or when user joins or leaves the group
                     if (incoming.AsConversationUpdateActivity().MembersAdded.Any())
                     {
-                        await SendReplyMessage("Willkommen", incoming, token);
+                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
                     }
                     break;
                 case ActivityTypes.DeleteUserData:          // A user has requested for the bot to delete any profile / user data
