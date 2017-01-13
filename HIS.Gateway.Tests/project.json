@@ -16,7 +16,7 @@
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
     "HIS.Helpers": "1.0.0-*",
-    "IdentityModel": "2.0.0",
+    "IdentityModel": "2.1.1",
     "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
     "HIS.Gateway.Services": "1.0.0-*",
     "HIS.Helpers.Test": "1.0.0-*"

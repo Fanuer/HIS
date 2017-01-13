@@ -70,7 +70,7 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
             if (searchModel.Tags != null && searchModel.Tags.Any())
             {
-                recipes = recipes.Where(x=>x.Tags.Any(rtag=>rtag.RecipeTag.Name))
+                recipes = recipes.Where(x => x.Tags.Any(rtag => searchModel.Tags.Contains(rtag.RecipeTag.Name)));
             }
             return recipes;
         }

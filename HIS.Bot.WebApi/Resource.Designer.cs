@@ -10,35 +10,36 @@
 
 namespace HIS.Bot.WebApi {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
-    ///    Eine stark typisierte Ressourcenklasse zum Suchen nach lokalisierten Zeichenfolgen usw.
+    ///   Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
     /// </summary>
-    // Diese Klasse wurde von der StronglyTypedResourceBuilder-Klasse
-    // mithilfe eines Tools wie ResGen oder Visual Studio automatisch generiert.
-    // Bearbeiten Sie zum Hinzufügen oder Entfernen eines Members die .ResX-Datei, und führen Sie dann ResGen
-    // mit der Option "/str" erneut aus, oder erstellen Sie das VS-Projekt neu.
+    // Diese Klasse wurde von der StronglyTypedResourceBuilder automatisch generiert
+    // -Klasse über ein Tool wie ResGen oder Visual Studio automatisch generiert.
+    // Um einen Member hinzuzufügen oder zu entfernen, bearbeiten Sie die .ResX-Datei und führen dann ResGen
+    // mit der /str-Option erneut aus, oder Sie erstellen Ihr VS-Projekt neu.
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resource {
+    internal class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resource() {
         }
         
         /// <summary>
-        ///    Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+        ///   Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HIS.Bot.WebApi.Resource", typeof(Resource).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HIS.Bot.WebApi.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -46,11 +47,11 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///    Überschreibt die Eigenschaft 'CurrentUICulture' des aktuellen Threads für alle
-        ///    Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+        ///   Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+        ///   Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -60,9 +61,18 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///    Sucht nach einer lokalisierten Zeichenfolge, die 'Welcome. I am a Recipe Bot. You can ask me for cool recipes. When you choose one, I will guide you though your cooking.' ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die I&apos;m sorry. I didn&apos;t understand you. ähnelt.
         /// </summary>
-        public static string Message_Welcome {
+        internal static string Message_DontUnderstand {
+            get {
+                return ResourceManager.GetString("Message_DontUnderstand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Welcome. I am a Recipe Bot. You can ask me for cool recipes. When you choose one, I will guide you though your cooking. ähnelt.
+        /// </summary>
+        internal static string Message_Welcome {
             get {
                 return ResourceManager.GetString("Message_Welcome", resourceCulture);
             }

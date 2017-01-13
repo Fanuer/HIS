@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http;
 using System.Web.Http.Description;
-using Autofac;
-using Autofac.Core.Lifetime;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using HIS.Bot.WebApi.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
-using Microsoft.Rest;
 
 namespace HIS.Bot.WebApi.Controllers
 {
-    //[BotAuthentication]
-    [Route("api/[controller]")]
-    public class MessagesController : Controller
+    [BotAuthentication]
+    //[Route("api/[controller]")]
+    public class MessagesController : ApiController
     {
+
         #region CONST
         #endregion
 
@@ -27,35 +23,47 @@ namespace HIS.Bot.WebApi.Controllers
         #endregion
 
         #region CTOR
+
+        public MessagesController()
+        {
+        }
         #endregion
 
         #region METHODS  
 
+        [HttpGet]
+        public IHttpActionResult Test()
+        {
+            return this.Ok();
+        }
         /// <summary>
         /// Receive a message from a user and reply to it
         /// </summary>
-
         [ResponseType(typeof(void))]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Activity activity, CancellationToken token)
+        public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
-            if (activity == null) { throw new ArgumentNullException(nameof(activity));}
-
-            var type = activity.GetActivityType();
-
-            if (type.Equals(ActivityTypes.Message))
+            try
             {
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
+                if (activity == null) { throw new ArgumentNullException(nameof(activity)); }
 
-                // return our reply to the user
-                await SendReplyMessage($"You sent {length} characters", activity, token);
+                var type = activity.GetActivityType();
+
+                if (type.Equals(ActivityTypes.Message))
+                {
+                    await Conversation.SendAsync(activity, () => new RecipeDialog(), new CancellationToken());
+                }
+                else
+                {
+                    await HandleSystemMessage(activity, new CancellationToken());
+                }
             }
-            else
+            catch (Exception e)
             {
-                await HandleSystemMessage(activity, token);
+                Console.WriteLine(e);
+                this.ModelState.AddModelError("", e.Message);
             }
-            return Ok();
+            return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
 
         private async Task HandleSystemMessage(Activity incoming, CancellationToken token)
@@ -63,22 +71,23 @@ namespace HIS.Bot.WebApi.Controllers
             switch (incoming.GetActivityType())
             {
                 case ActivityTypes.Ping:                    // An incoming sent to test the security of a bot.
-                    var reply = incoming.CreateReply();
+                    /*var reply = incoming.CreateReply();
                     reply.Type = ActivityTypes.Ping;
-                    await SendReplyMessage(incoming, reply, token);
+                    var connector = new ConnectorClient(new Uri(incoming.ServiceUrl));
+                    var replyMessage = incoming.CreateReply("Yo, I heard you.", "en");
+                    await SendReplyMessage(incoming, reply, token);*/
                     break;
                 case ActivityTypes.ContactRelationUpdate:   // The bot was added to or removed from a user's contact list
                     if (incoming.AsContactRelationUpdateActivity().Action.Equals("add"))
                     {
-                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
+                        await SendReplyMessage("Willkommen", incoming, token);
                     }
-
-                    await SendReplyMessage(Resource.Message_Welcome, incoming, token);
+                    await SendReplyMessage("Willkommen", incoming, token);
                     break;
                 case ActivityTypes.ConversationUpdate:      // This notification is sent when the conversation's properties change, for example the topic name, or when user joins or leaves the group
                     if (incoming.AsConversationUpdateActivity().MembersAdded.Any())
                     {
-                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
+                        await SendReplyMessage("Willkommen", incoming, token);
                     }
                     break;
                 case ActivityTypes.DeleteUserData:          // A user has requested for the bot to delete any profile / user data
@@ -102,7 +111,7 @@ namespace HIS.Bot.WebApi.Controllers
         {
             using (var connector = new ConnectorClient(new Uri(incomingAct.ServiceUrl)))
             {
-                await connector.Conversations.ReplyToActivityWithHttpMessagesAsync(incomingAct.Conversation.Id, incomingAct.Id, outgoingAct, cancellationToken: token);
+                await connector.Conversations.ReplyToActivityAsync(outgoingAct, token);
             }
         }
 

@@ -248,3 +248,4 @@ node_modules
 TemporaryDbContextFactory.cs
 /HIS.Recipes.Console
 /HIS.Bot.WebApi2
+/HIS.Bot.WebApi/Web.Keys.config
