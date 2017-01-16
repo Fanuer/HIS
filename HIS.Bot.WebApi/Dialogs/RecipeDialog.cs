@@ -37,7 +37,7 @@ namespace HIS.Bot.WebApi.Dialogs
         [LuisIntent("")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Verstehe ich nicht");
+            await context.PostAsync(Resource.Message_DontUnderstand);
             context.Wait(MessageReceived);
         }
 
@@ -79,15 +79,34 @@ namespace HIS.Bot.WebApi.Dialogs
             context.Wait(MessageReceived);
         }
 
-        [LuisIntent("GetRecipeStep")]
-        public async Task GetRecipeStep(IDialogContext context, LuisResult result)
+        [LuisIntent("GetNextRecipeStep")]
+        public async Task GetNextRecipeStep(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Verstehe ich nicht");
+            await context.PostAsync(Resource.Message_DontUnderstand);
             context.Wait(MessageReceived);
         }
 
+        [LuisIntent("GetLastRecipeStep")]
+        public async Task GetLastRecipeStep(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync(Resource.Message_DontUnderstand);
+            context.Wait(MessageReceived);
+        }
 
-        
+        [LuisIntent("GetCurrentRecipeStep")]
+        public async Task GetCurrentRecipeStep(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync(Resource.Message_DontUnderstand);
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("GetIngrediantList")]
+        public async Task GetIngrediantList(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync(Resource.Message_DontUnderstand);
+            context.Wait(MessageReceived);
+        }
+
         #endregion
 
         #region PROPERTIES

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,40 +31,33 @@ namespace HIS.Bot.WebApi.Controllers
         #endregion
 
         #region METHODS  
-
-        [HttpGet]
-        public IHttpActionResult Test()
-        {
-            return this.Ok();
-        }
         /// <summary>
         /// Receive a message from a user and reply to it
         /// </summary>
         [ResponseType(typeof(void))]
         [HttpPost]
-        public async Task<HttpResponseMessage> Post([FromBody] Activity activity)
+        public async Task<IHttpActionResult> Post([FromBody] Activity activity, CancellationToken token)
         {
             try
             {
                 if (activity == null) { throw new ArgumentNullException(nameof(activity)); }
 
-                var type = activity.GetActivityType();
-
-                if (type.Equals(ActivityTypes.Message))
+                if (activity.GetActivityType().Equals(ActivityTypes.Message))
                 {
-                    await Conversation.SendAsync(activity, () => new RecipeDialog(), new CancellationToken());
+                    await Conversation.SendAsync(activity, () => new RecipeDialog(), token);
                 }
                 else
                 {
-                    await HandleSystemMessage(activity, new CancellationToken());
+                    await HandleSystemMessage(activity, token);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 this.ModelState.AddModelError("", e.Message);
+                return BadRequest(this.ModelState);
             }
-            return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
+            return this.StatusCode(HttpStatusCode.Accepted);
         }
 
         private async Task HandleSystemMessage(Activity incoming, CancellationToken token)
@@ -78,13 +72,13 @@ namespace HIS.Bot.WebApi.Controllers
                 case ActivityTypes.ContactRelationUpdate:   // The bot was added to or removed from a user's contact list
                     if (incoming.AsContactRelationUpdateActivity().Action.Equals("add"))
                     {
-                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
+                        await SendReplyMessage($"{Resource.Message_Welcome} {incoming.From.Name}", incoming, token);
                     }
                     break;
                 case ActivityTypes.ConversationUpdate:      // This notification is sent when the conversation's properties change, for example the topic name, or when user joins or leaves the group
                     if (incoming.AsConversationUpdateActivity().MembersAdded.Any())
                     {
-                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
+                        await SendReplyMessage($"{Resource.Message_Welcome} {incoming.From.Name}", incoming, token);
                     }
                     break;
                 case ActivityTypes.DeleteUserData:          // A user has requested for the bot to delete any profile / user data
