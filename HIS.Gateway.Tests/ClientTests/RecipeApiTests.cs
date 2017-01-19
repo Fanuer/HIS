@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HIS.Gateway.Services.Clients;
@@ -35,6 +36,8 @@ namespace HIS.Gateway.Tests.ClientTests
             {
                 var recipe = await client.GetRecipes();
                 Assert.NotNull(recipe);
+                Assert.NotNull(recipe.Entries);
+                Assert.NotEmpty(recipe.Entries);
             }
         }
 
@@ -44,10 +47,9 @@ namespace HIS.Gateway.Tests.ClientTests
             using (var client = await this.CreateInternalClient())
             {
                 var recipes = await client.GetRecipes();
-                var shortRecipeViewModels = recipes as ShortRecipeViewModel[] ?? recipes.ToArray();
-                if (shortRecipeViewModels.Any())
+                if (recipes.Entries.Any())
                 {
-                    var ingrediants = await client.GetRecipeIngrediantsAsync(shortRecipeViewModels.First().Id);
+                    var ingrediants = await client.GetRecipeIngrediantsAsync(recipes.Entries.First().Id);
                     Assert.NotNull(ingrediants);
                     Assert.NotEmpty(ingrediants);
                 }
@@ -60,10 +62,9 @@ namespace HIS.Gateway.Tests.ClientTests
             using (var client = await this.CreateInternalClient())
             {
                 var recipes = await client.GetRecipes();
-                var shortRecipeViewModels = recipes as ShortRecipeViewModel[] ?? recipes.ToArray();
-                if (shortRecipeViewModels.Any())
+                if (recipes.Entries.Any())
                 {
-                    var firstRecipe = shortRecipeViewModels.First();
+                    var firstRecipe = recipes.Entries.First();
                     var step = await client.GetStepAsync(firstRecipe.Id);
                     Assert.NotNull(step);
                 }
@@ -97,7 +98,7 @@ namespace HIS.Gateway.Tests.ClientTests
             var config = GetConfig();
             var info = new GatewayInformation(config);
             
-            var authServerInfos = new AuthServerInfoOptions() {ApiName = info.GatewayApiName, AuthServerLocation = info.AuthServerUrl, UseHttps = false};
+            var authServerInfos = new AuthServerInfoOptions() {ApiName = info.GatewayApiName, AuthServerLocation = info.AuthServerUrl, UseHttps = true};
             var authServerOptions = new OptionsWrapper<AuthServerInfoOptions>(authServerInfos);
 
             var clientInfo = new GatewayClientInfoOptions()

@@ -37,12 +37,19 @@ namespace HIS.Gateway.Services.Clients
         #region PROPERTIES
         #endregion
 
-        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel, int page = 0, int entriesPerPage = 10)
+        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel= null, int page = 0, int entriesPerPage = 10)
         {
             var newUrl = new Uri(this.BaseAddress, "Recipes/");
-            var url = this.AddToUrlAsQueryString(newUrl.ToString(), nameof(searchModel), searchModel);
+            var url = newUrl.ToString();
+
+            if (searchModel != null)
+            {
+                url = this.AddToUrlAsQueryString(newUrl.ToString(), nameof(searchModel), searchModel);
+            }
+             
             url = QueryHelpers.AddQueryString(url, nameof(page), page.ToString());
             url = QueryHelpers.AddQueryString(url, nameof(entriesPerPage), entriesPerPage.ToString());
+
             return await this.GetAsync<ListViewModel<ShortRecipeViewModel>>(url);
         }
 
