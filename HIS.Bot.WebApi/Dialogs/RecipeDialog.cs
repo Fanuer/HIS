@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HIS.Bot.WebApi.Extensions;
+using HIS.Bot.WebApi.Flows;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
@@ -62,6 +64,9 @@ namespace HIS.Bot.WebApi.Dialogs
                 tags = new List<EntityRecommendation>();
             }
 
+            //await Conversation.SendAsync(context.Activity as IMessageActivity, CreateRecipeSearchDialog);
+
+
             var markedUpRecipeName = String.IsNullOrWhiteSpace(recipeName.Entity) ? "**keine Angabe**": $"*{recipeName.Entity}*" ;
             var markedUpTags = tags== null || !tags.Any() ? "**keine Angabe**": $"*{String.Join(", ", tags.Select(x => x.Entity))}*" ;
             var markedUpIngrediants = ingrediants == null || !ingrediants.Any() ? "**keine Angabe**": $"*{String.Join(", ", ingrediants.Select(x => x.Entity))}*" ;
@@ -77,6 +82,11 @@ namespace HIS.Bot.WebApi.Dialogs
             message.Text = reply;
             await context.PostAsync(message);
             context.Wait(MessageReceived);
+        }
+
+        internal static IDialog<RecipeSearch> CreateRecipeSearchDialog()
+        {
+            return Chain.From(() => FormDialog.FromForm(RecipeSearch.BuildForm));
         }
 
         [LuisIntent("GetNextRecipeStep")]

@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HIS.Gateway.WebApi.Controllers
 {
+    /// <summary>
+    /// Grants access to recipes 
+    /// </summary>
     [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -36,10 +39,10 @@ namespace HIS.Gateway.WebApi.Controllers
         /// <returns></returns>
         /// <response code="200">Returns a list of all available recipes</response>
         [HttpGet]
-        public async Task<IEnumerable<ShortRecipeViewModel>> GetRecipesAsync()
+        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page = 0, [FromQuery]int entriesPerPage = 10)
         {
             await Client.SetBearerTokenAsync(this.HttpContext);
-            return await this.Client.GetRecipes();
+            return await this.Client.GetRecipes(searchModel, page, entriesPerPage);
         }
 
         /// <summary>

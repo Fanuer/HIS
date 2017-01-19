@@ -123,13 +123,14 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="WebConfigData\HISAuth.xml" />
+    <Content Include="WebConfigData\MSAuth.xml" />
     <None Include="Properties\PublishProfiles\his-bot - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\his-bot - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\his-bot - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-    <Content Include="Web.keys.config" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
@@ -142,9 +143,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Clients\GatewayClient.cs" />
+    <Compile Include="ConfigSections\AuthServiceData.cs" />
+    <Compile Include="ConfigSections\BotData.cs" />
+    <Compile Include="ConfigSections\ClientInfo.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\RecipeDialog.cs" />
     <Compile Include="Extensions\EntityRecommendationExtensions.cs" />
+    <Compile Include="Extensions\HttpClientExtensions.cs" />
+    <Compile Include="Extensions\HttpUtilityExtensions.cs" />
+    <Compile Include="Flows\RecipeSearch.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -154,6 +162,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ListViewModel.cs" />
+    <Compile Include="ViewModels\RecipeSearchViewModel.cs" />
+    <Compile Include="ViewModels\ServerException.cs" />
+    <Compile Include="ViewModels\ShortRecipeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.de-de.resx" />

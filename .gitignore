@@ -249,3 +249,5 @@ TemporaryDbContextFactory.cs
 /HIS.Recipes.Console
 /HIS.Bot.WebApi2
 /HIS.Bot.WebApi/Web.Keys.config
+/HIS.Bot.WebApi/WebConfigData/MSAuth.xml
+/HIS.Bot.WebApi/WebConfigData/HISAuth.xml

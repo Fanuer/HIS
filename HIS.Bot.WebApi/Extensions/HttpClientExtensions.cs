@@ -1,116 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
-using HIS.Helpers.Exceptions;
-using HIS.Helpers.Extensions;
-using HIS.Helpers.Options;
-using IdentityModel.Client;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using System.Web;
 using Newtonsoft.Json;
+using ServerException = HIS.Bot.WebApi.ViewModels.ServerException;
 
-namespace HIS.Gateway.Services.Clients
+namespace HIS.Bot.WebApi.Extensions
 {
-    internal abstract class S2SClientBase:HttpClient
+    public static class HttpClientExtensions
     {
-        #region CONST
-
-        private const string AUTH_COOKIE_NAME = "authCookie";
-        #endregion
-
-        #region FIELDS
-        private readonly AuthServerInfoOptions _authOptions;
-        private readonly ClientInfoOptions _clientOptions;
-        #endregion
-
-        #region CTOR
-
-        protected S2SClientBase(IOptions<AuthServerInfoOptions> authOptions, IOptions<GatewayClientInfoOptions> clientOptions, ILogger logger, string apiName)
-        {
-            if (String.IsNullOrWhiteSpace(apiName)) { throw new ArgumentNullException(nameof(apiName)); }
-
-            if (authOptions?.Value == null){ throw new ArgumentNullException(nameof(authOptions)); }
-            if (String.IsNullOrWhiteSpace(authOptions.Value.ApiName)){ throw new ArgumentNullException(nameof(authOptions.Value.ApiName)); }
-            if (String.IsNullOrWhiteSpace(authOptions.Value.AuthServerLocation)){ throw new ArgumentNullException(nameof(authOptions.Value.AuthServerLocation)); }
-
-            if (clientOptions?.Value == null) { throw new ArgumentException(nameof(clientOptions)); }
-            if (String.IsNullOrWhiteSpace(clientOptions.Value.ClientId)){ throw new ArgumentNullException(nameof(clientOptions.Value.ClientId)); }
-            if (String.IsNullOrWhiteSpace(clientOptions.Value.ClientSecret)){ throw new ArgumentNullException(nameof(clientOptions.Value.ClientSecret)); }
-            
-            if (logger == null){ throw new ArgumentNullException(nameof(logger)); }
-
-            if (clientOptions?.Value?.GatewayClients == null) { throw new ArgumentNullException(nameof(clientOptions.Value.GatewayClients), "GatewayClients must be definied"); }
-            if (!clientOptions.Value.GatewayClients.ContainsKey(apiName)) { throw new ArgumentNullException(nameof(clientOptions.Value.GatewayClients), $"GatewayClient '{apiName}' is not defined"); }
-
-            this.BaseAddress = new Uri(clientOptions.Value.GatewayClients[apiName]);
-            this.ApiName = apiName;
-            _authOptions = authOptions.Value;
-            _clientOptions = clientOptions.Value;
-            this.Logger = logger;
-        }
-        
-        #endregion
-
-        #region METHODS
-
-        /// <summary>
-        /// Adds a Access Token to the Httpthis
-        /// Stores a recieved token 
-        /// </summary>
-        /// <param name="context">current HTTPContext </param>
-        /// <returns></returns>
-        public async Task SetBearerTokenAsync(HttpContext context)
-        {
-            string bearerToken;
-            context.Request.Cookies.TryGetValue(CookieName, out bearerToken);
-
-            if (String.IsNullOrWhiteSpace(bearerToken))
-            {
-                var disco = await DiscoveryClient.GetAsync(this._authOptions.AuthServerLocation);
-                var tokenClient = new TokenClient(disco.TokenEndpoint, this._clientOptions.ClientId, this._clientOptions.ClientSecret);
-                var tokenResponse = await tokenClient.RequestClientCredentialsAsync(this.ApiName);
-
-                if (tokenResponse.IsError)
-                {
-                    var message = "Error on receiving token for this Credential Auth";
-                    Logger.LogError(message +": " + tokenResponse.Error);
-                    throw new ArgumentException(message);
-                }
-                this.SetBearerToken(tokenResponse.AccessToken);
-                context.Response.Cookies.Append(CookieName, tokenResponse.AccessToken, new CookieOptions()
-                {
-                    Expires = DateTime.Now.AddSeconds(tokenResponse.ExpiresIn),
-                    HttpOnly = true,
-                    Secure = true
-                });
-
-                Logger.LogInformation($"Added new Access Token for Api {this._authOptions.ApiName}. Expires at {DateTime.Now.AddSeconds(tokenResponse.ExpiresIn)}");
-            }
-            else
-            {
-                Logger.LogInformation($"Used cached Access Token for Api {this._authOptions.ApiName}");
-                this.SetBearerToken(bearerToken);
-            }
-        }
-
-        public async Task<HttpResponseMessage> PostAsJsonAsync<T>(string url, T model)
+        public static async Task<HttpResponseMessage> PostAsJsonAsync<T>(this HttpClient client, string url, T model)
         {
             var json = JsonConvert.SerializeObject(model);
-            return await base.PostAsync(url, new StringContent(json, Encoding.UTF8, "text/json"));
+            return await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "text/json"));
         }
 
-        public async Task<HttpResponseMessage> PutAsJsonAsync<T>(string url, T model)
+        public static async Task<HttpResponseMessage> PutAsJsonAsync<T>(this HttpClient client, string url, T model)
         {
             var json = JsonConvert.SerializeObject(model);
-            return await base.PutAsync(url, new StringContent(json, Encoding.UTF8, "text/json"));
+            return await client.PutAsync(url, new StringContent(json, Encoding.UTF8, "text/json"));
         }
 
-        protected async Task<T> GetAsync<T>(string url, params object[] args)
+        public static async Task<T> GetAsync<T>(this HttpClient client, string url, params object[] args)
         {
-            var response = await this.GetAsync(String.Format(url, args));
+            var response = await client.GetAsync(String.Format(url, args));
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsAsync<T>();
@@ -119,17 +37,17 @@ namespace HIS.Gateway.Services.Clients
             throw new ServerException(response);
         }
 
-        protected async Task<HttpStatusCode> GetHttpStatusAsync(string url, params object[] args)
+        public static async Task<HttpStatusCode> GetHttpStatusAsync(this HttpClient client, string url, params object[] args)
         {
-            
-            var response = await this.GetAsync(String.Format(url, args));
+
+            var response = await client.GetAsync(String.Format(url, args));
             return response.StatusCode;
         }
 
-        protected async Task<byte[]> GetBytesAsync(string url, params object[] args)
+        public static async Task<byte[]> GetBytesAsync(this HttpClient client, string url, params object[] args)
         {
-            
-            var response = await this.GetAsync(String.Format(url, args));
+
+            var response = await client.GetAsync(String.Format(url, args));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("GetBytesAsync<{0}>({1}) -> {2}", typeof(byte[]).Name, String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -140,10 +58,10 @@ namespace HIS.Gateway.Services.Clients
             throw new ServerException(response);
         }
 
-        protected async Task PutAsJsonAsync<T>(T model, string url, params object[] args)
+        public static async Task PutAsJsonAsync<T>(this HttpClient client, T model, string url, params object[] args)
         {
-            
-            var response = await this.PutAsJsonAsync(String.Format(url, args), model);
+
+            var response = await client.PutAsJsonAsync(String.Format(url, args), model);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled)
@@ -159,10 +77,10 @@ namespace HIS.Gateway.Services.Clients
             }
         }
 
-        protected async Task PutAsync(string url, params object[] args)
+        public static async Task PutAsync(this HttpClient client, string url, params object[] args)
         {
-            
-            var response = await base.PutAsync(String.Format(url, args), new StringContent(String.Empty));
+
+            var response = await client.PutAsync(String.Format(url, args), new StringContent(String.Empty));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PutAsync({0}) -> {1}", String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -175,10 +93,10 @@ namespace HIS.Gateway.Services.Clients
             }
         }
 
-        protected async Task DeleteAsync(string url, params object[] args)
+        public static async Task DeleteAsync(this HttpClient client, string url, params object[] args)
         {
-            
-            var response = await base.DeleteAsync(String.Format(url, args));
+
+            var response = await client.DeleteAsync(String.Format(url, args));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("DeleteAsync({0}) -> {1}", String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -191,10 +109,10 @@ namespace HIS.Gateway.Services.Clients
             }
         }
 
-        protected async Task<T> DeleteAsync<T>(string url, params object[] args)
+        public static async Task<T> DeleteAsync<T>(this HttpClient client, string url, params object[] args)
         {
-            
-            var response = await base.DeleteAsync(String.Format(url, args));
+
+            var response = await client.DeleteAsync(String.Format(url, args));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("DeleteAsync({0}) -> {1}", String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -204,10 +122,10 @@ namespace HIS.Gateway.Services.Clients
             throw new ServerException(response);
         }
 
-        protected async Task<T> PostAsync<T>(HttpContent content, string url, params object[] args)
+        public static async Task<T> PostAsync<T>(this HttpClient client, HttpContent content, string url, params object[] args)
         {
-            
-            var response = await base.PostAsync(String.Format(url, args), content);
+
+            var response = await client.PostAsync(String.Format(url, args), content);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PostAsync<{0}>({1}) -> {2}", typeof(T).Name, String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -220,10 +138,10 @@ namespace HIS.Gateway.Services.Clients
             }
         }
 
-        protected async Task PostAsync(HttpContent content, string url, params object[] args)
+        public static async Task PostAsync(this HttpClient client, HttpContent content, string url, params object[] args)
         {
-            
-            var response = await base.PostAsync(String.Format(url, args), content);
+
+            var response = await client.PostAsync(String.Format(url, args), content);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled)
@@ -237,10 +155,10 @@ namespace HIS.Gateway.Services.Clients
             }
         }
 
-        protected async Task PostAsync(string url, params object[] args)
+        public static async Task PostAsync(this HttpClient client, string url, params object[] args)
         {
-            
-            var response = await base.PostAsync(String.Format(url, args), new StringContent(String.Empty));
+
+            var response = await client.PostAsync(String.Format(url, args), new StringContent(String.Empty));
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PostAsJsonAsync({0}) -> {1}", String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -254,10 +172,10 @@ namespace HIS.Gateway.Services.Clients
             }
         }
 
-        protected async Task PostAsJsonAsync<T>(T model, string url, params object[] args)
+        public static async Task PostAsJsonAsync<T>(this HttpClient client, T model, string url, params object[] args)
         {
-            
-            var response = await this.PostAsJsonAsync(String.Format(url, args), model);
+
+            var response = await client.PostAsJsonAsync(String.Format(url, args), model);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PostAsJsonAsync<{0}>({1}) -> {2}", typeof(T).Name, String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -271,10 +189,10 @@ namespace HIS.Gateway.Services.Clients
             }
         }
 
-        protected async Task<TResult> PutAsJsonReturnAsync<T, TResult>(T model, string url, params object[] args)
+        public static async Task<TResult> PutAsJsonReturnAsync<T, TResult>(this HttpClient client, T model, string url, params object[] args)
         {
-            
-            var response = await this.PutAsJsonAsync(String.Format(url, args), model);
+
+            var response = await client.PutAsJsonAsync(String.Format(url, args), model);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PutAsJsonAsyncReturn<{0}, {1}>({2}) -> {3}", typeof(T).Name, typeof(TResult).Name, String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -286,10 +204,10 @@ namespace HIS.Gateway.Services.Clients
             throw new ServerException(response);
         }
 
-        protected async Task<TResult> PostAsJsonReturnAsync<T, TResult>(T model, string url, params object[] args)
+        public static async Task<TResult> PostAsJsonReturnAsync<T, TResult>(this HttpClient client, T model, string url, params object[] args)
         {
-            
-            var response = await this.PostAsJsonAsync(String.Format(url, args), model);
+
+            var response = await client.PostAsJsonAsync(String.Format(url, args), model);
             if (response.IsSuccessStatusCode)
             {
                 //if (Log.IsDebugEnabled) Log.Debug(String.Format("PostAsJsonAsyncReturn<{0}, {1}>({2}) -> {3}", typeof(T).Name, typeof(TResult).Name, String.Format(url, args), await response.Content.ReadAsStringAsync()));
@@ -301,16 +219,6 @@ namespace HIS.Gateway.Services.Clients
                 throw new ServerException(response);
             }
         }
-
-        #endregion
-
-        #region PROPERTIES
-        public ILogger Logger { get; }
-        public string ApiName { get; }
-
-        private string CookieName => $"{AUTH_COOKIE_NAME}_{this.ApiName.Replace("_", "-")}";
-
-        #endregion
 
     }
 }
