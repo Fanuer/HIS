@@ -45,7 +45,7 @@ namespace HIS.Gateway.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.Configure<GatewayClientInfoOptions>(Configuration.GetSection("ClientInfo"));
+            services.Configure<GatewayInformation>(Configuration.GetSection("ClientInfo"));
             services.Configure<AuthServerInfoOptions>(Configuration.GetSection("AuthServerInfo"));
 
             ServiceConfiguration.AddServices(services, Configuration);
@@ -76,8 +76,9 @@ namespace HIS.Gateway.WebApi
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
 
                 //Set the comments path for the swagger json and ui.
-                var xmlPath = Path.Combine(basePath, "HIS.WebApi.Gateway.xml");
+                var xmlPath = Path.Combine(basePath, "HIS.Gateway.WebApi.xml");
                 options.IncludeXmlComments(xmlPath);
+                options.DescribeAllEnumsAsStrings();
             });
 
 
@@ -88,7 +89,8 @@ namespace HIS.Gateway.WebApi
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IOptions<AuthServerInfoOptions> authServerInfo)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug(LogLevel.Trace);
+            loggerFactory.AddAzureWebAppDiagnostics();
 
             if (env.IsDevelopment())
             {

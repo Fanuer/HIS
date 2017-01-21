@@ -5,7 +5,7 @@ using HIS.Recipes.Models.ViewModels;
 
 namespace HIS.Gateway.Services.Interfaces
 {
-    public interface IRecipeBotClient: IS2SClient
+    public interface IGatewayRecipeClient: IS2SClient
     {
         Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId);
 

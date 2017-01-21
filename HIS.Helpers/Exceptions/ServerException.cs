@@ -16,7 +16,7 @@ namespace HIS.Helpers.Exceptions
         #region Ctor
         public ServerException(HttpResponseMessage response)
         {
-            if (response == null) { throw new ArgumentNullException("reason"); }
+            if (response == null) { throw new ArgumentNullException(nameof(response)); }
             this.Response = response;
             Initialise();
         }

@@ -8,7 +8,7 @@ namespace HIS.Helpers.Options
     /// <summary>
     /// Provides Configuration of an Client that uses ClientCredential-Authorisation
     /// </summary>
-    public class ClientInfoOptions
+    public class ClientCredentials
     {
         /// <summary>
         /// Name of the this client

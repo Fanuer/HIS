@@ -30,11 +30,11 @@ namespace HIS.Gateway.Tests
 
         #region METHODS
         
-        private ClientInfoOptions GetClientInfos(IConfiguration config, string sectionKey)
+        private ClientCredentials GetClientInfos(IConfiguration config, string sectionKey)
         {
             if (String.IsNullOrWhiteSpace(sectionKey)) { throw new ArgumentNullException(nameof(sectionKey));}
 
-            var result = new ClientInfoOptions();
+            var result = new ClientCredentials();
             var configClientInfo = config.GetSection(sectionKey);
             result.ClientId = configClientInfo["ClientId"];
             result.ClientSecret = configClientInfo["ClientSecret"];
@@ -75,8 +75,8 @@ namespace HIS.Gateway.Tests
         #endregion
 
         #region PROPERTIES
-        public ClientInfoOptions ExternalClientInfo { get; }
-        public ClientInfoOptions ClientInfo { get; }
+        public ClientCredentials ExternalClientInfo { get; }
+        public ClientCredentials ClientInfo { get; }
         public string GatewayApiBaseUrl { get; }
         public string AuthServerUrl { get; }
         public string GatewayApiName { get; }

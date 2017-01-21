@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using HIS.Gateway.Services.Interfaces;
+using HIS.Helpers.Exceptions;
 using HIS.Recipes.Models.Enums;
 using HIS.Recipes.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -26,7 +28,7 @@ namespace HIS.Gateway.WebApi.Controllers
 
         #region CTOR
 
-        public RecipesController(IRecipeBotClient client)
+        public RecipesController(IGatewayRecipeClient client)
         {
             Client = client;
         }
@@ -41,8 +43,16 @@ namespace HIS.Gateway.WebApi.Controllers
         [HttpGet]
         public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page = 0, [FromQuery]int entriesPerPage = 10)
         {
-            await Client.SetBearerTokenAsync(this.HttpContext);
-            return await this.Client.GetRecipes(searchModel, page, entriesPerPage);
+            try
+            {
+                await Client.SetBearerTokenAsync(this.HttpContext);
+                return await this.Client.GetRecipes(searchModel, page, entriesPerPage);
+            }
+            catch (ServerException e)
+            {
+                throw new ArgumentException("Unable to access recipe-api", e);
+            }
+            
         }
 
         /// <summary>
@@ -67,7 +77,7 @@ namespace HIS.Gateway.WebApi.Controllers
         /// <response code="200">Steps of a Recipe</response>
         /// <response code="404">If no recipe with the given id was found</response>
         [HttpGet("{recipeId:int}/Steps/{stepId:int}")]
-        public async Task<StepViewModel> GetStepByIdAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep)
+        public async Task<StepViewModel> GetStepByIdAsync(int recipeId, int stepId, [FromQuery]StepDirection direction = StepDirection.ThisStep)
         {
             await Client.SetBearerTokenAsync(this.HttpContext);
             return await this.Client.GetStepAsync(recipeId, stepId, direction);
@@ -76,7 +86,7 @@ namespace HIS.Gateway.WebApi.Controllers
         #endregion
 
         #region PROPERTIES
-        public IRecipeBotClient Client { get; }
+        public IGatewayRecipeClient Client { get; }
         #endregion 
     }
 }

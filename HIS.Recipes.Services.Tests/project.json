@@ -1,22 +1,19 @@
 {
-  "version": "1.0.0-*",
-  "testRunner": "xunit",
   "dependencies": {
+    "AutoMapper": "5.2.0",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "HIS.Helpers.Test": "1.0.0-*",
+    "HIS.Recipes.Services": "1.0.0-*",
+    "Microsoft.EntityFrameworkCore.InMemory": "1.1.0",
     "Microsoft.NETCore.App": {
       "version": "1.1.0",
       "type": "platform"
     },
+    "moq.netcore": "4.4.0-beta8",
     "System.Diagnostics.TraceSource": "4.0.0",
     "System.Linq": "4.3.0",
-    "Microsoft.EntityFrameworkCore.InMemory": "1.1.0",
-    "AutoMapper": "5.2.0",
-    "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "xunit": "2.2.0-beta4-build3444",
-    "moq.netcore": "4.4.0-beta8",
-    "HIS.Recipes.Services": "1.0.0-*",
-    "HIS.Helpers.Test": "1.0.0-*"
+    "xunit": "2.2.0-beta4-build3444"
   },
-
   "frameworks": {
     "netcoreapp1.1": {
       "imports": [
@@ -24,5 +21,7 @@
         "portable-net451+win8"
       ]
     }
-  }
+  },
+  "testRunner": "xunit",
+  "version": "1.0.0-*"
 }

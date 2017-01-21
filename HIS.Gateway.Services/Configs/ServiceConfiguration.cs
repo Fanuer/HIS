@@ -18,7 +18,7 @@ namespace HIS.Gateway.Services.Configs
         /// <param name="config">AppSettings-Configuration</param>
         public static void AddServices(IServiceCollection services, IConfigurationRoot config)
         {
-            services.AddScoped<IRecipeBotClient, RecipeBotClient>();
+            services.AddScoped<IGatewayRecipeClient, GatewayRecipeClient>();
         }
     }
 }

@@ -95,7 +95,8 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Url, x => x.Ignore());
 
             this.CreateMap<RecipeCookbookSource, CookbookSourceViewModel>()
-                .ForMember(x=>x.Recipes,x=>x.MapFrom(y=>y.RecipeSourceRecipes));
+                .ForMember(x=>x.Recipes,x=>x.MapFrom(y=>y.RecipeSourceRecipes))
+                .ForMember(x => x.Url, x => x.Ignore());
 
             this.CreateMap<RecipeBaseSource, SourceListEntryViewModel>()
                 .ForMember(x=>x.Type, x=>x.MapFrom(m => m.GetSourceType()))
@@ -130,7 +131,7 @@ namespace HIS.Recipes.Services.Configs
                 .ForMember(x => x.Images, x => x.Ignore());
 
             this.CreateMap<Recipe, ShortRecipeViewModel>()
-                .ForMember(x => x.ImageUrl, x => x.MapFrom(y => y.Images.First().Url))
+                .ForMember(x => x.ImageUrl,  x => x.MapFrom(y => y.Images.Any() ? y.Images.First().Url : ""))
                 .ForMember(x => x.Tags, x => x.MapFrom(y => y.Tags.Select(tag => tag.RecipeTag.Name)))
                 .ForMember(x => x.Url, x => x.Ignore());
 

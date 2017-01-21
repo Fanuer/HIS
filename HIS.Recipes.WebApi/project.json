@@ -55,6 +55,7 @@
       "wwwroot",
       "**/*.cshtml",
       "appsettings.json",
+      "appsettings.keys.json",
       "web.config"
     ]
   },

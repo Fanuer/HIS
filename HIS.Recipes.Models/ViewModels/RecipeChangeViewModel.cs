@@ -14,6 +14,6 @@ namespace HIS.Recipes.Models.ViewModels
         [Range(0, int.MaxValue)]
         public int NumberOfServings { get; set; }
         [Range(0, int.MaxValue)]
-        public int Calories { get; set; }
+        public int? Calories { get; set; }
     }
 }

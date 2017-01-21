@@ -83,7 +83,7 @@ namespace HIS.Recipes.WebApi
         /// </summary>
         /// <param name="app">App Builder</param>
         /// <param name="env">Enviroment Context</param>
-        /// <param name="loggerFactory">Logger Factory</param>
+        /// <param name="loggerFactory">LoggerFactory Factory</param>
         /// <param name="authServerInfo">Information of used auth server</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IOptions<AuthServerInfoOptions> authServerInfo)
         {
@@ -94,7 +94,7 @@ namespace HIS.Recipes.WebApi
             {
                 Authority = authServerInfo.Value.AuthServerLocation,
                 ScopeName = authServerInfo.Value.ApiName,
-                RequireHttpsMetadata = authServerInfo.Value.UseHttps && !env.IsDevelopment() // https only in production
+                RequireHttpsMetadata = authServerInfo.Value.UseHttps || !env.IsDevelopment() // https only in production
             });
 
             app.UseMvcWithDefaultRoute();

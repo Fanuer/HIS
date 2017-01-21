@@ -43,11 +43,12 @@ namespace HIS.Recipes.Services.Implementation.Services
                                         .ThenInclude(x => x.RecipeTag);
 
                 this.SearchForRecipes(recipes, searchModel);
-
+                
                 result = recipes
                             .OrderByDescending(x=>x.CookedCounter)
                                 .ThenByDescending(x=>x.LastTimeCooked)
                             .ProjectTo<ShortRecipeViewModel>(this.Mapper.ConfigurationProvider);
+
                 this.Logger.LogDebug(new EventId(), $"Returned all recipes");
             }
             catch (Exception e)

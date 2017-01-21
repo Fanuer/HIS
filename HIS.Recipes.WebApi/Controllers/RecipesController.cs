@@ -57,22 +57,34 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <summary>
         /// Get all recipes
         /// </summary>
-        /// <returns></returns>
+        /// <param name="searchModel">hold parameters to restrict the result</param>
+        /// <param name="page">0-based Page Counter. Is used to enable pagination </param>
+        /// <param name="entriesPerPage">Number of entries per page. Is used to enable pagination.</param>
         /// <response code="200">Returns a list of all available recipes</response>
         [HttpGet]
         public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page=0, [FromQuery]int entriesPerPage=10)
         {
-            var page1Based = page + 1;
-
             var recipeCount = await _service.GetRecipes().CountAsync();
 
-            var result = _service
+            var result = await _service
                             .GetRecipes(searchModel)
-                            .Skip(page1Based * entriesPerPage)
-                            .Take(entriesPerPage);
+                            .Skip(page * entriesPerPage)
+                            .Take(entriesPerPage)
+                            .ToListAsync();
+            try
+            {
+                foreach (var shortRecipeViewModel in result)
+                {
+                    shortRecipeViewModel.Url = this.Url.RouteUrl("GetRecipeById", new {id = shortRecipeViewModel.Id});
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
             
-            await result.ForEachAsync(x => x.Url = this.Url.RouteUrl("GetRecipeById", new {id = x.Id}));
-            return new ListViewModel<ShortRecipeViewModel>(result, recipeCount, page1Based, entriesPerPage);
+            return new ListViewModel<ShortRecipeViewModel>(result, recipeCount, page +1, entriesPerPage);
         }
 
         /// <summary>
