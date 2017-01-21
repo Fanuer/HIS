@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HIS.Gateway.Services.Clients;
 using HIS.Helpers.Exceptions;
 using HIS.Helpers.Options;
 using HIS.Helpers.Test;
+using HIS.Recipes.Models.ViewModels;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -75,6 +77,84 @@ namespace HIS.Gateway.Tests.GatewayTest
             }
         }
 
+        [Fact]
+        public async Task SearchForRecipesByName()
+        {
+            using (var client = await this.CreateExternalClient())
+            {
+                try
+                {
+                    var allRecipe = await client.GetRecipes();
+                    var searchModel = new RecipeSearchViewModel()
+                    {
+                        Name = allRecipe.Entries.First().Name
+                    };
+
+                    var result = await client.GetRecipes(searchModel);
+                    Assert.NotNull(result);
+                    Assert.NotNull(result.Entries);
+                    Assert.NotEmpty(result.Entries);
+                    Assert.Equal(1, result.Entries.Count());
+
+                    var firstResult = result.Entries.First();
+                    var compareRecipe = result.Entries.First();
+
+                    Assert.Equal(compareRecipe.Name, firstResult.Name);
+                    Assert.Equal(compareRecipe.Creator, firstResult.Creator);
+                    Assert.Equal(compareRecipe.Id, firstResult.Id);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                
+            }
+        }
+
+        [Fact]
+        public async Task SearchForRecipesByTag()
+        {
+            using (var client = await this.CreateExternalClient())
+            {
+                var recipe = await client.GetRecipes();
+                var firstTagRecipe = recipe.Entries.First(x => x.Tags.Any());
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Tags = new List<string>() { firstTagRecipe.Tags.First() }
+                };
+
+                var result = await client.GetRecipes(searchModel);
+
+                Assert.NotNull(result);
+                Assert.NotNull(result.Entries);
+                Assert.NotEmpty(result.Entries);
+                Assert.True(result.Entries.Any(x => x.Id.Equals(firstTagRecipe.Id)));
+            }
+        }
+
+
+        [Fact]
+        public async Task SearchForRecipesByIngrediant()
+        {
+            using (var client = await this.CreateExternalClient())
+            {
+                var recipe = await client.GetRecipes();
+                var firstRecipe = recipe.Entries.First();
+                var ingrediants = await client.GetRecipeIngrediantsAsync(firstRecipe.Id);
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Ingrediants = new List<string>() { ingrediants.First().Name }
+                };
+
+                var result = await client.GetRecipes(searchModel);
+
+                Assert.NotNull(result);
+                Assert.NotNull(result.Entries);
+                Assert.NotEmpty(result.Entries);
+                Assert.True(result.Entries.Any(x => x.Id.Equals(firstRecipe.Id)));
+            }
+        }
 
         /// <summary>
         /// Creates a Bot client that connects itself to the api gateway

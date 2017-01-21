@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,40 @@ namespace HIS.Bot.WebApi.Extensions
 {
     public static class HttpClientExtensions
     {
+        /// <summary>
+        /// Converts a 1-deep object to a query string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="client">calling client</param>
+        /// <param name="model">modeldata to add</param>
+        /// <returns></returns>
+        public static string ConvertToQueryString<T>(this HttpClient client, string prefix, T model) where T : class
+        {
+            if (model == null)
+            {
+                return "";
+            }
+            var propList = new List<KeyValuePair<string, string>>();
+
+            foreach (var propertyInfo in model.GetType().GetProperties())
+            {
+                var key = propertyInfo.Name;
+                if (propertyInfo.PropertyType != typeof(string) && propertyInfo.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
+                {
+                    var enumerableValue = propertyInfo.GetValue(model) as IEnumerable;
+                    if (enumerableValue == null) continue;
+                    propList.AddRange(enumerableValue.Cast<object>().Select(x => new KeyValuePair<string, string>(key, x.ToString())));
+                }
+                else
+                {
+                    var rawValue = propertyInfo.GetValue(model);
+                    var value = (rawValue ?? "").ToString();
+                    propList.Add(new KeyValuePair<string, string>(key, value));
+                }
+            }
+            return propList.Any() ? String.Join("&", propList.Select(x => $"{x.Key}={HttpUtility.UrlEncode(x.Value)}").ToArray()) : "";
+        }
+
         public static async Task<HttpResponseMessage> PostAsJsonAsync<T>(this HttpClient client, string url, T model)
         {
             var json = JsonConvert.SerializeObject(model);

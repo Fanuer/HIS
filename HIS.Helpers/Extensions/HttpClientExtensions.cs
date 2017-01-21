@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,19 +15,35 @@ namespace HIS.Helpers.Extensions
 {
     public static class HttpClientExtensions
     {
-        public static string AddToUrlAsQueryString<T>(this HttpClient client, string baseUrl, string prefix, T model) where T : class
+        /// <summary>
+        /// Converts a 1-deep object to a query string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="client">calling client</param>
+        /// <param name="model">modeldata to add</param>
+        /// <returns></returns>
+        public static string AddToUrlAsQueryString<T>(this HttpClient client, T model) where T : class
         {
-            if (model == null) { return baseUrl; }
+            if (model == null) { return ""; } 
+            var propList = new List<KeyValuePair<string, string>>();
 
-            var prop = new Dictionary<string, string>();
             foreach (var propertyInfo in model.GetType().GetProperties())
             {
-                var key = !String.IsNullOrWhiteSpace(prefix)? $"{prefix}[{propertyInfo.Name}]":propertyInfo.Name;
-                var value = (propertyInfo.GetValue(model) ?? "").ToString();
-                prop.Add(key, value);
+                var key = propertyInfo.Name;
+                if (propertyInfo.PropertyType != typeof(string) && propertyInfo.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
+                {
+                    var enumerableValue = propertyInfo.GetValue(model) as IEnumerable;
+                    if (enumerableValue == null) continue;
+                    propList.AddRange(enumerableValue.Cast<object>().Select(x => new KeyValuePair<string, string>(key, x.ToString())));
+                }
+                else
+                {
+                    var rawValue = propertyInfo.GetValue(model);
+                    var value = (rawValue ?? "").ToString();
+                    propList.Add(new KeyValuePair<string, string>(key, value));
+                }
             }
-            
-            return QueryHelpers.AddQueryString(baseUrl, prop);
+            return propList.Any() ? String.Join("&", propList.Select(x => $"{x.Key}={WebUtility.UrlEncode(x.Value)}").ToArray()): "";
         }
 
         public static async Task<HttpResponseMessage> PostAsJsonAsync<T>(this HttpClient client, string url, T model)

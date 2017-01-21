@@ -151,7 +151,6 @@
     <Compile Include="Dialogs\RecipeDialog.cs" />
     <Compile Include="Extensions\EntityRecommendationExtensions.cs" />
     <Compile Include="Extensions\HttpClientExtensions.cs" />
-    <Compile Include="Extensions\HttpUtilityExtensions.cs" />
     <Compile Include="Flows\RecipeSearch.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

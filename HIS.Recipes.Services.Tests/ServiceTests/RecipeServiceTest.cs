@@ -52,6 +52,77 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
         }
 
         [Fact]
+        public async Task SearchForRecipesByTag()
+        {
+            await InitializeAsync();
+
+            using (var service = GetService())
+            {
+                var tagWith = this.DbContext.RecipeTags.Include(x => x.Recipes).First(x => x.Recipes.Any());
+
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Tags = new List<string>() { tagWith.Name }
+                };
+
+
+                var output = await service.GetRecipes(searchModel).ToListAsync();
+                Assert.NotNull(output);
+                Assert.NotEmpty(output);
+                Assert.Equal(tagWith.Recipes.Count, output.Count);
+                
+            }
+        }
+
+        [Fact]
+        public async Task SearchForRecipesByIngrediant()
+        {
+            await InitializeAsync();
+
+            using (var service = GetService())
+            {
+                var ingrediantWithRecipes = this.DbContext.Ingrediants.Include(x => x.Recipes).First(x => x.Recipes.Any());
+
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Ingrediants = new List<string>() { ingrediantWithRecipes.Name }
+                };
+
+
+                var output = await service.GetRecipes(searchModel).ToListAsync();
+                Assert.NotNull(output);
+                Assert.NotEmpty(output);
+                Assert.Equal(ingrediantWithRecipes.Recipes.Count, output.Count);
+
+            }
+        }
+
+
+        [Fact]
+        public async Task SearchForRecipesByName()
+        {
+            await InitializeAsync();
+
+            using (var service = GetService())
+            {
+                var firstRecipe = await this.DbContext.Recipes.FirstAsync();
+
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Name = firstRecipe.Name
+                };
+
+
+                var output = await service.GetRecipes(searchModel).ToListAsync();
+                Assert.NotNull(output);
+                Assert.NotEmpty(output);
+                Assert.Equal(1, output.Count);
+
+            }
+        }
+
+
+        [Fact]
         public async Task GetRecipe()
         {
             await InitializeAsync();

@@ -42,9 +42,9 @@ namespace HIS.Recipes.Services.Implementation.Services
                                     .Include(x => x.Tags)
                                         .ThenInclude(x => x.RecipeTag);
 
-                this.SearchForRecipes(recipes, searchModel);
+                var searchresult = this.SearchForRecipes(recipes, searchModel);
                 
-                result = recipes
+                result = searchresult
                             .OrderByDescending(x=>x.CookedCounter)
                                 .ThenByDescending(x=>x.LastTimeCooked)
                             .ProjectTo<ShortRecipeViewModel>(this.Mapper.ConfigurationProvider);

@@ -41,17 +41,21 @@ namespace HIS.Gateway.Services.Clients
         public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel = null, int page = 0, int entriesPerPage = 10)
         {
             var newUrl = new Uri(this.Client.BaseAddress, "Recipes/");
-            var url = newUrl.ToString();
+            var query = "";
 
             if (searchModel != null)
             {
-                url = this.Client.AddToUrlAsQueryString(newUrl.ToString(), nameof(searchModel), searchModel);
+                var searchQuery = this.Client.AddToUrlAsQueryString(searchModel);
+                if (!String.IsNullOrWhiteSpace(searchQuery))
+                {
+                    query = $"?{searchQuery}";
+                }
             }
+            
+            query = QueryHelpers.AddQueryString(query, nameof(page), page.ToString());
+            query = QueryHelpers.AddQueryString(query, nameof(entriesPerPage), entriesPerPage.ToString());
 
-            url = QueryHelpers.AddQueryString(url, nameof(page), page.ToString());
-            url = QueryHelpers.AddQueryString(url, nameof(entriesPerPage), entriesPerPage.ToString());
-
-            return await this.Client.GetAsync<ListViewModel<ShortRecipeViewModel>>(url);
+            return await this.Client.GetAsync<ListViewModel<ShortRecipeViewModel>>(new Uri(newUrl, query).ToString());
         }
 
         public async Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId)
