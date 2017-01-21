@@ -10,7 +10,7 @@ namespace HIS.Helpers.Web.Filters
 {
     public class CheckForInvalidModelFilter : ActionFilterAttribute
     {
-        public void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (!context.ModelState.IsValid)
             {

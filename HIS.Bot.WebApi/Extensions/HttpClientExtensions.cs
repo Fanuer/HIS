@@ -22,7 +22,7 @@ namespace HIS.Bot.WebApi.Extensions
         /// <param name="client">calling client</param>
         /// <param name="model">modeldata to add</param>
         /// <returns></returns>
-        public static string ConvertToQueryString<T>(this HttpClient client, string prefix, T model) where T : class
+        public static string ConvertToQueryString<T>(this HttpClient client, T model) where T : class
         {
             if (model == null)
             {

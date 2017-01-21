@@ -66,7 +66,7 @@ namespace HIS.Gateway.Services.Clients
 
         public async Task StartCookingAsync(int recipeId)
         {
-            await this.Client.GetAsync<StepViewModel>($"Recipes/{recipeId}/cooking");
+            await this.Client.PostAsync($"Recipes/{recipeId}/cooking");
         }
 
         #endregion

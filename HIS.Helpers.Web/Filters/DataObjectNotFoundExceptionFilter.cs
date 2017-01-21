@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using HIS.Helpers.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,14 @@ namespace HIS.Helpers.Web.Filters
     {
         public override void OnException(ExceptionContext context)
         {
-            if (!(context.Exception is DataObjectNotFoundException)) return;
-            context.ExceptionHandled = true;
-            context.Result = new NotFoundObjectResult(context.Exception.Message);
+            var dataObjectException = context.Exception as DataObjectNotFoundException;
+            var serverException = context.Exception as ServerException;
+
+            if (dataObjectException != null || (serverException != null && serverException.StatusCode == HttpStatusCode.NotFound))
+            {
+                context.ExceptionHandled = true;
+                context.Result = new NotFoundObjectResult(context.Exception.Message);
+            }
         }
     }
 }

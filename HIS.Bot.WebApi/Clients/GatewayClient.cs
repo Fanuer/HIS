@@ -5,8 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using HIS.Bot.WebApi.ConfigSections;
-using HIS.Bot.WebApi.ViewModels;
 using HIS.Bot.WebApi.Extensions;
+using HIS.Bot.WebApi.ViewModels;
+using HIS.Bot.WebApi.ViewModels.Enum;
 using IdentityModel.Client;
 
 namespace HIS.Bot.WebApi.Clients
@@ -35,11 +36,40 @@ namespace HIS.Bot.WebApi.Clients
 
         #region METHODS
 
-        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel, int page = 0, int entriesPerPage = 5)
+        public async Task<ViewModels.ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel, int page = 0, int entriesPerPage = 5)
         {
             await this.SetBearerTokenAsync(HttpContext.Current);
-            return await this._client.GetAsync<ListViewModel<ShortRecipeViewModel>>($"api/v{_apiVersion}/recipes{ConvertToQueryString(searchModel)}&{nameof(page)}={page}&{nameof(entriesPerPage)}={entriesPerPage}");
+            var newUrl = new Uri(this._client.BaseAddress, "Recipes/");
+            var query = $"${nameof(page)}={page}&{nameof(entriesPerPage)}={entriesPerPage}";
+
+            if (searchModel != null)
+            {
+                query  += this._client.ConvertToQueryString(searchModel);
+            }
+
+            return await this._client.GetAsync<ViewModels.ListViewModel<ShortRecipeViewModel>>(new Uri(newUrl, query).ToString());
         }
+
+        public async Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId)
+        {
+            await this.SetBearerTokenAsync(HttpContext.Current);
+
+            return await this._client.GetAsync<IEnumerable<RecipeIngrediantViewModel>>($"Recipes/{recipeId}/Ingrediants");
+        }
+
+        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId = -1, StepDirection direction = StepDirection.ThisStep)
+        {
+            await this.SetBearerTokenAsync(HttpContext.Current);
+
+            return await this._client.GetAsync<StepViewModel>($"Recipes/{recipeId}/Steps/{stepId}" + (direction != StepDirection.ThisStep ? $"?direction={direction}" : ""));
+        }
+
+        public async Task StartCookingAsync(int recipeId)
+        {
+            await this.SetBearerTokenAsync(HttpContext.Current);
+            await this._client.GetAsync($"Recipes/{recipeId}/cooking");
+        }
+
 
         /// <summary>
         /// Receives a bearer token from the auth service and adds it to this client

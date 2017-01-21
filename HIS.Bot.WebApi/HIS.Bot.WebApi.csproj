@@ -161,10 +161,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Enum\CookingUnit.cs" />
+    <Compile Include="ViewModels\Enum\SourceType.cs" />
+    <Compile Include="ViewModels\Enum\StepDirection.cs" />
+    <Compile Include="ViewModels\FullRecipeViewModel.cs" />
     <Compile Include="ViewModels\ListViewModel.cs" />
+    <Compile Include="ViewModels\NamedViewModel.cs" />
+    <Compile Include="ViewModels\RecipeIngrediantViewModel.cs" />
     <Compile Include="ViewModels\RecipeSearchViewModel.cs" />
     <Compile Include="ViewModels\ServerException.cs" />
     <Compile Include="ViewModels\ShortRecipeViewModel.cs" />
+    <Compile Include="ViewModels\StepViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.de-de.resx" />

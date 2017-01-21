@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using HIS.Gateway.Services.Interfaces;
 using HIS.Helpers.Exceptions;
@@ -40,19 +41,13 @@ namespace HIS.Gateway.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Returns a list of all available recipes</response>
+        /// <response code="400">If parameters were incorrect</response>
+        [ProducesResponseType(typeof(ListViewModel<ShortRecipeViewModel>), (int)HttpStatusCode.OK)]
         [HttpGet]
-        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page = 0, [FromQuery]int entriesPerPage = 10)
+        public async Task<IActionResult> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page = 0, [FromQuery]int entriesPerPage = 10)
         {
-            try
-            {
-                await Client.SetBearerTokenAsync(this.HttpContext);
-                return await this.Client.GetRecipes(searchModel, page, entriesPerPage);
-            }
-            catch (ServerException e)
-            {
-                throw new ArgumentException("Unable to access recipe-api", e);
-            }
-            
+            await Client.SetBearerTokenAsync(this.HttpContext);
+            return Ok(await this.Client.GetRecipes(searchModel, page, entriesPerPage));
         }
 
         /// <summary>
@@ -61,11 +56,12 @@ namespace HIS.Gateway.WebApi.Controllers
         /// <param name="recipeId">Id of the Recipe</param>
         /// <response code="200">After adding was successfully</response>
         /// <response code="404">If Tag or Recipe was not found by the given id</response>
+        [ProducesResponseType(typeof(IEnumerable<RecipeIngrediantViewModel>), (int)HttpStatusCode.OK)]
         [HttpGet("{recipeId:int}/Ingrediants")]
-        public async Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId)
+        public async Task<IActionResult> GetRecipeIngrediantsAsync(int recipeId)
         {
             await Client.SetBearerTokenAsync(this.HttpContext);
-            return await this.Client.GetRecipeIngrediantsAsync(recipeId);
+            return Ok(await this.Client.GetRecipeIngrediantsAsync(recipeId));
         }
 
         /// <summary>
@@ -77,12 +73,23 @@ namespace HIS.Gateway.WebApi.Controllers
         /// <response code="200">Steps of a Recipe</response>
         /// <response code="404">If no recipe with the given id was found</response>
         [HttpGet("{recipeId:int}/Steps/{stepId:int}")]
-        public async Task<StepViewModel> GetStepByIdAsync(int recipeId, int stepId, [FromQuery]StepDirection direction = StepDirection.ThisStep)
+        public async Task<IActionResult> GetStepByIdAsync(int recipeId, int stepId, [FromQuery]StepDirection direction = StepDirection.ThisStep)
         {
             await Client.SetBearerTokenAsync(this.HttpContext);
-            return await this.Client.GetStepAsync(recipeId, stepId, direction);
+            return Ok(await this.Client.GetStepAsync(recipeId, stepId, direction));
         }
 
+        /// <summary>
+        /// Marks a recipe as cooked. This infects the order of recipes shown on a search. 
+        /// </summary>
+        /// <param name="recipeId"></param>
+        /// <returns></returns>
+        [HttpPost("{recipeId:int}/Cooking")]
+        public async Task StartCookingAsync(int recipeId)
+        {
+            await Client.SetBearerTokenAsync(this.HttpContext);
+            await this.Client.StartCookingAsync(recipeId);
+        }
         #endregion
 
         #region PROPERTIES

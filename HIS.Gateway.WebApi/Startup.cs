@@ -3,6 +3,7 @@ using System.IO;
 using HIS.Gateway.Services.Configs;
 using HIS.Gateway.Services.Interfaces;
 using HIS.Helpers.Options;
+using HIS.Helpers.Web.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -40,8 +41,11 @@ namespace HIS.Gateway.WebApi
         #endregion
 
         #region METHODS
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
+        /// </summary>
+        /// <param name="services">collection that holds all used services</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
@@ -81,8 +85,16 @@ namespace HIS.Gateway.WebApi
                 options.DescribeAllEnumsAsStrings();
             });
 
+            #endregion            
+            
+            // Add framework services.
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(CheckForInvalidModelFilter));
+                options.Filters.Add(typeof(DataObjectNotFoundExceptionFilter));
+                options.Filters.Add(typeof(IdsNotIdenticalExceptionFilter));
+            });
 
-            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
