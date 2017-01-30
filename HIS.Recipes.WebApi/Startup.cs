@@ -94,7 +94,7 @@ namespace HIS.Recipes.WebApi
             {
                 Authority = authServerInfo.Value.AuthServerLocation,
                 ScopeName = authServerInfo.Value.ApiName,
-                RequireHttpsMetadata = authServerInfo.Value.UseHttps || !env.IsDevelopment() // https only in production
+                RequireHttpsMetadata = authServerInfo.Value.UseHttps && !env.IsDevelopment() // https only in production
             });
 
             app.UseMvcWithDefaultRoute();

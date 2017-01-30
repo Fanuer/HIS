@@ -103,6 +103,7 @@ namespace HIS.Recipes.Services.DB
         internal DbSet<RecipeSourceRecipe> RecipeSourceRecipes { get; set; }
         internal DbSet<RecipeStep> RecipeSteps { get; set; }
         internal DbSet<RecipeTag> RecipeTags { get; set; }
+        internal DbSet<FuzzyEntry> FuzzyEntries{ get; set; }
 
         #endregion
     }

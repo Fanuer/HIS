@@ -107,7 +107,7 @@ namespace HIS.Gateway.Tests.GatewayClientTests
         {
             using (var client = await this.CreateRecipeApiClient())
             {
-                var recipe = await client.GetRecipes();
+                var recipe = await client.GetRecipes(entriesPerPage: Int32.MaxValue);
                 var firstRecipe = recipe.Entries.First();
                 var ingrediants = await client.GetRecipeIngrediantsAsync(firstRecipe.Id);
                 var searchModel = new RecipeSearchViewModel()

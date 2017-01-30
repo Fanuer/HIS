@@ -12,7 +12,7 @@ using IdentityModel.Client;
 
 namespace HIS.Bot.WebApi.Clients
 {
-    public class GatewayClient:IDisposable
+    public class GatewayClient : IDisposable
     {
         #region CONST
         private const string AUTH_COOKIE_NAME = "authCookie";
@@ -26,10 +26,16 @@ namespace HIS.Bot.WebApi.Clients
 
         #region CTOR
 
-        public GatewayClient(string apiVersion = "1")
+        public GatewayClient(string apiVersion = "1.0")
         {
+            if (String.IsNullOrWhiteSpace(apiVersion)) { throw new ArgumentNullException(nameof(apiVersion)); }
             _apiVersion = apiVersion;
-            _client = new HttpClient {BaseAddress = new Uri(this.GetBotData().ClientInfo.GatewayUri)};
+            var baseUrl = new Uri(this.GetBotData().ClientInfo.GatewayUri);
+            if (!this.GetBotData().ClientInfo.GatewayUri.Contains("/api"))
+            {
+                baseUrl = new Uri(baseUrl, $"api/v{apiVersion}/");
+            }
+            _client = new HttpClient { BaseAddress = baseUrl };
         }
         #endregion
 
@@ -39,11 +45,11 @@ namespace HIS.Bot.WebApi.Clients
         {
             await this.SetBearerTokenAsync(HttpContext.Current);
             var newUrl = new Uri(this._client.BaseAddress, "Recipes/");
-            var query = $"${nameof(page)}={page}&{nameof(entriesPerPage)}={entriesPerPage}";
+            var query = $"?{nameof(page)}={page}&{nameof(entriesPerPage)}={entriesPerPage}";
 
             if (searchModel != null)
             {
-                query  += $"&{this._client.ConvertToQueryString(searchModel)}";
+                query += $"&{this._client.ConvertToQueryString(searchModel)}";
             }
 
             return await this._client.GetAsync<ListViewModel<ShortRecipeViewModel>>(new Uri(newUrl, query).ToString());
@@ -77,11 +83,11 @@ namespace HIS.Bot.WebApi.Clients
         private async Task SetBearerTokenAsync(HttpContext context)
         {
             string bearerToken = "";
-            if (context.Request.Cookies.AllKeys.Any(x=>x.Equals(CookieName)))
+            if (context.Request.Cookies.AllKeys.Any(x => x.Equals(CookieName)))
             {
                 bearerToken = context.Request.Cookies.Get(CookieName)?.Value;
             }
-            
+
             if (String.IsNullOrWhiteSpace(bearerToken))
             {
                 var botData = GetBotData();

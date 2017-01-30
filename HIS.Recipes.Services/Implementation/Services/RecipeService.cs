@@ -11,12 +11,13 @@ using HIS.Recipes.Services.Interfaces.Services;
 using HIS.Recipes.Services.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using HIS.Helpers.Extensions.FuzzyString;
 
 namespace HIS.Recipes.Services.Implementation.Services
 {
-    internal class RecipeService:BaseService<IRecipeRepository, Recipe, RecipeUpdateViewModel, RecipeCreationViewModel>, IRecipeService
+    internal class RecipeService : BaseService<IRecipeRepository, Recipe, RecipeUpdateViewModel, RecipeCreationViewModel>, IRecipeService
     {
-        
+
         #region CONST
         #endregion
 
@@ -24,7 +25,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         #endregion
 
         #region CTOR
-        public RecipeService(IRecipeRepository rep, IMapper mapper, ILoggerFactory loggerfactory) 
+        public RecipeService(IRecipeRepository rep, IMapper mapper, ILoggerFactory loggerfactory)
             : base(rep, mapper, loggerfactory.CreateLogger<RecipeService>(), "recipe")
         {
         }
@@ -40,13 +41,15 @@ namespace HIS.Recipes.Services.Implementation.Services
                                     .GetAll()
                                     .Include(x => x.Images)
                                     .Include(x => x.Tags)
-                                        .ThenInclude(x => x.RecipeTag);
+                                        .ThenInclude(x => x.RecipeTag)
+                                    .Include(x => x.Ingrediants)
+                                        .ThenInclude(x => x.Ingrediant);
 
                 var searchresult = this.SearchForRecipes(recipes, searchModel);
-                
+
                 result = searchresult
-                            .OrderByDescending(x=>x.CookedCounter)
-                                .ThenByDescending(x=>x.LastTimeCooked)
+                            .OrderByDescending(x => x.CookedCounter)
+                                .ThenByDescending(x => x.LastTimeCooked)
                             .ProjectTo<ShortRecipeViewModel>(this.Mapper.ConfigurationProvider);
 
                 this.Logger.LogDebug(new EventId(), $"Returned all recipes");
@@ -71,7 +74,41 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
             if (searchModel.Tags != null && searchModel.Tags.Any())
             {
-                recipes = recipes.Where(x => x.Tags.Any(rtag => searchModel.Tags.Contains(rtag.RecipeTag.Name)));
+                Dictionary<string, int> allTags = null;
+
+                foreach (var searchModelTag in searchModel.Tags)
+                {
+                    var hits = recipes.Where(x => x.Tags.Any(recipeTag => recipeTag.RecipeTag.Name.Contains(searchModelTag)));
+                    if (!hits.Any())
+                    {
+                        var cachedResults = await Repository.GetCachedFuzzyResultAsync(searchModelTag);
+                        if (cachedResults == null)
+                        {
+                            if (allTags == null)
+                            {
+                                allTags = recipes.SelectMany(x => x.Tags).ToDictionary(x => x.RecipeTag.Name, x => x.RecipeTagId);
+                            }
+                            var hit = allTags.Keys.FirstOrDefault(x => x.ApproximatelyEquals(searchModelTag, FuzzyStringComparisonTolerance.Normal, FuzzyStringComparisonOptions.UseLevenshteinDistance));
+                            if (hit != null)
+                            {
+                                await Repository.SaveFuzzyResultAsync(new FuzzyEntry() {EntityId = allTags[hit], SearchQuery = searchModelTag, Type = typeof(RecipeTag).Name});
+                                hits = recipes.Where(x => x.Tags.Any(tag => tag.RecipeTagId.Equals(allTags[hit])));
+                            }
+                        }
+                    }
+                }
+               
+
+                recipes = recipes.Where(x => x.Tags
+                                              .Any(recipeTag=> searchModel.Tags
+                                                                          .Any(searchTag => searchTag.Equals(recipeTag.RecipeTag.Name, StringComparison.CurrentCultureIgnoreCase))));
+            }
+            if (searchModel.Ingrediants != null && searchModel.Ingrediants.Any())
+            {
+                recipes = recipes
+                            .Where(x => x.Ingrediants
+                                         .Any(recipeIngrediant => searchModel.Ingrediants
+                                                                             .Any(searchIngrediant => searchIngrediant.Equals(recipeIngrediant.Ingrediant.Name, StringComparison.CurrentCultureIgnoreCase))));
             }
             return recipes;
         }
@@ -86,13 +123,13 @@ namespace HIS.Recipes.Services.Implementation.Services
                                    .Include(x => x.Images)
                                    .Include(x => x.Tags)
                                         .ThenInclude(x => x.RecipeTag)
-                                   .Include(x=>x.Steps)
-                                   .Include(x=>x.Ingrediants)
-                                        .ThenInclude(x=>x.Ingrediant)
-                                   .Include(x=>x.Source)
-                                        .ThenInclude(x=>x.Source)
+                                   .Include(x => x.Steps)
+                                   .Include(x => x.Ingrediants)
+                                        .ThenInclude(x => x.Ingrediant)
+                                   .Include(x => x.Source)
+                                        .ThenInclude(x => x.Source)
                                    .ProjectTo<FullRecipeViewModel>(this.Mapper.ConfigurationProvider)
-                                   .SingleOrDefaultAsync(x=>x.Id.Equals(recipeId));
+                                   .SingleOrDefaultAsync(x => x.Id.Equals(recipeId));
 
                 if (result == null)
                 {
@@ -117,7 +154,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         public async Task CookNowAsync(int recipeId)
         {
             var recipe = await this.Repository.FindAsync(recipeId);
-            if(recipe == null)
+            if (recipe == null)
             {
                 throw new DataObjectNotFoundException($"No recipe with the given no '{recipeId}' found");
             }

@@ -162,7 +162,5 @@ namespace HIS.Data.Base.MSSql
 
         protected DbContext DbContext { get; private set; }
         #endregion
-
-        
     }
 }
