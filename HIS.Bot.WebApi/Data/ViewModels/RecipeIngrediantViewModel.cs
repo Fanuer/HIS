@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HIS.Bot.WebApi.Data.ViewModels.Enum;
 
-namespace HIS.Bot.WebApi.ViewModels
+namespace HIS.Bot.WebApi.Data.ViewModels
 {
     public class RecipeIngrediantViewModel:NamedViewModel
     {

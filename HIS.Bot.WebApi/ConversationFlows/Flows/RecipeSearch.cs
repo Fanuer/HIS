@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using Microsoft.Bot.Builder.FormFlow;
-using Microsoft.Bot.Builder.FormFlow.Advanced;
 
-namespace HIS.Bot.WebApi.Flows
+namespace HIS.Bot.WebApi.ConversationFlows.Flows
 {
     public class RecipeSearch
     {

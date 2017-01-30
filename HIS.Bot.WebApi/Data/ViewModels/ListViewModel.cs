@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace HIS.Bot.WebApi.ViewModels
+namespace HIS.Bot.WebApi.Data.ViewModels
 {
     public class ListViewModel<T> where T:class
     {

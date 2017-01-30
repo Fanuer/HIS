@@ -4,17 +4,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using HIS.Bot.WebApi.ConfigSections;
+using HIS.Bot.WebApi.Data.ViewModels;
+using HIS.Bot.WebApi.Data.ViewModels.Enum;
 using HIS.Bot.WebApi.Extensions;
-using HIS.Bot.WebApi.ViewModels;
-using HIS.Bot.WebApi.ViewModels.Enum;
+using HIS.Bot.WebApi.XML.ConfigSections;
 using IdentityModel.Client;
 
 namespace HIS.Bot.WebApi.Clients
 {
     public class GatewayClient:IDisposable
     {
-
         #region CONST
         private const string AUTH_COOKIE_NAME = "authCookie";
 
@@ -36,7 +35,7 @@ namespace HIS.Bot.WebApi.Clients
 
         #region METHODS
 
-        public async Task<ViewModels.ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel, int page = 0, int entriesPerPage = 5)
+        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel, int page = 0, int entriesPerPage = 5)
         {
             await this.SetBearerTokenAsync(HttpContext.Current);
             var newUrl = new Uri(this._client.BaseAddress, "Recipes/");
@@ -44,10 +43,10 @@ namespace HIS.Bot.WebApi.Clients
 
             if (searchModel != null)
             {
-                query  += this._client.ConvertToQueryString(searchModel);
+                query  += $"&{this._client.ConvertToQueryString(searchModel)}";
             }
 
-            return await this._client.GetAsync<ViewModels.ListViewModel<ShortRecipeViewModel>>(new Uri(newUrl, query).ToString());
+            return await this._client.GetAsync<ListViewModel<ShortRecipeViewModel>>(new Uri(newUrl, query).ToString());
         }
 
         public async Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId)
@@ -60,14 +59,13 @@ namespace HIS.Bot.WebApi.Clients
         public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId = -1, StepDirection direction = StepDirection.ThisStep)
         {
             await this.SetBearerTokenAsync(HttpContext.Current);
-
             return await this._client.GetAsync<StepViewModel>($"Recipes/{recipeId}/Steps/{stepId}" + (direction != StepDirection.ThisStep ? $"?direction={direction}" : ""));
         }
 
         public async Task StartCookingAsync(int recipeId)
         {
             await this.SetBearerTokenAsync(HttpContext.Current);
-            await this._client.GetAsync($"Recipes/{recipeId}/cooking");
+            await this._client.PostAsync($"Recipes/{recipeId}/cooking");
         }
 
 
@@ -116,7 +114,7 @@ namespace HIS.Bot.WebApi.Clients
 
         private BotData GetBotData()
         {
-            var config = System.Configuration.ConfigurationManager.GetSection("botData") as ConfigSections.BotData;
+            var config = System.Configuration.ConfigurationManager.GetSection("botData") as BotData;
             if (config == null)
             {
                 throw new ArgumentNullException(nameof(config), "Configsection 'BotData' must be defined within the web.config");

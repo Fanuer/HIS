@@ -33,11 +33,14 @@ namespace HIS.Gateway.Tests
         private ClientCredentials GetClientInfos(IConfiguration config, string sectionKey)
         {
             if (String.IsNullOrWhiteSpace(sectionKey)) { throw new ArgumentNullException(nameof(sectionKey));}
+            const string clientId = "ClientId";
+            const string clientSecret = "ClientSecret";
+
 
             var result = new ClientCredentials();
             var configClientInfo = config.GetSection(sectionKey);
-            result.ClientId = configClientInfo["ClientId"];
-            result.ClientSecret = configClientInfo["ClientSecret"];
+            result.ClientId = configClientInfo[$"{clientId}"] ?? config[$"{sectionKey}:{clientId}"];
+            result.ClientSecret = configClientInfo[$"{clientSecret}"] ??  config[$"{sectionKey}:{clientSecret}"];
 
             if (String.IsNullOrWhiteSpace(result.ClientId)) { throw new ArgumentNullException(nameof(result.ClientId), "Appsettings.Keys.Json-Configfile must define the key ClientInfo:ClientId"); }
             if (String.IsNullOrWhiteSpace(result.ClientSecret)) { throw new ArgumentNullException(nameof(result.ClientSecret), "Appsettings.Keys.Json-Configfile must define the key ClientInfo:ClientSecret"); }

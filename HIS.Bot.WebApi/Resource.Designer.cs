@@ -22,7 +22,7 @@ namespace HIS.Bot.WebApi {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource {
+    public class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace HIS.Bot.WebApi {
         ///   Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HIS.Bot.WebApi.Resource", typeof(Resource).Assembly);
@@ -51,7 +51,7 @@ namespace HIS.Bot.WebApi {
         ///   Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,20 +61,191 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Start Cooking ähnelt.
+        /// </summary>
+        public static string ButtonLabel_StartCooking {
+            get {
+                return ResourceManager.GetString("ButtonLabel_StartCooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bunch(es) ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Bunch {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Bunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die g ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Gramm {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Gramm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die kg ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Kilogramm {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Kilogramm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die l ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Liter {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Liter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die mg ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Milligramm {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Milligramm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die ml ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Milliliter {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Milliliter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die msp ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Msp {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Msp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die  ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_None {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Package(s) ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Package {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Package", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die tbl ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Tablespoon {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Tablespoon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die tsp ähnelt.
+        /// </summary>
+        public static string EnumValue_CookingUnit_Teaspoon {
+            get {
+                return ResourceManager.GetString("EnumValue_CookingUnit_Teaspoon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die I&apos;m sorry. I didn&apos;t understand you. ähnelt.
         /// </summary>
-        internal static string Message_DontUnderstand {
+        public static string Message_Error_DontUnderstand {
             get {
-                return ResourceManager.GetString("Message_DontUnderstand", resourceCulture);
+                return ResourceManager.GetString("Message_Error_DontUnderstand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You have to choose a recipe first, to show its ingrediant-list ähnelt.
+        /// </summary>
+        public static string Message_Error_NoRecipeIdFoundForIngrediantslist {
+            get {
+                return ResourceManager.GetString("Message_Error_NoRecipeIdFoundForIngrediantslist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, I found no recipes that matches your question ähnelt.
+        /// </summary>
+        public static string Message_Error_NoRecipesFound {
+            get {
+                return ResourceManager.GetString("Message_Error_NoRecipesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, I did not find your Recipe ähnelt.
+        /// </summary>
+        public static string Message_Error_RecipeNotFound {
+            get {
+                return ResourceManager.GetString("Message_Error_RecipeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die I found the following recipes ähnelt.
+        /// </summary>
+        public static string Message_RecipesFound {
+            get {
+                return ResourceManager.GetString("Message_RecipesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die While cooking, you can navigate between the cooking steps or ask for the ingrediants list ähnelt.
+        /// </summary>
+        public static string Message_StartCooking_Desc {
+            get {
+                return ResourceManager.GetString("Message_StartCooking_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Here we go ähnelt.
+        /// </summary>
+        public static string Message_StartCooking_HereWeGo {
+            get {
+                return ResourceManager.GetString("Message_StartCooking_HereWeGo", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Welcome. I am a Recipe Bot. You can ask me for cool recipes. When you choose one, I will guide you though your cooking. ähnelt.
         /// </summary>
-        internal static string Message_Welcome {
+        public static string Message_Welcome {
             get {
                 return ResourceManager.GetString("Message_Welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You need these ingrediants: ähnelt.
+        /// </summary>
+        public static string Message_YouNeedFollingIngrediants {
+            get {
+                return ResourceManager.GetString("Message_YouNeedFollingIngrediants", resourceCulture);
             }
         }
     }

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using HIS.Bot.WebApi.Dialogs;
+using HIS.Bot.WebApi.ConversationFlows.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -72,13 +72,13 @@ namespace HIS.Bot.WebApi.Controllers
                 case ActivityTypes.ContactRelationUpdate:   // The bot was added to or removed from a user's contact list
                     if (incoming.AsContactRelationUpdateActivity().Action.Equals("add"))
                     {
-                        await SendReplyMessage($"{Resource.Message_Welcome} {incoming.From.Name}", incoming, token);
+                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
                     }
                     break;
                 case ActivityTypes.ConversationUpdate:      // This notification is sent when the conversation's properties change, for example the topic name, or when user joins or leaves the group
                     if (incoming.AsConversationUpdateActivity().MembersAdded.Any())
                     {
-                        await SendReplyMessage($"{Resource.Message_Welcome} {incoming.From.Name}", incoming, token);
+                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
                     }
                     break;
                 case ActivityTypes.DeleteUserData:          // A user has requested for the bot to delete any profile / user data

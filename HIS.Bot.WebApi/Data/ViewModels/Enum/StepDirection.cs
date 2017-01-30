@@ -1,4 +1,4 @@
-﻿namespace HIS.Bot.WebApi.ViewModels.Enum
+﻿namespace HIS.Bot.WebApi.Data.ViewModels.Enum
 {
     public enum StepDirection
     {

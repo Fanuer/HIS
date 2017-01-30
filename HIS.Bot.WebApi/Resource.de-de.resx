@@ -117,10 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ButtonLabel_StartCooking" xml:space="preserve">
+    <value>Jetzt Kochen</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Bunch" xml:space="preserve">
+    <value>Bunch(es)</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Gramm" xml:space="preserve">
+    <value>g</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Kilogramm" xml:space="preserve">
+    <value>kg</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Liter" xml:space="preserve">
+    <value>l</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Milligramm" xml:space="preserve">
+    <value>mg</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Milliliter" xml:space="preserve">
+    <value>ml</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Msp" xml:space="preserve">
+    <value>msp</value>
+  </data>
+  <data name="EnumValue_CookingUnit_None" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EnumValue_CookingUnit_Package" xml:space="preserve">
+    <value>Package(s)</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Tablespoon" xml:space="preserve">
+    <value>tbl</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Teaspoon" xml:space="preserve">
+    <value>tsp</value>
+  </data>
   <data name="Message_DontUnderstand" xml:space="preserve">
     <value>Tut mir leid. Ich verstehe dich nicht</value>
   </data>
+  <data name="Message_Error_NoRecipeIdFoundForIngrediantslist" xml:space="preserve">
+    <value>Du musst zuerst ein Rezept auswählen, bevor du dir die Zutatenliste angucken kannst</value>
+  </data>
+  <data name="Message_Error_NoRecipesFound" xml:space="preserve">
+    <value>Für deine Anfrage habe ich keine Rezepte gefunden</value>
+  </data>
+  <data name="Message_Error_RecipeNotFound" xml:space="preserve">
+    <value>Rezept wurde nicht gefunden</value>
+  </data>
+  <data name="Message_RecipesFound" xml:space="preserve">
+    <value>Ich habe folgende Rezepte gefunden</value>
+  </data>
+  <data name="Message_StartCooking_Desc" xml:space="preserve">
+    <value>Du kannst während des Kochens zwischen den einzelnen Schritten vor und zurücknavigieren oder dir die Zutatenliste anzeigen lassen.</value>
+  </data>
+  <data name="Message_StartCooking_HereWeGo" xml:space="preserve">
+    <value>Los gehts</value>
+  </data>
   <data name="Message_Welcome" xml:space="preserve">
     <value>Hallo. Ich bin ein Rezepte-Bot. Du kannst mich nach tollen Rezepten fragen. Nachdem du ein Rezept ausgewählt hast, werde ich dich beim Kochen begleiten.</value>
+  </data>
+  <data name="Message_YouNeedFollingIngrediants" xml:space="preserve">
+    <value>Für dein Rezept werden folgende Zutaten benötigt:</value>
   </data>
 </root>

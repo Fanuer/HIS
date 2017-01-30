@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using HIS.Bot.WebApi.Data.ViewModels.Interfaces;
 
-namespace HIS.Bot.WebApi.ViewModels
+namespace HIS.Bot.WebApi.Data.ViewModels
 {
     public class FullRecipeViewModel:RecipeCreationViewModel, IViewModelEntity<int>
     {

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web;
 using Newtonsoft.Json;
 
-namespace HIS.Bot.WebApi.ViewModels
+namespace HIS.Bot.WebApi.Data.ViewModels
 {
     public class ServerException : Exception
     {

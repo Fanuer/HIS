@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Web;
 
-namespace HIS.Bot.WebApi.ConfigSections
+namespace HIS.Bot.WebApi.XML.ConfigSections
 {
     public class ClientInfo : ConfigurationElement
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HIS.Bot.WebApi.ViewModels
+namespace HIS.Bot.WebApi.Data.ViewModels
 {
     public class RecipeSearchViewModel
     {

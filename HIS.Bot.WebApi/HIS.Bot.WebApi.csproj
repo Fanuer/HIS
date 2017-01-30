@@ -123,8 +123,8 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="WebConfigData\HISAuth.xml" />
-    <Content Include="WebConfigData\MSAuth.xml" />
+    <Content Include="XML\WebConfigData\HISAuth.xml" />
+    <Content Include="XML\WebConfigData\MSAuth.xml" />
     <None Include="Properties\PublishProfiles\his-bot - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\his-bot - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\his-bot - Web Deploy.pubxml" />
@@ -144,14 +144,17 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Clients\GatewayClient.cs" />
-    <Compile Include="ConfigSections\AuthServiceData.cs" />
-    <Compile Include="ConfigSections\BotData.cs" />
-    <Compile Include="ConfigSections\ClientInfo.cs" />
+    <Compile Include="Data\Enums\CardActionTypes.cs" />
+    <Compile Include="Data\Exceptions\RecipeIdNotFoundException.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="XML\ConfigSections\AuthServiceData.cs" />
+    <Compile Include="XML\ConfigSections\BotData.cs" />
+    <Compile Include="XML\ConfigSections\ClientInfo.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Dialogs\RecipeDialog.cs" />
+    <Compile Include="ConversationFlows\Dialogs\RecipeDialog.cs" />
     <Compile Include="Extensions\EntityRecommendationExtensions.cs" />
     <Compile Include="Extensions\HttpClientExtensions.cs" />
-    <Compile Include="Flows\RecipeSearch.cs" />
+    <Compile Include="ConversationFlows\Flows\RecipeSearch.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -161,22 +164,32 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Enum\CookingUnit.cs" />
-    <Compile Include="ViewModels\Enum\SourceType.cs" />
-    <Compile Include="ViewModels\Enum\StepDirection.cs" />
-    <Compile Include="ViewModels\FullRecipeViewModel.cs" />
-    <Compile Include="ViewModels\ListViewModel.cs" />
-    <Compile Include="ViewModels\NamedViewModel.cs" />
-    <Compile Include="ViewModels\RecipeIngrediantViewModel.cs" />
-    <Compile Include="ViewModels\RecipeSearchViewModel.cs" />
-    <Compile Include="ViewModels\ServerException.cs" />
-    <Compile Include="ViewModels\ShortRecipeViewModel.cs" />
-    <Compile Include="ViewModels\StepViewModel.cs" />
+    <Compile Include="Data\ViewModels\Enum\CookingUnit.cs" />
+    <Compile Include="Data\ViewModels\Enum\SourceType.cs" />
+    <Compile Include="Data\ViewModels\Enum\StepDirection.cs" />
+    <Compile Include="Data\ViewModels\FullRecipeViewModel.cs" />
+    <Compile Include="Data\ViewModels\ListViewModel.cs" />
+    <Compile Include="Data\ViewModels\Interfaces\IEnity.cs" />
+    <Compile Include="Data\ViewModels\Interfaces\INamedEntity.cs" />
+    <Compile Include="Data\ViewModels\Interfaces\IViewModelEntity.cs" />
+    <Compile Include="Data\ViewModels\NamedViewModel.cs" />
+    <Compile Include="Data\ViewModels\RecipeChangeViewModel.cs" />
+    <Compile Include="Data\ViewModels\RecipeCreationViewModel.cs" />
+    <Compile Include="Data\ViewModels\RecipeIngrediantViewModel.cs" />
+    <Compile Include="Data\ViewModels\RecipeSearchViewModel.cs" />
+    <Compile Include="Data\ViewModels\RecipeSourceShortInfoViewModel.cs" />
+    <Compile Include="Data\ViewModels\ServerException.cs" />
+    <Compile Include="Data\ViewModels\ShortRecipeViewModel.cs" />
+    <Compile Include="Data\ViewModels\StepCreateViewModel.cs" />
+    <Compile Include="Data\ViewModels\StepUpdateViewModel.cs" />
+    <Compile Include="Data\ViewModels\StepViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resource.de-de.resx" />
+    <EmbeddedResource Include="Resource.de-de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

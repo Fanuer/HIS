@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
+﻿using System.Configuration;
 
-namespace HIS.Bot.WebApi.ConfigSections
+namespace HIS.Bot.WebApi.XML.ConfigSections
 {
     public class BotData : ConfigurationSection
     {

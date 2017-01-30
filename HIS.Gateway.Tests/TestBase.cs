@@ -25,7 +25,7 @@ namespace HIS.Gateway.Tests
         }
         protected IConfiguration GetConfig()
         {
-            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.keys.json", optional: true, reloadOnChange: true);
+            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.keys.json", optional: false, reloadOnChange: true);
             return builder.Build();
         }
 

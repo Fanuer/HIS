@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using ServerException = HIS.Bot.WebApi.ViewModels.ServerException;
+using ServerException = HIS.Bot.WebApi.Data.ViewModels.ServerException;
 
 namespace HIS.Bot.WebApi.Extensions
 {

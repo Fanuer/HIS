@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HIS.Bot.WebApi.Data.ViewModels.Interfaces;
 
-namespace HIS.Bot.WebApi.ViewModels
+namespace HIS.Bot.WebApi.Data.ViewModels
 {
     /// <summary>
     /// Returns an entity with its name, id and url
