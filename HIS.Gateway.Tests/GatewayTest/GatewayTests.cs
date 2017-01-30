@@ -33,7 +33,6 @@ namespace HIS.Gateway.Tests.GatewayTest
                     Console.WriteLine(e);
                     throw;
                 }
-                
             }
         }
 

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Recipes.Services.Models
 {
-    public class FuzzyEntry
+    public class FuzzyEntry:IFuzzyEntry
     {
         public string SearchQuery { get; set; }
-        public string Type { get; set; }
-        public int EntityId { get; set; }
+        public IEntity<int> Entity { get; set; }
     }
 }
