@@ -9,10 +9,15 @@ namespace HIS.Recipes.Services.Interfaces.Services
     public interface IRecipeService: IDisposable
     {
         /// <summary>
+        /// Returns a collection of recipes by the given search parameters
+        /// </summary>
+        /// <returns></returns>
+        Task<IQueryable<ShortRecipeViewModel>> SearchForRecipes(RecipeSearchViewModel searchModel = null);
+        /// <summary>
         /// Retunrs a collection of recipes
         /// </summary>
         /// <returns></returns>
-        Task<IQueryable<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel = null);
+        IQueryable<ShortRecipeViewModel> GetRecipes();
         /// <summary>
         /// Returns all data of a recipe
         /// </summary>

@@ -6,9 +6,10 @@ using HIS.Data.Base.Interfaces.Models;
 
 namespace HIS.Data.Base.Interfaces
 {
-    public interface IFuzzySearchStore
+    public interface IFuzzySearchStore<TFuzzy, TIdProperty> where TFuzzy : IFuzzyEntry<TIdProperty>
     {
-        Task<int> GetCachedFuzzyResultAsync(string searchQuery);
-        Task SaveFuzzyResultAsync(FuzzyEntry newEntry);
+        Task<TIdProperty> GetCachedFuzzyResultAsync(string type, string searchQuery);
+        Task SaveFuzzyEntryAsync(TFuzzy newEntry);
+        Task RemoveFuzzyEntryAsync(TFuzzy newEntry);
     }
 }

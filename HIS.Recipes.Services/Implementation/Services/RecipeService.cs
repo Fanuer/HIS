@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using HIS.Helpers.Extensions.FuzzyString;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using HIS.Helpers.Extensions;
 
 namespace HIS.Recipes.Services.Implementation.Services
 {
@@ -34,7 +35,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         #endregion
 
         #region METHODS
-        public async Task<IQueryable<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel = null)
+        public async Task<IQueryable<ShortRecipeViewModel>> SearchForRecipes(RecipeSearchViewModel searchModel)
         {
             IQueryable<ShortRecipeViewModel> result = null;
             try
@@ -64,6 +65,31 @@ namespace HIS.Recipes.Services.Implementation.Services
             return result;
         }
 
+        public IQueryable<ShortRecipeViewModel> GetRecipes()
+        {
+            IQueryable<ShortRecipeViewModel> result = null;
+            try
+            {
+                result = this.Repository
+                                    .GetAll()
+                                    .Include(x => x.Images)
+                                    .Include(x => x.Tags)
+                                        .ThenInclude(x => x.RecipeTag)
+                                    .OrderByDescending(x => x.CookedCounter)
+                                        .ThenByDescending(x => x.LastTimeCooked)
+                                    .ProjectTo<ShortRecipeViewModel>(this.Mapper.ConfigurationProvider);
+
+                this.Logger.LogDebug(new EventId(), $"Returned all recipes");
+            }
+            catch (Exception e)
+            {
+                this.Logger.LogError(new EventId(), e, $"Error on receiving all recipes");
+                throw new Exception($"Error on receiving all recipes");
+            }
+            return result;
+        }
+
+
         private async Task<IQueryable<Recipe>> SearchForRecipes(IQueryable<Recipe> recipes, RecipeSearchViewModel searchModel)
         {
             if (recipes == null) { throw new ArgumentNullException(nameof(recipes)); }
@@ -76,54 +102,99 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
             if (searchModel.Tags != null && searchModel.Tags.Any())
             {
-                Dictionary<string, RecipeTag> allTags = null;
-                IQueryable<Recipe> hits = new EnumerableQuery<Recipe>(new List<Recipe>());
-                foreach (var searchModelTag in searchModel.Tags)
-                {
-                     var currentHits = recipes.Where(x => x.Tags.Any(recipeTag => recipeTag.RecipeTag.Name.Contains(searchModelTag)));
-                    if (!await currentHits.AnyAsync())
-                    {
-                        var cachedResults = await Repository.GetCachedFuzzyResultAsync(searchModelTag);
-                        if (cachedResults == -1)
-                        {
-                            if (allTags == null)
-                            {
-                                allTags = recipes.SelectMany(x => x.Tags).ToDictionary(x => x.RecipeTag.Name, x => x.RecipeTag);
-                            }
-                            var hit = allTags.Keys.FirstOrDefault(x => x.ApproximatelyEquals(searchModelTag, FuzzyStringComparisonTolerance.Normal, FuzzyStringComparisonOptions.UseLevenshteinDistance));
-                            if (hit != null)
-                            {
-                                var newEntry = new FuzzyEntry() {Entity = allTags[hit], SearchQuery = searchModelTag};
-                                await Repository.SaveFuzzyResultAsync(newEntry);
-                                //await Repository.SaveFuzzyResultAsync(new FuzzyEntry() {EntityId = allTags[hit], SearchQuery = searchModelTag, Type = typeof(RecipeTag).Name});
-                                currentHits = recipes.Where(x => x.Tags.Any(tag => tag.RecipeTagId.Equals(allTags[hit].Id)));
-                            }
-                        }
-                        else
-                        {
-                            currentHits = recipes.Where(x => x.Tags.Any(tag => tag.RecipeTagId.Equals(cachedResults)));
-                        }
-                    }
-                    if (currentHits != null && await currentHits.AnyAsync())
-                    {
-                        hits = currentHits.Union(hits);
-                    }
-                }
-               
-
-                recipes = recipes.Where(x => x.Tags
-                                              .Any(recipeTag=> searchModel.Tags
-                                                                          .Any(searchTag => searchTag.Equals(recipeTag.RecipeTag.Name, StringComparison.CurrentCultureIgnoreCase))));
+                var hits = await GetRecipesForTagSearchQuery(recipes, searchModel);
+                recipes = recipes.Where(x => x.Tags.Any(tag => hits.Contains(tag.RecipeTagId)));
             }
             if (searchModel.Ingrediants != null && searchModel.Ingrediants.Any())
             {
-                recipes = recipes
-                            .Where(x => x.Ingrediants
-                                         .Any(recipeIngrediant => searchModel.Ingrediants
-                                                                             .Any(searchIngrediant => searchIngrediant.Equals(recipeIngrediant.Ingrediant.Name, StringComparison.CurrentCultureIgnoreCase))));
+                var hits = await GetRecipesForIngrediantsSearchQuery(recipes, searchModel);
+                recipes = recipes.Where(x => x.Ingrediants.Any(ingrediant => hits.Contains(ingrediant.IngrediantId)));
             }
             return recipes;
         }
+
+        private async Task<IEnumerable<int>> GetRecipesForTagSearchQuery(IQueryable<Recipe> recipes, RecipeSearchViewModel model)
+        {
+            Dictionary<string, int> allEntries = null;
+            IList<int> hits = new List<int>();
+            foreach (var searchModelTag in model.Tags)
+            {
+                // check if tag are found within database
+                var currentHit = await recipes.Where(x => x.Tags.Any(recipeTag => recipeTag.RecipeTag.Name.Contains(searchModelTag, true))).Select(x=>x.Id).FirstOrDefaultAsync();
+                if (currentHit != default(int))
+                {
+                    hits.Add(currentHit);
+                    continue;
+                }
+
+                // if no hits, lookup for fuzzy search cache for search query
+                currentHit = await Repository.GetCachedFuzzyResultAsync(nameof(RecipeTag), searchModelTag);
+                if (currentHit != default(int))
+                {
+                    hits.Add(currentHit);
+                    continue;
+                }
+
+                // If no hits available, load all elements and process a fuzzy search on them 
+                // TODO: Change to 'real' caching (e.g. Lucene)
+                if (allEntries == null)
+                {
+                    allEntries = recipes.SelectMany(x => x.Tags).ToDictionary(x => x.RecipeTag.Name, x => x.RecipeTagId);
+                }
+
+                var hit = allEntries.Keys.FirstOrDefault(x => x.ApproximatelyEquals(searchModelTag, FuzzyStringComparisonTolerance.Normal, FuzzyStringComparisonOptions.UseLevenshteinDistance));
+                // if hit is found, save to cache for reuse
+                if (hit != null)
+                {
+                    var newEntry = new FuzzyEntry() { Id = allEntries[hit], SearchQuery = searchModelTag, Type = nameof(RecipeTag) };
+                    await Repository.SaveFuzzyEntryAsync(newEntry);
+                    hits.Add(allEntries[hit]);
+                }
+            }
+            return hits.Distinct();
+        }
+
+        private async Task<IEnumerable<int>> GetRecipesForIngrediantsSearchQuery(IQueryable<Recipe> recipes, RecipeSearchViewModel model)
+        {
+            Dictionary<string, int> allEntries = null;
+            IList<int> hits = new List<int>();
+            foreach (var searchIngrediant in model.Ingrediants)
+            {
+                // check if tag are found within database
+                var currentHit = await recipes.Where(x => x.Ingrediants.Any(ingrediant => ingrediant.Ingrediant.Name.Contains(searchIngrediant, true))).Select(x => x.Id).FirstOrDefaultAsync();
+                if (currentHit != default(int))
+                {
+                    hits.Add(currentHit);
+                    continue;
+                }
+
+                // if no hits, lookup for fuzzy search cache for search query
+                currentHit = await Repository.GetCachedFuzzyResultAsync(nameof(RecipeTag), searchIngrediant);
+                if (currentHit != default(int))
+                {
+                    hits.Add(currentHit);
+                    continue;
+                }
+
+                // If no hits available, load all elements and process a fuzzy search on them 
+                // TODO: Change to 'real' caching (e.g. Lucene)
+                if (allEntries == null)
+                {
+                    allEntries = recipes.SelectMany(x => x.Ingrediants).ToDictionary(x => x.Ingrediant.Name, x => x.IngrediantId);
+                }
+
+                var hit = allEntries.Keys.FirstOrDefault(x => x.ApproximatelyEquals(searchIngrediant, FuzzyStringComparisonTolerance.Normal, FuzzyStringComparisonOptions.UseLevenshteinDistance));
+                // if hit is found, save to cache for reuse
+                if (hit != null)
+                {
+                    var newEntry = new FuzzyEntry() { Id = allEntries[hit], SearchQuery = searchIngrediant, Type = nameof(RecipeTag) };
+                    await Repository.SaveFuzzyEntryAsync(newEntry);
+                    hits.Add(allEntries[hit]);
+                }
+            }
+            return hits.Distinct();
+        }
+
 
         public async Task<FullRecipeViewModel> GetRecipeAsync(int recipeId)
         {

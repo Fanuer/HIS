@@ -11,20 +11,22 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HIS.Data.Base.MSSql
 {
-    public abstract class GenericDbRepository<T, TIdProperty> 
-        : IRepositoryAddAndDelete<T, TIdProperty>, 
-          IRepositoryFindAll<T>, 
-          IRepositoryFindSingle<T, TIdProperty>, 
-          IRepositoryUpdate<T, TIdProperty>, 
-          ICountAsync, 
-          IManualSaveChanges, 
-          IDisposable 
+    public abstract class GenericDbRepository<T, TIdProperty, TFuzzy>
+        : IRepositoryAddAndDelete<T, TIdProperty>,
+          IRepositoryFindAll<T>,
+          IRepositoryFindSingle<T, TIdProperty>,
+          IRepositoryUpdate<T, TIdProperty>,
+          ICountAsync,
+          IManualSaveChanges,
+          IDisposable,
+          IFuzzySearchStore<TFuzzy, TIdProperty>
           where T : class, IEntity<TIdProperty>
+          where TFuzzy : class, IFuzzyEntry<TIdProperty>
     {
         #region Field
 
         bool _disposed;
-        
+
 
         #endregion
 
@@ -90,7 +92,7 @@ namespace HIS.Data.Base.MSSql
             return this.DbContext.Set<T>().AsQueryable();
         }
 
-        
+
         public async Task<T> FindAsync<TProperty>(TIdProperty id, Expression<Func<T, TProperty>> navigationPropertyPath = null)
         {
             var dbSet = this.DbContext.Set<T>();
@@ -98,7 +100,7 @@ namespace HIS.Data.Base.MSSql
             {
                 throw new ArgumentException($"No DBSet of type {typeof(T).Name} was found in dbContext {this.DbContext.GetType().Name}");
             }
-            
+
             return navigationPropertyPath != null ? await dbSet.Include(navigationPropertyPath).SingleOrDefaultAsync(x => x.Id.Equals(id)) : await dbSet.SingleOrDefaultAsync(x => x.Id.Equals(id));
         }
 
@@ -126,7 +128,7 @@ namespace HIS.Data.Base.MSSql
         {
             return DbContext.SaveChanges();
         }
-        
+
         public async Task<int> SaveChangesAsync()
         {
             return await this.DbContext.SaveChangesAsync();
@@ -156,11 +158,44 @@ namespace HIS.Data.Base.MSSql
             this.DbContext = null;
             _disposed = true;
         }
+
+        #region IFuzzyStore
+
+        public async Task<TIdProperty> GetCachedFuzzyResultAsync(string type, string searchQuery)
+        {
+            if (String.IsNullOrWhiteSpace(type)) { throw new ArgumentNullException(nameof(type)); }
+            if (String.IsNullOrWhiteSpace(searchQuery)) { throw new ArgumentNullException(nameof(searchQuery)); }
+            var result = await DbContext.Set<TFuzzy>().FirstOrDefaultAsync(x => x.SearchQuery.Equals(searchQuery, StringComparison.CurrentCultureIgnoreCase) && type.Equals(type));
+            return result != null ? result.Id : default(TIdProperty);
+        }
+
+        public async Task SaveFuzzyEntryAsync(TFuzzy newEntry)
+        {
+            if (newEntry == null) { throw new ArgumentNullException(nameof(newEntry)); }
+            DbContext.Set<TFuzzy>().Add(newEntry);
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveFuzzyEntryAsync(TFuzzy entry)
+        {
+            if (entry == null) { throw new ArgumentNullException(nameof(entry)); }
+
+            var entries = DbContext.Set<TFuzzy>();
+            if (await entries.AnyAsync(x => x.Equals(entry)))
+            {
+                DbContext.Set<TFuzzy>().Remove(entry);
+                await DbContext.SaveChangesAsync();
+            }
+        }
+
+
+        #endregion
         #endregion
 
         #region Property
 
         protected DbContext DbContext { get; private set; }
+
         #endregion
     }
 }

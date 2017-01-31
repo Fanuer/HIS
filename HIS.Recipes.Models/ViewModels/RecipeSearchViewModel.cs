@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HIS.Recipes.Models.ViewModels
 {
@@ -15,5 +17,12 @@ namespace HIS.Recipes.Models.ViewModels
         public string Name { get; set; }
         public IEnumerable<string> Tags { get; set; }
         public IEnumerable<string> Ingrediants { get; set; }
+
+        public bool IsFilled()
+        {
+            return !String.IsNullOrWhiteSpace(this.Name) ||
+                   (this.Tags != null && this.Tags.Any()) ||
+                   (this.Ingrediants != null && this.Ingrediants.Any());
+        }
     }
 }

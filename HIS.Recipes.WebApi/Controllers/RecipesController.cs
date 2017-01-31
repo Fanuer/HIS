@@ -62,20 +62,31 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <param name="entriesPerPage">Number of entries per page. Is used to enable pagination.</param>
         /// <response code="200">Returns a list of all available recipes</response>
         [HttpGet]
-        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page=0, [FromQuery]int entriesPerPage=10)
+        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipesAsync([FromQuery]RecipeSearchViewModel searchModel, [FromQuery]int page = 0, [FromQuery]int entriesPerPage = 10)
         {
-            var recipeCount = await _service.GetRecipes().CountAsync();
-
-            var result = await _service
-                            .GetRecipes(searchModel)
-                            .Skip(page * entriesPerPage)
-                            .Take(entriesPerPage)
-                            .ToListAsync();
+            int recipeCount = 0;
+            List<ShortRecipeViewModel> result = new List<ShortRecipeViewModel>();
             try
             {
+                recipeCount = await _service.GetRecipes().CountAsync();
+
+                IQueryable<ShortRecipeViewModel> entries = null;
+                if (searchModel != null && searchModel.IsFilled())
+                {
+                    entries = await _service.SearchForRecipes(searchModel);
+                }
+                else
+                {
+                    entries = _service.GetRecipes();
+                }
+                result = await entries
+                                .Skip(page * entriesPerPage)
+                                .Take(entriesPerPage)
+                                .ToListAsync();
+
                 foreach (var shortRecipeViewModel in result)
                 {
-                    shortRecipeViewModel.Url = this.Url.RouteUrl("GetRecipeById", new {id = shortRecipeViewModel.Id});
+                    shortRecipeViewModel.Url = this.Url.RouteUrl("GetRecipeById", new { id = shortRecipeViewModel.Id });
                 }
             }
             catch (Exception e)
@@ -83,8 +94,8 @@ namespace HIS.Recipes.WebApi.Controllers
                 Console.WriteLine(e);
                 throw;
             }
-            
-            return new ListViewModel<ShortRecipeViewModel>(result, recipeCount, page +1, entriesPerPage);
+
+            return new ListViewModel<ShortRecipeViewModel>(result, recipeCount, page + 1, entriesPerPage);
         }
 
         /// <summary>
@@ -97,8 +108,7 @@ namespace HIS.Recipes.WebApi.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetRecipeAsync(int id)
         {
-            var result = await this._service.GetRecipeAsync(id);
-            return Ok(result);
+            return Ok(await this._service.GetRecipeAsync(id));
         }
 
         /// <summary>
@@ -108,7 +118,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <returns></returns>
         /// <response code="201">After Creation of the new recipe</response>
         /// <response code="400">If the given data are invalid</response>
-        [ProducesResponseType(typeof(FullRecipeViewModel), (int) HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(FullRecipeViewModel), (int)HttpStatusCode.Created)]
         [HttpPost]
         public async Task<IActionResult> CreateRecipeAsync([FromBody] RecipeCreationViewModel model)
         {
@@ -163,6 +173,7 @@ namespace HIS.Recipes.WebApi.Controllers
             }
             return Ok();
         }
+        
         #endregion
 
         #region PROPERTIES

@@ -62,19 +62,19 @@ namespace HIS.Recipes.Services.Implementation.Repositories
 
         #region Nested Classes
 
-        internal class DbImageRepository : GenericDbRepository<RecipeImage, int>, IDbImageRepository
+        internal class DbImageRepository : GenericDbRepository<RecipeImage, int, FuzzyEntry>, IDbImageRepository
         {
             public DbImageRepository(RecipeDbContext context): base(context){}
         }
-        internal class IngrediantRepository : GenericDbRepository<Ingrediant, int>, IIngrediantRepository
+        internal class IngrediantRepository : GenericDbRepository<Ingrediant, int, FuzzyEntry>, IIngrediantRepository
         {
             public IngrediantRepository(RecipeDbContext context) : base(context) { }
         }
-        internal class RecipeRepository : GenericDbRepository<Recipe, int>, IRecipeRepository
+        internal class RecipeRepository : GenericDbRepository<Recipe, int, FuzzyEntry>, IRecipeRepository
         {
             public RecipeRepository(RecipeDbContext context) : base(context) { }
         }
-        internal class StepRepository : GenericDbRepository<RecipeStep, int>, IStepRepository
+        internal class StepRepository : GenericDbRepository<RecipeStep, int, FuzzyEntry>, IStepRepository
         {
             public StepRepository(RecipeDbContext context) : base(context) { }
             public async Task UpdateAllAsync(int recipeId, ICollection<string> entries)
@@ -95,21 +95,21 @@ namespace HIS.Recipes.Services.Implementation.Repositories
                 }
             }
         }
-        internal class CookbookSourceRepository : GenericDbRepository<RecipeCookbookSource, int>, ICookbookSourceRepository
+        internal class CookbookSourceRepository : GenericDbRepository<RecipeCookbookSource, int, FuzzyEntry>, ICookbookSourceRepository
         {
             public CookbookSourceRepository(RecipeDbContext context) : base(context) { }
         }
-        internal class WebSourceRepository : GenericDbRepository<RecipeUrlSource, int>, IWebSourceRepository
+        internal class WebSourceRepository : GenericDbRepository<RecipeUrlSource, int, FuzzyEntry>, IWebSourceRepository
         {
             public WebSourceRepository(RecipeDbContext context) : base(context) { }
         }
-        internal class BaseSourceRepository : GenericDbRepository<RecipeBaseSource, int>, IBaseSourceRepository
+        internal class BaseSourceRepository : GenericDbRepository<RecipeBaseSource, int, FuzzyEntry>, IBaseSourceRepository
         {
             public BaseSourceRepository(RecipeDbContext context) : base(context) { }
         }
 
 
-        internal class TagsRepository : GenericDbRepository<RecipeTag, int>, ITagsRepository
+        internal class TagsRepository : GenericDbRepository<RecipeTag, int, FuzzyEntry>, ITagsRepository
         {
             public TagsRepository(RecipeDbContext context) : base(context) { }
         }

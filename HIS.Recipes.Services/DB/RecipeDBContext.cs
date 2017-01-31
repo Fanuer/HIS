@@ -38,6 +38,7 @@ namespace HIS.Recipes.Services.DB
             modelBuilder.Entity<RecipeIngrediant>().HasKey(x => new { x.RecipeId, x.IngrediantId });
             modelBuilder.Entity<RecipeSourceRecipe>().HasKey(x => new { x.RecipeId, x.SourceId });
             modelBuilder.Entity<RecipeRecipeTag>().HasKey(x => new { x.RecipeId, x.RecipeTagId });
+            modelBuilder.Entity<FuzzyEntry>().HasKey(x => new { x.Id, x.SearchQuery, x.Type });
 
             modelBuilder.Entity<RecipeIngrediant>()
                 .HasOne(x => x.Recipe)
@@ -74,7 +75,7 @@ namespace HIS.Recipes.Services.DB
             modelBuilder.Entity<RecipeTag>().HasIndex(x => x.Name).IsUnique();
             modelBuilder.Entity<Ingrediant>().HasIndex(x => x.Name).IsUnique();
             modelBuilder.Entity<RecipeStep>().HasIndex(x => new { x.RecipeId, x.Order }).IsUnique();
-
+            
             base.OnModelCreating(modelBuilder);
         }
 

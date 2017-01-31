@@ -66,7 +66,7 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
                 };
 
 
-                var output = await service.GetRecipes(searchModel).ToListAsync();
+                var output = await (await service.SearchForRecipes(searchModel)).ToListAsync();
                 Assert.NotNull(output);
                 Assert.NotEmpty(output);
                 Assert.Equal(tagWith.Recipes.Count, output.Count);
@@ -89,7 +89,7 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
                 };
 
 
-                var output = await service.GetRecipes(searchModel).ToListAsync();
+                var output = await (await service.SearchForRecipes(searchModel)).ToListAsync();
                 Assert.NotNull(output);
                 Assert.NotEmpty(output);
                 Assert.Equal(ingrediantWithRecipes.Recipes.Count, output.Count);
@@ -113,7 +113,7 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
                 };
 
 
-                var output = await service.GetRecipes(searchModel).ToListAsync();
+                var output = await (await service.SearchForRecipes(searchModel)).ToListAsync();
                 Assert.NotNull(output);
                 Assert.NotEmpty(output);
                 Assert.Equal(1, output.Count);
