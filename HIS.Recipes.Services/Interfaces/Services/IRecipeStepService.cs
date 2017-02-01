@@ -50,9 +50,9 @@ namespace HIS.Recipes.Services.Interfaces.Services
         /// Searches a step of a recipe
         /// </summary>
         /// <param name="recipeId">Id of the owning Recipe</param>
-        /// <param name="stepId">Id of a step</param>
+        /// <param name="stepId">Id of a step. If set to -1 the first Step will be returned</param>
         /// <param name="direction">To provide navigation you define if the step of the given id or one of its neighbors</param>
         /// <returns>Returns one step of a recipe</returns>
-        Task<StepViewModel> GetStepAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep);
+        Task<StepViewModel> GetStepAsync(int recipeId, int stepId = -1, StepDirection direction = StepDirection.ThisStep);
     }
 }

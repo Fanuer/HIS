@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HIS.Gateway.Services.Clients;
 using HIS.Helpers.Options;
 using HIS.Helpers.Test;
+using HIS.Recipes.Models.Enums;
 using HIS.Recipes.Models.ViewModels;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -177,6 +178,27 @@ namespace HIS.Gateway.Tests.GatewayClientTests
         }
 
         [Fact]
+        public async Task SearchForRecipesByIngrediantWithDirectName()
+        {
+            using (var client = await this.CreateRecipeApiClient())
+            {
+                var ingrediantName = "salat";
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Ingrediants = new List<string>() { ingrediantName }
+                };
+
+                var result = await client.GetRecipes(searchModel);
+
+                Assert.NotNull(result);
+                Assert.NotNull(result.Entries);
+                Assert.NotEmpty(result.Entries);
+                var ingrediants = await client.GetRecipeIngrediantsAsync(result.Entries.First().Id);
+                Assert.True(ingrediants.Any(x=>x.Name.Equals(ingrediantName, StringComparison.CurrentCultureIgnoreCase)));
+            }
+        }
+
+        [Fact]
         public async Task GetRecipeIngrediants()
         {
             using (var client = await this.CreateRecipeApiClient())
@@ -192,27 +214,165 @@ namespace HIS.Gateway.Tests.GatewayClientTests
         }
 
         [Fact]
-        public async Task GetRecipeStep()
+        public async Task GetFirstRecipeStep()
         {
             using (var client = await this.CreateRecipeApiClient())
             {
                 try
                 {
                     var recipes = await client.GetRecipes();
-                    if (recipes.Entries.Any())
-                    {
-                        var firstRecipe = recipes.Entries.First();
-                        var step = await client.GetStepAsync(firstRecipe.Id);
-                        Assert.NotNull(step);
-                    }
+                    Assert.NotNull(recipes?.Entries);
+                    Assert.NotEmpty(recipes.Entries);
+
+                    var firstRecipe = recipes.Entries.First();
+                    var step = await client.GetStepAsync(firstRecipe.Id);
+                    Assert.NotNull(step);
+                    Assert.NotEqual(0, step.Id);
+                    Assert.Equal(firstRecipe.Id, step.RecipeId);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    
                     throw;
                 }
-                
+            }
+        }
+
+        [Fact]
+        public async Task GetNextRecipeStep()
+        {
+            using (var client = await this.CreateRecipeApiClient())
+            {
+                try
+                {
+                    var recipes = await client.GetRecipes();
+                    Assert.NotNull(recipes?.Entries);
+                    Assert.NotEmpty(recipes.Entries);
+
+                    var firstRecipe = recipes.Entries.First();
+                    Assert.NotNull(firstRecipe);
+
+                    var firstStep = await client.GetStepAsync(firstRecipe.Id);
+                    Assert.NotNull(firstStep);
+                    Assert.NotEqual(0, firstStep.Id);
+                    Assert.Equal(firstRecipe.Id, firstStep.RecipeId);
+
+                    var secondStep = await client.GetStepAsync(firstRecipe.Id, firstStep.Id, StepDirection.Next);
+                    Assert.NotNull(secondStep);
+                    Assert.NotEqual(0, secondStep.Id);
+                    Assert.Equal(firstRecipe.Id, secondStep.RecipeId);
+                    Assert.NotEqual(firstStep.Id, secondStep.Id);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetPreviousRecipeStep()
+        {
+            using (var client = await this.CreateRecipeApiClient())
+            {
+                try
+                {
+                    var recipes = await client.GetRecipes();
+                    Assert.NotNull(recipes?.Entries);
+                    Assert.NotEmpty(recipes.Entries);
+
+                    var firstRecipe = recipes.Entries.First();
+                    Assert.NotNull(firstRecipe);
+
+                    var firstStep = await client.GetStepAsync(firstRecipe.Id);
+                    Assert.NotNull(firstStep);
+                    Assert.NotEqual(0, firstStep.Id);
+                    Assert.Equal(firstRecipe.Id, firstStep.RecipeId);
+
+                    var secondStep = await client.GetStepAsync(firstRecipe.Id, firstStep.Id, StepDirection.Next);
+                    Assert.NotNull(secondStep);
+                    Assert.NotEqual(0, secondStep.Id);
+                    Assert.Equal(firstRecipe.Id, secondStep.RecipeId);
+                    Assert.NotEqual(firstStep.Id, secondStep.Id);
+
+                    var firstStep2 = await client.GetStepAsync(firstRecipe.Id, secondStep.Id, StepDirection.Previous);
+                    Assert.NotNull(firstStep2);
+                    Assert.NotEqual(0, firstStep2.Id);
+                    Assert.Equal(firstRecipe.Id, firstStep2.RecipeId);
+                    Assert.Equal(firstStep.Id, firstStep2.Id);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetCurrentRecipeStep()
+        {
+            using (var client = await this.CreateRecipeApiClient())
+            {
+                try
+                {
+                    var recipes = await client.GetRecipes();
+                    Assert.NotNull(recipes?.Entries);
+                    Assert.NotEmpty(recipes.Entries);
+
+                    var firstRecipe = recipes.Entries.First();
+                    Assert.NotNull(firstRecipe);
+
+                    var firstStep = await client.GetStepAsync(firstRecipe.Id);
+                    Assert.NotNull(firstStep);
+                    Assert.NotEqual(0, firstStep.Id);
+                    Assert.Equal(firstRecipe.Id, firstStep.RecipeId);
+                    
+                    var firstStep2 = await client.GetStepAsync(firstRecipe.Id, firstStep.Id, StepDirection.ThisStep);
+                    Assert.NotNull(firstStep2);
+                    Assert.NotEqual(0, firstStep2.Id);
+                    Assert.Equal(firstRecipe.Id, firstStep2.RecipeId);
+                    Assert.Equal(firstStep.Id, firstStep2.Id);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
+
+        [Fact]
+        public async Task PreviousOfFirstStepIsFirstStep()
+        {
+            using (var client = await this.CreateRecipeApiClient())
+            {
+                try
+                {
+                    var recipes = await client.GetRecipes();
+                    Assert.NotNull(recipes?.Entries);
+                    Assert.NotEmpty(recipes.Entries);
+
+                    var firstRecipe = recipes.Entries.First();
+                    Assert.NotNull(firstRecipe);
+
+                    var firstStep = await client.GetStepAsync(firstRecipe.Id);
+                    Assert.NotNull(firstStep);
+                    Assert.NotEqual(0, firstStep.Id);
+                    Assert.Equal(firstRecipe.Id, firstStep.RecipeId);
+
+                    var firstStep2 = await client.GetStepAsync(firstRecipe.Id, firstStep.Id, StepDirection.Previous);
+                    Assert.NotNull(firstStep2);
+                    Assert.NotEqual(0, firstStep2.Id);
+                    Assert.Equal(firstRecipe.Id, firstStep2.RecipeId);
+                    Assert.Equal(firstStep.Id, firstStep2.Id);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
 

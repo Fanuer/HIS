@@ -12,7 +12,7 @@ namespace HIS.Helpers.Options
     {
         public GatewayInformation()
         {
-            //GatewayClients = new Dictionary<string, string>(); 
+            GatewayClients = new Dictionary<string, string>(); 
         }
 
         /// <summary>

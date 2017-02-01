@@ -75,6 +75,7 @@ namespace HIS.Recipes.WebApi
                 //Set the comments path for the swagger json and ui.
                 var xmlPath = Path.Combine(basePath, "HIS.Recipes.WebApi.xml");
                 options.IncludeXmlComments(xmlPath);
+                options.DescribeAllEnumsAsStrings();
             });
         }
 

@@ -183,12 +183,12 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
 
         private ISourceService GetService()
         {
-            var baseSourceRep = new RecipeDbRepository.BaseSourceRepository(this.DbContext);
-            var webSourceRep = new RecipeDbRepository.WebSourceRepository(this.DbContext);
-            var cookbookSourceRep = new RecipeDbRepository.CookbookSourceRepository(this.DbContext);
+            var baseSourceRep = new RecipeDbRepository.BaseSourceRepository(this.DbContext, new MockLoggerFactory<object>());
+            var webSourceRep = new RecipeDbRepository.WebSourceRepository(this.DbContext, new MockLoggerFactory<object>());
+            var cookbookSourceRep = new RecipeDbRepository.CookbookSourceRepository(this.DbContext, new MockLoggerFactory<object>());
             var sourceRep = new RecipeSourceRepository(webSourceRep, baseSourceRep, cookbookSourceRep);
 
-            var reciperep = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var reciperep = new RecipeDbRepository.RecipeRepository(this.DbContext, new MockLoggerFactory<object>());
             var mockFactory = new MockLoggerFactory<IngrediantService>();
             IMapper mapper = new Mapper(new MapperConfiguration(m => m.AddProfile<AutoMapperServiceProfile>()));
             return new SourceService(sourceRep, reciperep, mapper, mockFactory);

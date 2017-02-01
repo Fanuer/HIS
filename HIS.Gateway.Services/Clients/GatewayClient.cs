@@ -27,7 +27,7 @@ namespace HIS.Gateway.Services.Clients
 
         #region CTOR
         public GatewayClient(IOptions<ClientInformation> clientOptions, ILoggerFactory loggerFactory)
-               : base(clientOptions, loggerFactory.CreateLogger<GatewayClient>())
+               : base(clientOptions.Value, loggerFactory.CreateLogger<GatewayClient>())
         {
         }
 
@@ -73,6 +73,5 @@ namespace HIS.Gateway.Services.Clients
 
         #region PROPERTIES
         #endregion
-
     }
 }

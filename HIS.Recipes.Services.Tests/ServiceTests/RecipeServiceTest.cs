@@ -263,7 +263,7 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
 
         private IRecipeService GetService()
         {
-            var rep = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var rep = new RecipeDbRepository.RecipeRepository(this.DbContext, new MockLoggerFactory<object>());
             var mockFactory = new MockLoggerFactory<IngrediantService>();
             IMapper mapper = new Mapper(new MapperConfiguration(m => m.AddProfile<AutoMapperServiceProfile>()));
             return new RecipeService(rep, mapper, mockFactory);

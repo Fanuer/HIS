@@ -252,3 +252,4 @@ TemporaryDbContextFactory.cs
 /HIS.Bot.WebApi/WebConfigData/MSAuth.xml
 /HIS.Bot.WebApi/WebConfigData/HISAuth.xml
 /HIS.Bot.WebApi/XML/WebConfigData
+**/PublishProfiles/*

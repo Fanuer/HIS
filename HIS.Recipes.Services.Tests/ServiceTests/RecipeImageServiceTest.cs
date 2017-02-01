@@ -142,7 +142,7 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
 
         private IRecipeImageService GetService()
         {
-            var rep = new RecipeDbRepository.DbImageRepository(this.DbContext);
+            var rep = new RecipeDbRepository.DbImageRepository(this.DbContext, new MockLoggerFactory<object>());
             var mockFactory = new MockLoggerFactory<IngrediantService>();
             IMapper mapper = new Mapper(new MapperConfiguration(m => m.AddProfile<AutoMapperServiceProfile>()));
             IImageService mockImageService = new MockImageService();

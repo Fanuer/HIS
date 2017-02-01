@@ -26,21 +26,21 @@ namespace HIS.Helpers.Web.Clients
 
         #region CTOR
 
-        protected S2SClientBase(IOptions<ClientInformation> clientOptions, ILogger logger)
+        protected S2SClientBase(ClientInformation clientInformation, ILogger logger)
         {
-            if (clientOptions?.Value == null) { throw new ArgumentException(nameof(clientOptions)); }
-            if (clientOptions?.Value.Credentials == null) { throw new ArgumentException(nameof(clientOptions.Value.Credentials)); }
-            if (String.IsNullOrWhiteSpace(clientOptions.Value.Credentials.ClientId)){ throw new ArgumentNullException(nameof(clientOptions.Value.Credentials.ClientId)); }
-            if (String.IsNullOrWhiteSpace(clientOptions.Value.Credentials.ClientSecret)){ throw new ArgumentNullException(nameof(clientOptions.Value.Credentials.ClientSecret)); }
-            if (String.IsNullOrWhiteSpace(clientOptions.Value.TargetApiName)){ throw new ArgumentNullException(nameof(clientOptions.Value.TargetApiName)); }
-            if (String.IsNullOrWhiteSpace(clientOptions.Value.TargetBaseUrl)){ throw new ArgumentNullException(nameof(clientOptions.Value.TargetBaseUrl)); }
+            if (clientInformation == null) { throw new ArgumentException(nameof(clientInformation)); }
+            if (clientInformation.Credentials == null) { throw new ArgumentException(nameof(clientInformation.Credentials)); }
+            if (String.IsNullOrWhiteSpace(clientInformation.Credentials.ClientId)){ throw new ArgumentNullException(nameof(clientInformation.Credentials.ClientId)); }
+            if (String.IsNullOrWhiteSpace(clientInformation.Credentials.ClientSecret)){ throw new ArgumentNullException(nameof(clientInformation.Credentials.ClientSecret)); }
+            if (String.IsNullOrWhiteSpace(clientInformation.TargetApiName)){ throw new ArgumentNullException(nameof(clientInformation.TargetApiName)); }
+            if (String.IsNullOrWhiteSpace(clientInformation.TargetBaseUrl)){ throw new ArgumentNullException(nameof(clientInformation.TargetBaseUrl)); }
             
             if (logger == null){ throw new ArgumentNullException(nameof(logger)); }
 
-            this._client = new HttpClient {BaseAddress = new Uri(clientOptions.Value.TargetBaseUrl)};
+            this._client = new HttpClient {BaseAddress = new Uri(clientInformation.TargetBaseUrl)};
 
-            this.ApiName = clientOptions.Value.TargetApiName;
-            _clientOptions = clientOptions.Value;
+            this.ApiName = clientInformation.TargetApiName;
+            _clientOptions = clientInformation;
             this.Logger = logger;
         }
 

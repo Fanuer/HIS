@@ -79,6 +79,7 @@ namespace HIS.Recipes.Services.Implementation.Services
                 result = this.Repository
                     .GetAll()
                     .Where(x => x.RecipeId.Equals(recipeId))
+                    .Include(x=>x.Recipe).ThenInclude(x=>x.Steps)
                     .OrderBy(x => x.Order)
                     .ProjectTo<StepViewModel>(this.Mapper.ConfigurationProvider);
 
@@ -99,7 +100,7 @@ namespace HIS.Recipes.Services.Implementation.Services
         /// <param name="stepId">Id of a step</param>
         /// <param name="direction">To provide navigation you define if the step of the given id or one of its neighbors</param>
         /// <returns>Returns one step of a recipe</returns>
-        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId, StepDirection direction = StepDirection.ThisStep)
+        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId = -1, StepDirection direction = StepDirection.ThisStep)
         {
             StepViewModel result = null;
             var steps = await this.GetStepsForRecipe(recipeId).ToListAsync();
@@ -136,24 +137,25 @@ namespace HIS.Recipes.Services.Implementation.Services
             {
                 if (recipeId == default(int)) { throw new ArgumentNullException(nameof(recipeId), "RecipeId must be set"); }
                 if (creationModel == null) { throw new ArgumentNullException(nameof(creationModel), "Data to create a step must be set"); }
-
-                var recipe = await this._recipeRep.FindAsync(recipeId, x => x.Steps);
-                if (recipe == null)
-                {
-                    var message = $"No recipe with thie given id '{recipeId}' found";
-                    this.Logger.LogError(String.Concat("Creating Step: ", message));
-                    throw new DataObjectNotFoundException(message);
-                }
-
+                
                 if (creationModel.Order <= 0)
                 {
-                    creationModel.Order = recipe.Steps.Count + 1;
+                    var recipe = await this._recipeRep.FindAsync(recipeId, x => x.Steps);
+                    if (recipe == null)
+                    {
+                        var message = $"No recipe with thie given id '{recipeId}' found";
+                        this.Logger.LogError(String.Concat("Creating Step: ", message));
+                        throw new DataObjectNotFoundException(message);
+                    }
+                    creationModel.Order = recipe.Steps.Count;
+                    Logger.LogDebug($"No Order defined for new step. Set to max for recipe {recipe.Name}({recipe.Id})");
                 }
 
                 var dbModel = this.Mapper.Map<RecipeStep>(creationModel);
+                dbModel.RecipeId = recipeId;
                 var createdModel = await this.Repository.AddAsync(dbModel);
                 result = Mapper.Map<StepViewModel>(createdModel);
-                Logger.LogDebug($"New Step '{result.Id}' for recipe '{recipe.Name}({recipe.Id})'successfully created");
+                Logger.LogDebug($"New Step '{result.Id}' for recipe '{recipeId}' successfully created");
             }
             catch (Exception e)
             {

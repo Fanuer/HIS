@@ -58,26 +58,12 @@ namespace HIS.Recipes.WebApi.Controllers
         /// </summary>
         /// <param name="recipeId">Id of a recipe</param>
         /// <param name="id">Id of a step</param>
-        /// <response code="200">Steps of a Recipe</response>
-        /// <response code="404">If no recipe with the given id was found</response>
-        [HttpGet("Recipes/{recipeId:int}/Steps/{id:int}", Name = "GetStepById")]
-        [ProducesResponseType(typeof(StepViewModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetStepsForRecipe(int recipeId, int id)
-        {
-            return await this.GetStepsForRecipe(recipeId, id, StepDirection.ThisStep);
-        }
-
-        /// <summary>
-        /// Returns all steps of a recipe
-        /// </summary>
-        /// <param name="recipeId">Id of a recipe</param>
-        /// <param name="id">Id of a step</param>
         /// <param name="direction">To provide navigation you define if the step of the given id or one of its neighbors</param>
         /// <response code="200">Steps of a Recipe</response>
         /// <response code="404">If no recipe with the given id was found</response>
-        [HttpGet("Recipes/{recipeId:int}/Steps/{id:int}/{direction}")]
+        [HttpGet("Recipes/{recipeId:int}/Steps/{id:int}")]
         [ProducesResponseType(typeof(StepViewModel), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetStepsForRecipe(int recipeId, int id, StepDirection direction)
+        public async Task<IActionResult> GetStepsForRecipe(int recipeId, int id, [FromQuery]StepDirection direction = StepDirection.ThisStep)
         {
             return Ok(await _service.GetStepAsync(recipeId, id, direction));
         }

@@ -31,7 +31,7 @@ namespace HIS.Gateway.Services.Clients
 
         #region CTOR        
         public GatewayRecipeClient(IOptions<GatewayInformation> clientOptions, ILoggerFactory factory) 
-            : base(new OptionsWrapper<ClientInformation>(clientOptions.Value.GetClientInformation(apiName)), factory.CreateLogger<GatewayRecipeClient>())
+            : base(clientOptions.Value.GetClientInformation(apiName), factory.CreateLogger<GatewayRecipeClient>())
         {
         }
 

@@ -12,5 +12,6 @@ namespace HIS.Recipes.Models.ViewModels
         [Range(0, int.MaxValue)]
         [Required]
         public int RecipeId { get; set; }
+        public int TotalSteps { get; set; }
     }
 }

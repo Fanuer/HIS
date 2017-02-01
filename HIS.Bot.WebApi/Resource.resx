@@ -180,4 +180,25 @@
   <data name="Message_Error_NoRecipeIdFoundForIngrediantslist" xml:space="preserve">
     <value>You have to choose a recipe first, to show its ingrediant-list</value>
   </data>
+  <data name="Message_Error_RecipeMustBeSelectedFirst" xml:space="preserve">
+    <value>You must choose a recipe first.</value>
+  </data>
+  <data name="Message_CookingCompleted" xml:space="preserve">
+    <value>Cooking completed. Enjoy your meal</value>
+  </data>
+  <data name="Message_Error_UnableToReceiveStep" xml:space="preserve">
+    <value>Error on loading recipe step. If this error occurs frequently, please contact the bot admin</value>
+  </data>
+  <data name="Message_Error_NoRecipePicked" xml:space="preserve">
+    <value>You have to pick a recipe first.</value>
+  </data>
+  <data name="Message_Step" xml:space="preserve">
+    <value>Step</value>
+  </data>
+  <data name="Message_of" xml:space="preserve">
+    <value>von</value>
+  </data>
+  <data name="Message_Steps" xml:space="preserve">
+    <value>Schritten</value>
+  </data>
 </root>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using HIS.Helpers.Test;
 using HIS.Recipes.Services.DB;
 using HIS.Recipes.Services.Implementation.Repositories;
 using HIS.Recipes.Services.Models;
@@ -16,7 +17,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
         public async Task SearchRecipe()
         {
             await this.InitializeAsync();
-            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext, new MockLoggerFactory<object>());
             var input = this.TestData.Recipes.First();
             var output = await repository.FindAsync(input.Id);
 
@@ -28,7 +29,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
         public async Task CreateNewRecipe()
         {
             await InitializeAsync();
-            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext, new MockLoggerFactory<object>());
 
             var input = new Recipe()
             {
@@ -51,7 +52,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
         public async Task DeleteRecipe()
         {
             await InitializeAsync();
-            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext, new MockLoggerFactory<object>());
             
             var input = this.TestData.Recipes.First();
             var output = await repository.RemoveAsync(input);
@@ -69,7 +70,7 @@ namespace HIS.Recipes.Services.Tests.RepositoryTests
             const string newCreator = "New User";
 
             await InitializeAsync();
-            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var repository = new RecipeDbRepository.RecipeRepository(this.DbContext, new MockLoggerFactory<object>());
 
             var input = this.TestData.Recipes.First();
             var dbInput = await repository.FindAsync(input.Id);

@@ -121,8 +121,8 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
 
         private ITagService GetService()
         {
-            var rep = new RecipeDbRepository.TagsRepository(this.DbContext);
-            var recipeRep = new RecipeDbRepository.RecipeRepository(this.DbContext);
+            var rep = new RecipeDbRepository.TagsRepository(this.DbContext, new MockLoggerFactory<object>());
+            var recipeRep = new RecipeDbRepository.RecipeRepository(this.DbContext, new MockLoggerFactory<object>());
             var mockFactory = new MockLoggerFactory<IngrediantService>();
             IMapper mapper = new Mapper(new MapperConfiguration(m => m.AddProfile<AutoMapperServiceProfile>()));
             return new TagService(rep, recipeRep, mapper, mockFactory);

@@ -127,6 +127,7 @@
     <Content Include="XML\WebConfigData\MSAuth.xml" />
     <None Include="Properties\PublishProfiles\his-bot - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\his-bot - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\his-bot - Web Deploy %283%29.pubxml" />
     <None Include="Properties\PublishProfiles\his-bot - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

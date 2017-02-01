@@ -169,6 +169,15 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cooking completed. Enjoy your meal ähnelt.
+        /// </summary>
+        public static string Message_CookingCompleted {
+            get {
+                return ResourceManager.GetString("Message_CookingCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die I&apos;m sorry. I didn&apos;t understand you. ähnelt.
         /// </summary>
         public static string Message_Error_DontUnderstand {
@@ -187,6 +196,15 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You have to pick a recipe first. ähnelt.
+        /// </summary>
+        public static string Message_Error_NoRecipePicked {
+            get {
+                return ResourceManager.GetString("Message_Error_NoRecipePicked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, I found no recipes that matches your question ähnelt.
         /// </summary>
         public static string Message_Error_NoRecipesFound {
@@ -196,11 +214,38 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die You must choose a recipe first. ähnelt.
+        /// </summary>
+        public static string Message_Error_RecipeMustBeSelectedFirst {
+            get {
+                return ResourceManager.GetString("Message_Error_RecipeMustBeSelectedFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, I did not find your Recipe ähnelt.
         /// </summary>
         public static string Message_Error_RecipeNotFound {
             get {
                 return ResourceManager.GetString("Message_Error_RecipeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error on loading recipe step. If this error occurs frequently, please contact the bot admin ähnelt.
+        /// </summary>
+        public static string Message_Error_UnableToReceiveStep {
+            get {
+                return ResourceManager.GetString("Message_Error_UnableToReceiveStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die von ähnelt.
+        /// </summary>
+        public static string Message_of {
+            get {
+                return ResourceManager.GetString("Message_of", resourceCulture);
             }
         }
         
@@ -228,6 +273,24 @@ namespace HIS.Bot.WebApi {
         public static string Message_StartCooking_HereWeGo {
             get {
                 return ResourceManager.GetString("Message_StartCooking_HereWeGo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Step ähnelt.
+        /// </summary>
+        public static string Message_Step {
+            get {
+                return ResourceManager.GetString("Message_Step", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Schritten ähnelt.
+        /// </summary>
+        public static string Message_Steps {
+            get {
+                return ResourceManager.GetString("Message_Steps", resourceCulture);
             }
         }
         

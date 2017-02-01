@@ -153,6 +153,9 @@
   <data name="EnumValue_CookingUnit_Teaspoon" xml:space="preserve">
     <value>tsp</value>
   </data>
+  <data name="Message_CookingCompleted" xml:space="preserve">
+    <value>Das Gericht ist fertig. Guten Appetit.</value>
+  </data>
   <data name="Message_DontUnderstand" xml:space="preserve">
     <value>Tut mir leid. Ich verstehe dich nicht</value>
   </data>
@@ -162,8 +165,14 @@
   <data name="Message_Error_NoRecipesFound" xml:space="preserve">
     <value>Für deine Anfrage habe ich keine Rezepte gefunden</value>
   </data>
+  <data name="Message_Error_RecipeMustBeSelectedFirst" xml:space="preserve">
+    <value>Es muss zuerst ein Rezept gewählt werden, das Kochen gestartet werden kann</value>
+  </data>
   <data name="Message_Error_RecipeNotFound" xml:space="preserve">
     <value>Rezept wurde nicht gefunden</value>
+  </data>
+  <data name="Message_Error_UnableToReceiveStep" xml:space="preserve">
+    <value>Fehler beim Laden des Rezepteschritts. Falls dieser Fehler häufiger auftauche, wende dich bitte an deinen Admin</value>
   </data>
   <data name="Message_RecipesFound" xml:space="preserve">
     <value>Ich habe folgende Rezepte gefunden</value>
@@ -173,6 +182,9 @@
   </data>
   <data name="Message_StartCooking_HereWeGo" xml:space="preserve">
     <value>Los gehts</value>
+  </data>
+  <data name="Message_Step" xml:space="preserve">
+    <value>Schritt</value>
   </data>
   <data name="Message_Welcome" xml:space="preserve">
     <value>Hallo. Ich bin ein Rezepte-Bot. Du kannst mich nach tollen Rezepten fragen. Nachdem du ein Rezept ausgewählt hast, werde ich dich beim Kochen begleiten.</value>

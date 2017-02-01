@@ -70,10 +70,6 @@ namespace HIS.Bot.WebApi.Controllers
                     await SendReplyMessage(incoming, reply, token);
                     break;
                 case ActivityTypes.ContactRelationUpdate:   // The bot was added to or removed from a user's contact list
-                    if (incoming.AsContactRelationUpdateActivity().Action.Equals("add"))
-                    {
-                        await SendReplyMessage(Resource.Message_Welcome, incoming, token);
-                    }
                     break;
                 case ActivityTypes.ConversationUpdate:      // This notification is sent when the conversation's properties change, for example the topic name, or when user joins or leaves the group
                     if (incoming.AsConversationUpdateActivity().MembersAdded.Any())
