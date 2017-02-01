@@ -8,6 +8,7 @@ using HIS.Data.Base.Interfaces.Models;
 using HIS.Data.Base.Interfaces.SingleId;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace HIS.Data.Base.MSSql
 {
@@ -25,17 +26,20 @@ namespace HIS.Data.Base.MSSql
     {
         #region Field
 
-        bool _disposed;
+        private bool _disposed;
+        private readonly ILogger _log;
 
 
         #endregion
 
         #region Ctor
 
-        protected GenericDbRepository(DbContext ctx)
+        protected GenericDbRepository(DbContext ctx, ILoggerFactory loggerFactory)
         {
             if (ctx == null) { throw new ArgumentNullException(nameof(ctx)); }
+            if (loggerFactory == null) { throw new ArgumentNullException(nameof(loggerFactory)); }
 
+            _log = loggerFactory.CreateLogger($"{typeof(T).Name}Repository");
             DbContext = ctx;
         }
         ~GenericDbRepository()
@@ -58,9 +62,11 @@ namespace HIS.Data.Base.MSSql
                 }
                 this.DbContext.Set<T>().Add(model);
                 await DbContext.SaveChangesAsync();
+                _log.LogInformation($"Added {typeof(T).Name} {model.Id} sussessfully");
             }
             catch (Exception e)
             {
+                _log.LogError(new EventId(), e, $"Error on adding {typeof(T).Name} {model.Id}");
                 throw new DbUpdateException($"Unable to add Entry of type {typeof(T).Namespace}", e);
             }
             return await this.FindAsync(model.Id);
@@ -163,29 +169,65 @@ namespace HIS.Data.Base.MSSql
 
         public async Task<TIdProperty> GetCachedFuzzyResultAsync(string type, string searchQuery)
         {
-            if (String.IsNullOrWhiteSpace(type)) { throw new ArgumentNullException(nameof(type)); }
-            if (String.IsNullOrWhiteSpace(searchQuery)) { throw new ArgumentNullException(nameof(searchQuery)); }
-            var result = await DbContext.Set<TFuzzy>().FirstOrDefaultAsync(x => x.SearchQuery.Equals(searchQuery, StringComparison.CurrentCultureIgnoreCase) && type.Equals(type));
-            return result != null ? result.Id : default(TIdProperty);
+            try
+            {
+                if (String.IsNullOrWhiteSpace(type)) { throw new ArgumentNullException(nameof(type)); }
+                if (String.IsNullOrWhiteSpace(searchQuery)) { throw new ArgumentNullException(nameof(searchQuery)); }
+                var result = await DbContext.Set<TFuzzy>().FirstOrDefaultAsync(x => x.SearchQuery.Equals(searchQuery, StringComparison.CurrentCultureIgnoreCase) && type.Equals(type));
+                return result != null ? result.Id : default(TIdProperty);
+            }
+            catch (Exception e)
+            {
+                var message = $"Error on lookup for fuzzy entry '{searchQuery ?? "unknown"}' for type '{type ?? "unknown"}'";
+                _log.LogError(new EventId(), e, message);
+                throw new Exception(message);
+            }
         }
 
         public async Task SaveFuzzyEntryAsync(TFuzzy newEntry)
         {
-            if (newEntry == null) { throw new ArgumentNullException(nameof(newEntry)); }
-            DbContext.Set<TFuzzy>().Add(newEntry);
-            await DbContext.SaveChangesAsync();
+            try
+            {
+                if (newEntry == null) { throw new ArgumentNullException(nameof(newEntry)); }
+                DbContext.Set<TFuzzy>().Add(newEntry);
+                await DbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                var message = $"Error on saving fuzzy entry";
+                if (newEntry != null)
+                {
+                    message += $" {newEntry}";
+                }
+                _log.LogError(new EventId(), e, message);
+                throw new Exception(message);
+            }
         }
 
         public async Task RemoveFuzzyEntryAsync(TFuzzy entry)
         {
-            if (entry == null) { throw new ArgumentNullException(nameof(entry)); }
-
-            var entries = DbContext.Set<TFuzzy>();
-            if (await entries.AnyAsync(x => x.Equals(entry)))
+            try
             {
-                DbContext.Set<TFuzzy>().Remove(entry);
-                await DbContext.SaveChangesAsync();
+                if (entry == null) { throw new ArgumentNullException(nameof(entry)); }
+
+                var entries = DbContext.Set<TFuzzy>();
+                if (await entries.AnyAsync(x => x.Equals(entry)))
+                {
+                    DbContext.Set<TFuzzy>().Remove(entry);
+                    await DbContext.SaveChangesAsync();
+                }
             }
+            catch (Exception e)
+            {
+                var message = $"Error on saving fuzzy entry";
+                if (entry != null)
+                {
+                    message += $" {entry}";
+                }
+                _log.LogError(new EventId(), e, message);
+                throw new Exception(message);
+            }
+
         }
 
 

@@ -68,8 +68,6 @@ namespace HIS.Recipes.WebApi.Controllers
             List<ShortRecipeViewModel> result = new List<ShortRecipeViewModel>();
             try
             {
-                recipeCount = await _service.GetRecipes().CountAsync();
-
                 IQueryable<ShortRecipeViewModel> entries = null;
                 if (searchModel != null && searchModel.IsFilled())
                 {
@@ -79,6 +77,8 @@ namespace HIS.Recipes.WebApi.Controllers
                 {
                     entries = _service.GetRecipes();
                 }
+
+                recipeCount = await entries.CountAsync();
                 result = await entries
                                 .Skip(page * entriesPerPage)
                                 .Take(entriesPerPage)

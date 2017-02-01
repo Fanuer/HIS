@@ -45,13 +45,22 @@ namespace HIS.Gateway.Tests.GatewayClientTests
         [Fact]
         public async Task GetRecipes()
         {
-            using (var client = await this.CreateRecipeApiClient())
+            try
             {
-                var recipe = await client.GetRecipes();
-                Assert.NotNull(recipe);
-                Assert.NotNull(recipe.Entries);
-                Assert.NotEmpty(recipe.Entries);
+                using (var client = await this.CreateRecipeApiClient())
+                {
+                    var recipe = await client.GetRecipes();
+                    Assert.NotNull(recipe);
+                    Assert.NotNull(recipe.Entries);
+                    Assert.NotEmpty(recipe.Entries);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
         [Fact]
@@ -101,6 +110,27 @@ namespace HIS.Gateway.Tests.GatewayClientTests
             }
         }
 
+        [Fact]
+        public async Task SearchForRecipesByTagFuzzy()
+        {
+            using (var client = await this.CreateRecipeApiClient())
+            {
+                var recipe = await client.GetRecipes();
+                var firstTagRecipe = recipe.Entries.First(x => x.Tags.Any());
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Tags = new List<string>() { firstTagRecipe.Tags.First() + "ABC" }
+                };
+
+                var result = await client.GetRecipes(searchModel);
+
+                Assert.NotNull(result);
+                Assert.NotNull(result.Entries);
+                Assert.NotEmpty(result.Entries);
+                Assert.True(result.Entries.Any(x => x.Id.Equals(firstTagRecipe.Id)));
+            }
+        }
+
 
         [Fact]
         public async Task SearchForRecipesByIngrediant()
@@ -113,6 +143,28 @@ namespace HIS.Gateway.Tests.GatewayClientTests
                 var searchModel = new RecipeSearchViewModel()
                 {
                     Ingrediants = new List<string>() { ingrediants.First().Name }
+                };
+
+                var result = await client.GetRecipes(searchModel);
+
+                Assert.NotNull(result);
+                Assert.NotNull(result.Entries);
+                Assert.NotEmpty(result.Entries);
+                Assert.True(result.Entries.Any(x => x.Id.Equals(firstRecipe.Id)));
+            }
+        }
+
+        [Fact]
+        public async Task SearchForRecipesByIngrediantFuzzy()
+        {
+            using (var client = await this.CreateRecipeApiClient())
+            {
+                var recipe = await client.GetRecipes(entriesPerPage: Int32.MaxValue);
+                var firstRecipe = recipe.Entries.First();
+                var ingrediants = await client.GetRecipeIngrediantsAsync(firstRecipe.Id);
+                var searchModel = new RecipeSearchViewModel()
+                {
+                    Ingrediants = new List<string>() { ingrediants.First().Name + "ABC" }
                 };
 
                 var result = await client.GetRecipes(searchModel);

@@ -50,10 +50,14 @@ namespace HIS.Recipes.Services.Models
         {
             return Equals(left, right);
         }
-
         public static bool operator !=(FuzzyEntry left, FuzzyEntry right)
         {
             return !Equals(left, right);
+        }
+
+        public override string ToString()
+        {
+            return $"{SearchQuery ?? "'Undefined Query'"} for {Id}[{Type ?? "'Undefined Type'"}]";
         }
 
         #endregion

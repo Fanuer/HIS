@@ -8,6 +8,7 @@ using HIS.Recipes.Services.DB;
 using HIS.Recipes.Services.Interfaces.Repositories;
 using HIS.Recipes.Services.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HIS.Recipes.Services.Implementation.Repositories
 {
@@ -64,19 +65,19 @@ namespace HIS.Recipes.Services.Implementation.Repositories
 
         internal class DbImageRepository : GenericDbRepository<RecipeImage, int, FuzzyEntry>, IDbImageRepository
         {
-            public DbImageRepository(RecipeDbContext context): base(context){}
+            public DbImageRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) {}
         }
         internal class IngrediantRepository : GenericDbRepository<Ingrediant, int, FuzzyEntry>, IIngrediantRepository
         {
-            public IngrediantRepository(RecipeDbContext context) : base(context) { }
+            public IngrediantRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) { }
         }
         internal class RecipeRepository : GenericDbRepository<Recipe, int, FuzzyEntry>, IRecipeRepository
         {
-            public RecipeRepository(RecipeDbContext context) : base(context) { }
+            public RecipeRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) { }
         }
         internal class StepRepository : GenericDbRepository<RecipeStep, int, FuzzyEntry>, IStepRepository
         {
-            public StepRepository(RecipeDbContext context) : base(context) { }
+            public StepRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) { }
             public async Task UpdateAllAsync(int recipeId, ICollection<string> entries)
             {
                 if (entries == null) { throw new ArgumentNullException(nameof(entries));}
@@ -97,21 +98,21 @@ namespace HIS.Recipes.Services.Implementation.Repositories
         }
         internal class CookbookSourceRepository : GenericDbRepository<RecipeCookbookSource, int, FuzzyEntry>, ICookbookSourceRepository
         {
-            public CookbookSourceRepository(RecipeDbContext context) : base(context) { }
+            public CookbookSourceRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) { }
         }
         internal class WebSourceRepository : GenericDbRepository<RecipeUrlSource, int, FuzzyEntry>, IWebSourceRepository
         {
-            public WebSourceRepository(RecipeDbContext context) : base(context) { }
+            public WebSourceRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) { }
         }
         internal class BaseSourceRepository : GenericDbRepository<RecipeBaseSource, int, FuzzyEntry>, IBaseSourceRepository
         {
-            public BaseSourceRepository(RecipeDbContext context) : base(context) { }
+            public BaseSourceRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) { }
         }
 
 
         internal class TagsRepository : GenericDbRepository<RecipeTag, int, FuzzyEntry>, ITagsRepository
         {
-            public TagsRepository(RecipeDbContext context) : base(context) { }
+            public TagsRepository(RecipeDbContext context, ILoggerFactory logger): base(context, logger) { }
         }
 
         #endregion
