@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using HIS.Bot.WebApi.Data.ViewModels.Enum;
+using HIS.Bot.WebApi.Properties;
 
 namespace HIS.Bot.WebApi.Extensions
 {
@@ -16,7 +17,7 @@ namespace HIS.Bot.WebApi.Extensions
 
         public static string GetUnit(this CookingUnit unit)
         {
-            var result = "";
+            string result = null;
 
             var displayAttributes = unit.GetType().GetCustomAttributes(typeof(DisplayAttribute), false).Cast<DisplayAttribute>();
             var attributes = displayAttributes as DisplayAttribute[] ?? displayAttributes.ToArray();
@@ -24,7 +25,17 @@ namespace HIS.Bot.WebApi.Extensions
             {
                 result = attributes.First().GetName();
             }
-            return result;
+            else
+            {
+                var oldValue = Resources.ResourceManager.IgnoreCase;
+                Resources.ResourceManager.IgnoreCase = false;
+
+                var key = $"EnumValue_{nameof(CookingUnit)}_{Enum.GetName(typeof(CookingUnit), unit)}";
+                result = Resources.ResourceManager.GetString(key);
+
+                Resources.ResourceManager.IgnoreCase = oldValue;
+            }
+            return result ?? unit.GetName();
         }
     }
 }

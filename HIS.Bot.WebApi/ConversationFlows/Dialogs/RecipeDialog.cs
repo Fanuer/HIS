@@ -65,36 +65,45 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
         [LuisIntent("SearchRecipe")]
         public async Task SearchRecipe(IDialogContext context, LuisResult result)
         {
-            var searchModel = CreateSearchModel(result);
-
-            ListViewModel<ShortRecipeViewModel> recipes = null;
-            using (var client = new GatewayClient())
+            try
             {
-                recipes = await client.GetRecipes(searchModel);
-            }
+                var searchModel = CreateSearchModel(result);
 
-            IMessageActivity reply = context.MakeMessage();
-            
-            reply.Recipient = context.Activity.From;
-            reply.Type = ActivityTypes.Message;
-
-            if (recipes.Entries.Any())
-            {
-                await context.PostAsync(Resources.Message_RecipesFound);
-                reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
-                foreach (var shortRecipeViewModel in recipes.Entries)
+                ListViewModel<ShortRecipeViewModel> recipes = null;
+                using (var client = new GatewayClient())
                 {
-                    var attachment = shortRecipeViewModel.ToAttachment(String.Format(RecipeStartStringFormat, shortRecipeViewModel.Id));
-                    reply.Attachments.Add(attachment);
+                    recipes = await client.GetRecipes(searchModel);
                 }
 
-                //recipes.Entries.Select(x => x.ToAttachment(String.Format(RecipeStartStringFormat, x.Id))).ForEach(x => reply.Attachments.Add(x));
-                await context.PostAsync(reply);
+                IMessageActivity reply = context.MakeMessage();
+
+                reply.Recipient = context.Activity.From;
+                reply.Type = ActivityTypes.Message;
+
+                if (recipes.Entries.Any())
+                {
+                    await context.PostAsync(Resources.Message_RecipesFound);
+                    reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                    foreach (var shortRecipeViewModel in recipes.Entries)
+                    {
+                        var attachment = shortRecipeViewModel.ToAttachment(String.Format(RecipeStartStringFormat, shortRecipeViewModel.Id));
+                        reply.Attachments.Add(attachment);
+                    }
+
+                    //recipes.Entries.Select(x => x.ToAttachment(String.Format(RecipeStartStringFormat, x.Id))).ForEach(x => reply.Attachments.Add(x));
+                    await context.PostAsync(reply);
+                }
+                else
+                {
+                    await context.PostAsync(Resources.Message_Error_NoRecipesFound);
+                }
             }
-            else
+            catch (Exception e)
             {
-                await context.PostAsync(Resources.Message_Error_NoRecipesFound);
+                Console.WriteLine(e);
+                await context.PostAsync(Resources.Message_Error_SearchRecipeError);
             }
+            
 
             context.Wait(MessageReceived);
         }
@@ -159,7 +168,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             }
             else
             {
-                var responseText = await this.GetIngredintListTextAsync(recipeId);
+                var responseText = await this.GetIngrediantListAsync(recipeId);
                 await context.PostAsync(responseText);
             }
 
@@ -239,7 +248,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
 
                     await context.PostAsync(Resources.Message_StartCooking_HereWeGo + Bot_NewLine + Resources.Message_StartCooking_Desc);
 
-                    var text = await GetIngredintListTextAsync(recipeId);
+                    var text = await GetIngrediantListAsync(recipeId);
                     await context.PostAsync(text);
                     await this.HandleGetRecipeStep(context, StepDirection.ThisStep);
                     
@@ -256,7 +265,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             }
         }
 
-        private async Task<string> GetIngredintListTextAsync(int recipeId)
+        private async Task<string> GetIngrediantListAsync(int recipeId)
         {
             IEnumerable<RecipeIngrediantViewModel> ingrediants = null;
             using (var client = new GatewayClient())
@@ -265,9 +274,10 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             }
             var builder = new StringBuilder();
             builder.AppendLine(Resources.Message_YouNeedFollingIngrediants + Bot_NewLine + Bot_NewLine);
-            foreach (var ingrediant in ingrediants)
+            foreach (var ingrediant in ingrediants.OrderByDescending(x=>x.Amount))
             {
-                builder.AppendLine($"* {ingrediant.Amount.ToString().PadLeft(4, ' ')} {ingrediant.Unit.GetUnit().PadRight(3, ' ')} {ingrediant.Name}{Environment.NewLine}");
+                var line = $"* {ingrediant.Amount.ToString().PadLeft(4)} {ingrediant.Unit.GetUnit().PadRight(3, ' ')} {ingrediant.Name}";
+                builder.AppendLine(line);
             }
             return builder.ToString();
 

@@ -70,7 +70,7 @@ namespace HIS.Bot.WebApi.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Bunch(es) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bündel ähnelt.
         /// </summary>
         public static string EnumValue_CookingUnit_Bunch {
             get {
@@ -142,7 +142,7 @@ namespace HIS.Bot.WebApi.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Package(s) ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Päckchen ähnelt.
         /// </summary>
         public static string EnumValue_CookingUnit_Package {
             get {
@@ -151,7 +151,7 @@ namespace HIS.Bot.WebApi.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die tbl ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die EL ähnelt.
         /// </summary>
         public static string EnumValue_CookingUnit_Tablespoon {
             get {
@@ -160,7 +160,7 @@ namespace HIS.Bot.WebApi.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die tsp ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die TL ähnelt.
         /// </summary>
         public static string EnumValue_CookingUnit_Teaspoon {
             get {
@@ -237,6 +237,15 @@ namespace HIS.Bot.WebApi.Properties {
         public static string Message_Error_RecipeNotFound {
             get {
                 return ResourceManager.GetString("Message_Error_RecipeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Es ist ein Fehler bei der Suche nach Rzepten aufgetreten. Bitte wende dich an den Bot Betreiber ähnelt.
+        /// </summary>
+        public static string Message_Error_SearchRecipeError {
+            get {
+                return ResourceManager.GetString("Message_Error_SearchRecipeError", resourceCulture);
             }
         }
         
