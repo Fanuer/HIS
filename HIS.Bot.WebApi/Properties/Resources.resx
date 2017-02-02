@@ -15,8 +15,8 @@
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <resheader name="reader">System.Resourcess.ResXResourcesReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resourcess.ResXResourcesWriter, System.Windows.Forms, ...</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
@@ -37,11 +37,11 @@
     mimetype set.
     
     The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+    ResXResourcesReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
     
     Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+    that the ResXResourcesWriter will generate, however the reader can 
     read any of the formats listed below.
     
     mimetype: application/x-microsoft.net.object.binary.base64
@@ -117,47 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Message_Error_DontUnderstand" xml:space="preserve">
-    <value>I'm sorry. I didn't understand you.</value>
-  </data>
-  <data name="Message_Welcome" xml:space="preserve">
-    <value>Welcome. I am a Recipe Bot. You can ask me for cool recipes. When you choose one, I will guide you though your cooking.</value>
-  </data>
   <data name="ButtonLabel_StartCooking" xml:space="preserve">
-    <value>Start Cooking</value>
+    <value>Jetzt Kochen</value>
   </data>
-  <data name="Message_Error_RecipeNotFound" xml:space="preserve">
-    <value>Sorry, I did not find your Recipe</value>
-  </data>
-  <data name="Message_StartCooking_HereWeGo" xml:space="preserve">
-    <value>Here we go</value>
-  </data>
-  <data name="Message_StartCooking_Desc" xml:space="preserve">
-    <value>While cooking, you can navigate between the cooking steps or ask for the ingrediants list</value>
-  </data>
-  <data name="Message_RecipesFound" xml:space="preserve">
-    <value>I found the following recipes</value>
-  </data>
-  <data name="Message_Error_NoRecipesFound" xml:space="preserve">
-    <value>Sorry, I found no recipes that matches your question</value>
-  </data>
-  <data name="EnumValue_CookingUnit_None" xml:space="preserve">
-    <value />
-  </data>
-  <data name="EnumValue_CookingUnit_Teaspoon" xml:space="preserve">
-    <value>tsp</value>
-  </data>
-  <data name="EnumValue_CookingUnit_Tablespoon" xml:space="preserve">
-    <value>tbl</value>
-  </data>
-  <data name="EnumValue_CookingUnit_Milliliter" xml:space="preserve">
-    <value>ml</value>
-  </data>
-  <data name="EnumValue_CookingUnit_Liter" xml:space="preserve">
-    <value>l</value>
-  </data>
-  <data name="EnumValue_CookingUnit_Milligramm" xml:space="preserve">
-    <value>mg</value>
+  <data name="EnumValue_CookingUnit_Bunch" xml:space="preserve">
+    <value>Bunch(es)</value>
   </data>
   <data name="EnumValue_CookingUnit_Gramm" xml:space="preserve">
     <value>g</value>
@@ -165,40 +129,79 @@
   <data name="EnumValue_CookingUnit_Kilogramm" xml:space="preserve">
     <value>kg</value>
   </data>
-  <data name="EnumValue_CookingUnit_Package" xml:space="preserve">
-    <value>Package(s)</value>
+  <data name="EnumValue_CookingUnit_Liter" xml:space="preserve">
+    <value>l</value>
   </data>
-  <data name="EnumValue_CookingUnit_Bunch" xml:space="preserve">
-    <value>Bunch(es)</value>
+  <data name="EnumValue_CookingUnit_Milligramm" xml:space="preserve">
+    <value>mg</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Milliliter" xml:space="preserve">
+    <value>ml</value>
   </data>
   <data name="EnumValue_CookingUnit_Msp" xml:space="preserve">
     <value>msp</value>
   </data>
-  <data name="Message_YouNeedFollingIngrediants" xml:space="preserve">
-    <value>You need these ingrediants:</value>
+  <data name="EnumValue_CookingUnit_None" xml:space="preserve">
+    <value />
   </data>
-  <data name="Message_Error_NoRecipeIdFoundForIngrediantslist" xml:space="preserve">
-    <value>You have to choose a recipe first, to show its ingrediant-list</value>
+  <data name="EnumValue_CookingUnit_Package" xml:space="preserve">
+    <value>Package(s)</value>
   </data>
-  <data name="Message_Error_RecipeMustBeSelectedFirst" xml:space="preserve">
-    <value>You must choose a recipe first.</value>
+  <data name="EnumValue_CookingUnit_Tablespoon" xml:space="preserve">
+    <value>tbl</value>
+  </data>
+  <data name="EnumValue_CookingUnit_Teaspoon" xml:space="preserve">
+    <value>tsp</value>
   </data>
   <data name="Message_CookingCompleted" xml:space="preserve">
-    <value>Cooking completed. Enjoy your meal</value>
+    <value>Das Gericht ist fertig. Guten Appetit.</value>
   </data>
-  <data name="Message_Error_UnableToReceiveStep" xml:space="preserve">
-    <value>Error on loading recipe step. If this error occurs frequently, please contact the bot admin</value>
+  <data name="Message_DontUnderstand" xml:space="preserve">
+    <value>Tut mir leid. Ich verstehe dich nicht</value>
+  </data>
+  <data name="Message_Error_DontUnderstand" xml:space="preserve">
+    <value>Das habe ich leider nicht verstanden</value>
+  </data>
+  <data name="Message_Error_NoRecipeIdFoundForIngrediantslist" xml:space="preserve">
+    <value>Du musst zuerst ein Rezept auswählen, bevor du dir die Zutatenliste angucken kannst</value>
   </data>
   <data name="Message_Error_NoRecipePicked" xml:space="preserve">
-    <value>You have to pick a recipe first.</value>
+    <value>Du musst zuerst ein Rezept auswählen</value>
   </data>
-  <data name="Message_Step" xml:space="preserve">
-    <value>Step</value>
+  <data name="Message_Error_NoRecipesFound" xml:space="preserve">
+    <value>Für deine Anfrage habe ich keine Rezepte gefunden</value>
+  </data>
+  <data name="Message_Error_RecipeMustBeSelectedFirst" xml:space="preserve">
+    <value>Es muss zuerst ein Rezept gewählt werden, das Kochen gestartet werden kann</value>
+  </data>
+  <data name="Message_Error_RecipeNotFound" xml:space="preserve">
+    <value>Rezept wurde nicht gefunden</value>
+  </data>
+  <data name="Message_Error_UnableToReceiveStep" xml:space="preserve">
+    <value>Fehler beim Laden des Rezepteschritts. Falls dieser Fehler häufiger auftauche, wende dich bitte an deinen Admin</value>
   </data>
   <data name="Message_of" xml:space="preserve">
     <value>von</value>
   </data>
+  <data name="Message_RecipesFound" xml:space="preserve">
+    <value>Ich habe folgende Rezepte gefunden</value>
+  </data>
+  <data name="Message_StartCooking_Desc" xml:space="preserve">
+    <value>Du kannst während des Kochens zwischen den einzelnen Schritten vor und zurücknavigieren oder dir die Zutatenliste anzeigen lassen.</value>
+  </data>
+  <data name="Message_StartCooking_HereWeGo" xml:space="preserve">
+    <value>Los gehts</value>
+  </data>
+  <data name="Message_Step" xml:space="preserve">
+    <value>Schritt</value>
+  </data>
   <data name="Message_Steps" xml:space="preserve">
     <value>Schritten</value>
+  </data>
+  <data name="Message_Welcome" xml:space="preserve">
+    <value>Hallo. Ich bin ein Rezepte-Bot. Du kannst mich nach tollen Rezepten fragen. Nachdem du ein Rezept ausgewählt hast, werde ich dich beim Kochen begleiten.</value>
+  </data>
+  <data name="Message_YouNeedFollingIngrediants" xml:space="preserve">
+    <value>Für dein Rezept werden folgende Zutaten benötigt:</value>
   </data>
 </root>

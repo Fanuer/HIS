@@ -1,60 +1,61 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HIS.Bot.WebApi.Properties;
 
 namespace HIS.Bot.WebApi.Data.ViewModels.Enum
 {
     public enum CookingUnit
     {
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_None))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_None))]
         None,
         /// <summary>
         /// t or tsp. -> Teeloeffel
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Teaspoon))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Teaspoon))]
         Teaspoon,
         /// <summary>
         /// T, tbl., tbs., or tbsp. -> Essloeffel
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Tablespoon))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Tablespoon))]
         Tablespoon,
         /// <summary>
         /// ml, cc and mL 
         ///  </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Milliliter))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Milliliter))]
         Milliliter,
         /// <summary>
         /// l, litre, L 
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Liter))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Liter))]
         Liter,
         /// <summary>
         /// mg 
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Milligramm))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Milligramm))]
         Milligramm,
         /// <summary>
         /// g
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Gramm))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Gramm))]
         Gramm,
         /// <summary>
         /// kg 
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Kilogramm))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Kilogramm))]
         Kilogramm,
         /// <summary>
         /// Päckchen 
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Package))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Package))]
         Package,
         /// <summary>
         /// Bündel 
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Bunch))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Bunch))]
         Bunch,
         /// <summary>
         /// Messerspitze 
         /// </summary>
-        [Display(ResourceType = typeof(Resource), Name = nameof(Resource.EnumValue_CookingUnit_Msp))]
+        [Display(ResourceType = typeof(Resources), Name = nameof(Resources.EnumValue_CookingUnit_Msp))]
         Msp,
     }
 }

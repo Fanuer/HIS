@@ -148,6 +148,11 @@
     <Compile Include="Data\Enums\CardActionTypes.cs" />
     <Compile Include="Data\Exceptions\RecipeIdNotFoundException.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="XML\ConfigSections\AuthServiceData.cs" />
     <Compile Include="XML\ConfigSections\BotData.cs" />
     <Compile Include="XML\ConfigSections\ClientInfo.cs" />
@@ -160,10 +165,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource.Designer.cs">
+    <Compile Include="Properties\__Resources.en.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
+      <DependentUpon>__Resources.en.resx</DependentUpon>
     </Compile>
     <Compile Include="Data\ViewModels\Enum\CookingUnit.cs" />
     <Compile Include="Data\ViewModels\Enum\SourceType.cs" />
@@ -186,12 +191,15 @@
     <Compile Include="Data\ViewModels\StepViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resource.de-de.resx">
+    <EmbeddedResource Include="Properties\__Resources.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>__Resources.en.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resource.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

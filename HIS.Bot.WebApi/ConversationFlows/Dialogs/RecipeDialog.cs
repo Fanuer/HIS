@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Chronic;
 using HIS.Bot.WebApi.Clients;
@@ -16,6 +18,7 @@ using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
+using HIS.Bot.WebApi.Properties;
 
 namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
 {
@@ -45,7 +48,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
 
         public RecipeDialog()
         {
-
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-de");
         }
         #endregion
 
@@ -55,7 +58,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
         [LuisIntent("")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync(Resource.Message_Error_DontUnderstand);
+            await context.PostAsync(Resources.Message_Error_DontUnderstand);
             context.Wait(MessageReceived);
         }
 
@@ -71,39 +74,29 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             }
 
             IMessageActivity reply = context.MakeMessage();
+            
             reply.Recipient = context.Activity.From;
             reply.Type = ActivityTypes.Message;
 
             if (recipes.Entries.Any())
             {
-                await context.PostAsync(Resource.Message_RecipesFound);
-                recipes.Entries.Select(x => x.ToAttachment(String.Format(RecipeStartStringFormat, x.Id))).ForEach(x => reply.Attachments.Add(x));
+                await context.PostAsync(Resources.Message_RecipesFound);
+                reply.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+                foreach (var shortRecipeViewModel in recipes.Entries)
+                {
+                    var attachment = shortRecipeViewModel.ToAttachment(String.Format(RecipeStartStringFormat, shortRecipeViewModel.Id));
+                    reply.Attachments.Add(attachment);
+                }
+
+                //recipes.Entries.Select(x => x.ToAttachment(String.Format(RecipeStartStringFormat, x.Id))).ForEach(x => reply.Attachments.Add(x));
                 await context.PostAsync(reply);
             }
             else
             {
-                await context.PostAsync(Resource.Message_Error_NoRecipesFound);
+                await context.PostAsync(Resources.Message_Error_NoRecipesFound);
             }
 
             context.Wait(MessageReceived);
-
-            //await Conversation.SendAsync(context.Activity as IMessageActivity, CreateRecipeSearchDialog);
-
-            /*
-            var markedUpRecipeName = String.IsNullOrWhiteSpace(recipeName.Entity) ? "**keine Angabe**": $"*{recipeName.Entity}*" ;
-            var markedUpTags = !tags.Any() ? "**keine Angabe**": $"*{String.Join(", ", tags.Select(x => x.Entity))}*" ;
-            var markedUpIngrediants = !ingrediants.Any() ? "**keine Angabe**": $"*{String.Join(", ", ingrediants.Select(x => x.Entity))}*" ;
-            
-
-            var reply = $"Folgende Suchoptionen wurden gefunden: \n\n" +
-                         $"Gesuchter Rezeptname: \t{markedUpRecipeName}\n\n" +
-                         $"Gesuchte Tags: \t{markedUpTags} \n\n" +
-                         $"Gesuchte Zutaten: \t{markedUpIngrediants}";
-
-            var message = context.MakeMessage();
-            message.TextFormat = TextFormatTypes.Markdown;
-            message.Text = reply;
-            */
         }
 
 
@@ -117,7 +110,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             catch (RecipeIdNotFoundException e)
             {
                 Console.WriteLine(e);
-                await context.PostAsync(Resource.Message_Error_NoRecipePicked);
+                await context.PostAsync(Resources.Message_Error_NoRecipePicked);
             }
 
             context.Wait(MessageReceived);
@@ -133,7 +126,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             catch (RecipeIdNotFoundException e)
             {
                 Console.WriteLine(e);
-                await context.PostAsync(Resource.Message_Error_NoRecipePicked);
+                await context.PostAsync(Resources.Message_Error_NoRecipePicked);
             }
 
             context.Wait(MessageReceived);
@@ -149,7 +142,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             catch (RecipeIdNotFoundException e)
             {
                 Console.WriteLine(e);
-                await context.PostAsync(Resource.Message_Error_NoRecipePicked);
+                await context.PostAsync(Resources.Message_Error_NoRecipePicked);
             }
 
             context.Wait(MessageReceived);
@@ -162,7 +155,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
             int recipeId = -1;
             if (!context.UserData.TryGetValue(Userdata_RecipeId, out recipeId))
             {
-                await context.PostAsync(Resource.Message_Error_NoRecipeIdFoundForIngrediantslist);
+                await context.PostAsync(Resources.Message_Error_NoRecipeIdFoundForIngrediantslist);
             }
             else
             {
@@ -205,21 +198,21 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
 
                 if (step == null)
                 {
-                    await context.PostAsync(Resource.Message_Error_UnableToReceiveStep);
+                    await context.PostAsync(Resources.Message_Error_UnableToReceiveStep);
                 }
                 else
                 {
                     context.UserData.SetValue(Userdata_StepId, step.Id);
-                    await context.PostAsync($"{Resource.Message_Step} {step.Order + 1} {Resource.Message_of} {step.TotalSteps} {Resource.Message_Steps}:{Bot_NewLine}{step.Description}");
+                    await context.PostAsync($"{Resources.Message_Step} {step.Order + 1} {Resources.Message_of} {step.TotalSteps} {Resources.Message_Steps}:{Bot_NewLine}{step.Description}");
                     if (step.Order + 1 >= step.TotalSteps)
                     {
-                        await context.PostAsync(Resource.Message_CookingCompleted);
+                        await context.PostAsync(Resources.Message_CookingCompleted);
                     }
                 }
             }
             catch (RecipeIdNotFoundException e)
             {
-                await context.PostAsync(Resource.Message_Error_RecipeMustBeSelectedFirst);
+                await context.PostAsync(Resources.Message_Error_RecipeMustBeSelectedFirst);
             }
         }
 
@@ -234,7 +227,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
                     var recipeIdMatch = Regex.Match(activity.Text.Remove(0, RecipeStartRaw.Length), "\\d+");
                     if (!Int32.TryParse(recipeIdMatch.Value, out recipeId))
                     {
-                        await context.PostAsync(Resource.Message_Error_RecipeNotFound);
+                        await context.PostAsync(Resources.Message_Error_RecipeNotFound);
                     }
                     context.UserData.SetValue(Userdata_RecipeId, recipeId);
                     context.UserData.RemoveValue(Userdata_StepId);
@@ -244,7 +237,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
                         await client.StartCookingAsync(recipeId);
                     }
 
-                    await context.PostAsync(Resource.Message_StartCooking_HereWeGo + Bot_NewLine + Resource.Message_StartCooking_Desc);
+                    await context.PostAsync(Resources.Message_StartCooking_HereWeGo + Bot_NewLine + Resources.Message_StartCooking_Desc);
 
                     var text = await GetIngredintListTextAsync(recipeId);
                     await context.PostAsync(text);
@@ -271,7 +264,7 @@ namespace HIS.Bot.WebApi.ConversationFlows.Dialogs
                 ingrediants = await client.GetRecipeIngrediantsAsync(recipeId);
             }
             var builder = new StringBuilder();
-            builder.AppendLine(Resource.Message_YouNeedFollingIngrediants + Bot_NewLine + Bot_NewLine);
+            builder.AppendLine(Resources.Message_YouNeedFollingIngrediants + Bot_NewLine + Bot_NewLine);
             foreach (var ingrediant in ingrediants)
             {
                 builder.AppendLine($"* {ingrediant.Amount.ToString().PadLeft(4, ' ')} {ingrediant.Unit.GetUnit().PadRight(3, ' ')} {ingrediant.Name}{Environment.NewLine}");

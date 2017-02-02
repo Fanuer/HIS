@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using HIS.Bot.WebApi.ConversationFlows.Dialogs;
 using HIS.Bot.WebApi.Data.Enums;
 using HIS.Bot.WebApi.Extensions;
+using HIS.Bot.WebApi.Properties;
 using Microsoft.Bot.Connector;
 
 namespace HIS.Bot.WebApi.Data.ViewModels
@@ -29,9 +30,12 @@ namespace HIS.Bot.WebApi.Data.ViewModels
         #region METHODS
         public Attachment ToAttachment(string buttonValue)
         {
-            var action = new CardAction(CardActionTypes.postBack.GetName(), Resource.ButtonLabel_StartCooking, value: buttonValue);
+            var action = new CardAction(CardActionTypes.postBack.GetName(), Resources.ButtonLabel_StartCooking, value: buttonValue);
             var image = new CardImage(this.ImageUrl, this.Name);
-            return new ThumbnailCard(this.Name, String.Join(", ", this.Tags), images: new List<CardImage>() { image }, buttons: new List<CardAction>() { action }).ToAttachment();
+            return new ThumbnailCard(this.Name, 
+                                     String.Join(", ", this.Tags), 
+                                     images: String.IsNullOrWhiteSpace(image.Url)?new List<CardImage>() : new List<CardImage>() { image }, 
+                                     buttons: new List<CardAction>() { action }).ToAttachment();
         }
 
         #endregion

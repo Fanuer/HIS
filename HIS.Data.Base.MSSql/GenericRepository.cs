@@ -167,14 +167,13 @@ namespace HIS.Data.Base.MSSql
 
         #region IFuzzyStore
 
-        public async Task<TIdProperty> GetCachedFuzzyResultAsync(string type, string searchQuery)
+        public async Task<IEnumerable<TIdProperty>> GetCachedFuzzyResultAsync(string type, string searchQuery)
         {
             try
             {
                 if (String.IsNullOrWhiteSpace(type)) { throw new ArgumentNullException(nameof(type)); }
                 if (String.IsNullOrWhiteSpace(searchQuery)) { throw new ArgumentNullException(nameof(searchQuery)); }
-                var result = await DbContext.Set<TFuzzy>().FirstOrDefaultAsync(x => x.SearchQuery.Equals(searchQuery, StringComparison.CurrentCultureIgnoreCase) && type.Equals(type));
-                return result != null ? result.Id : default(TIdProperty);
+                return await DbContext.Set<TFuzzy>().Where(x => x.SearchQuery.Equals(searchQuery, StringComparison.CurrentCultureIgnoreCase) && type.Equals(type)).Select(x=>x.Id).ToListAsync();
             }
             catch (Exception e)
             {

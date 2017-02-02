@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HIS.Bot.WebApi {
+namespace HIS.Bot.WebApi.Properties {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace HIS.Bot.WebApi {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resource {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resource() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace HIS.Bot.WebApi {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HIS.Bot.WebApi.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HIS.Bot.WebApi.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Start Cooking ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Jetzt Kochen ähnelt.
         /// </summary>
         public static string ButtonLabel_StartCooking {
             get {
@@ -169,7 +169,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Cooking completed. Enjoy your meal ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das Gericht ist fertig. Guten Appetit. ähnelt.
         /// </summary>
         public static string Message_CookingCompleted {
             get {
@@ -178,7 +178,16 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die I&apos;m sorry. I didn&apos;t understand you. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Tut mir leid. Ich verstehe dich nicht ähnelt.
+        /// </summary>
+        public static string Message_DontUnderstand {
+            get {
+                return ResourceManager.GetString("Message_DontUnderstand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Das habe ich leider nicht verstanden ähnelt.
         /// </summary>
         public static string Message_Error_DontUnderstand {
             get {
@@ -187,7 +196,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die You have to choose a recipe first, to show its ingrediant-list ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Du musst zuerst ein Rezept auswählen, bevor du dir die Zutatenliste angucken kannst ähnelt.
         /// </summary>
         public static string Message_Error_NoRecipeIdFoundForIngrediantslist {
             get {
@@ -196,7 +205,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die You have to pick a recipe first. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Du musst zuerst ein Rezept auswählen ähnelt.
         /// </summary>
         public static string Message_Error_NoRecipePicked {
             get {
@@ -205,7 +214,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, I found no recipes that matches your question ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Für deine Anfrage habe ich keine Rezepte gefunden ähnelt.
         /// </summary>
         public static string Message_Error_NoRecipesFound {
             get {
@@ -214,7 +223,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die You must choose a recipe first. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Es muss zuerst ein Rezept gewählt werden, das Kochen gestartet werden kann ähnelt.
         /// </summary>
         public static string Message_Error_RecipeMustBeSelectedFirst {
             get {
@@ -223,7 +232,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Sorry, I did not find your Recipe ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rezept wurde nicht gefunden ähnelt.
         /// </summary>
         public static string Message_Error_RecipeNotFound {
             get {
@@ -232,7 +241,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Error on loading recipe step. If this error occurs frequently, please contact the bot admin ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Fehler beim Laden des Rezepteschritts. Falls dieser Fehler häufiger auftauche, wende dich bitte an deinen Admin ähnelt.
         /// </summary>
         public static string Message_Error_UnableToReceiveStep {
             get {
@@ -250,7 +259,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die I found the following recipes ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ich habe folgende Rezepte gefunden ähnelt.
         /// </summary>
         public static string Message_RecipesFound {
             get {
@@ -259,7 +268,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die While cooking, you can navigate between the cooking steps or ask for the ingrediants list ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Du kannst während des Kochens zwischen den einzelnen Schritten vor und zurücknavigieren oder dir die Zutatenliste anzeigen lassen. ähnelt.
         /// </summary>
         public static string Message_StartCooking_Desc {
             get {
@@ -268,7 +277,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Here we go ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Los gehts ähnelt.
         /// </summary>
         public static string Message_StartCooking_HereWeGo {
             get {
@@ -277,7 +286,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Step ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Schritt ähnelt.
         /// </summary>
         public static string Message_Step {
             get {
@@ -295,7 +304,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Welcome. I am a Recipe Bot. You can ask me for cool recipes. When you choose one, I will guide you though your cooking. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hallo. Ich bin ein Rezepte-Bot. Du kannst mich nach tollen Rezepten fragen. Nachdem du ein Rezept ausgewählt hast, werde ich dich beim Kochen begleiten. ähnelt.
         /// </summary>
         public static string Message_Welcome {
             get {
@@ -304,7 +313,7 @@ namespace HIS.Bot.WebApi {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die You need these ingrediants: ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Für dein Rezept werden folgende Zutaten benötigt: ähnelt.
         /// </summary>
         public static string Message_YouNeedFollingIngrediants {
             get {

@@ -8,7 +8,7 @@ namespace HIS.Data.Base.Interfaces
 {
     public interface IFuzzySearchStore<TFuzzy, TIdProperty> where TFuzzy : IFuzzyEntry<TIdProperty>
     {
-        Task<TIdProperty> GetCachedFuzzyResultAsync(string type, string searchQuery);
+        Task<IEnumerable<TIdProperty>> GetCachedFuzzyResultAsync(string type, string searchQuery);
         Task SaveFuzzyEntryAsync(TFuzzy newEntry);
         Task RemoveFuzzyEntryAsync(TFuzzy newEntry);
     }
