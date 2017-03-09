@@ -17,8 +17,7 @@ using Microsoft.Extensions.Logging;
 namespace HIS.Recipes.Services.Implementation.Services
 {
     internal class BaseService<T, TDbEntity, TViewModel, TCreationViewModel> : IDisposable
-        where T : class, IRepositoryFindSingle<TDbEntity, int>, IRepositoryUpdate<TDbEntity, int>,
-        IRepositoryAddAndDelete<TDbEntity, int>, IDisposable
+        where T : class, IRepositoryFindSingle<TDbEntity, int>, IRepositoryUpdate<TDbEntity, int>, IRepositoryAddAndDelete<TDbEntity, int>, IDisposable
         where TDbEntity : class, IEntity<int>
         where TViewModel : IViewModelEntity<int>
     {

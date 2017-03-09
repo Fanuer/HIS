@@ -59,18 +59,15 @@ namespace HIS.Recipes.Services.Tests.ServiceTests
             using (var service = GetService())
             {
                 var tagWith = this.DbContext.RecipeTags.Include(x => x.Recipes).First(x => x.Recipes.Any());
-
                 var searchModel = new RecipeSearchViewModel()
                 {
                     Tags = new List<string>() { tagWith.Name }
                 };
 
-
                 var output = await (await service.SearchForRecipes(searchModel)).ToListAsync();
                 Assert.NotNull(output);
                 Assert.NotEmpty(output);
                 Assert.Equal(tagWith.Recipes.Count, output.Count);
-                
             }
         }
 

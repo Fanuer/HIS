@@ -253,3 +253,9 @@ TemporaryDbContextFactory.cs
 /HIS.Bot.WebApi/WebConfigData/HISAuth.xml
 /HIS.Bot.WebApi/XML/WebConfigData
 **/PublishProfiles/*
+
+# Ignores compiled TypeScript files
+**/app/**/*.map
+**/app/**/*.js
+
+**/wwwroot/**/*.*
