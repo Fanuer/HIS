@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +19,9 @@ using HIS.WebApi.Auth.IdentityConfigs;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.Services;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyModel;
 
@@ -71,6 +75,12 @@ namespace HIS.WebApi.Auth
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
+
+            services.AddTransient<IProfileService, IdentityWithAdditionalClaimsProfileService>();
+
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name; // aktuelle Assembly
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
@@ -78,14 +88,16 @@ namespace HIS.WebApi.Auth
                 
                 .AddConfigurationStore(builder => builder.UseSqlServer(dbConnectionString, options => options.MigrationsAssembly(migrationsAssembly)))
                 .AddOperationalStore(builder => builder.UseSqlServer(dbConnectionString, options => options.MigrationsAssembly(migrationsAssembly)))
-                .AddAspNetIdentity<ApplicationUser>();
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
 
             services.AddAutoMapper();
             services.AddOptions();
-            services.Configure<HIS.WebApi.Auth.Options.IdentityOptions>(Configuration.GetSection("Identity"));
+            services.Configure<Options.IdentityOptions>(Configuration.GetSection("Identity"));
             services.Configure<InitialUserDataOptions>(Configuration.GetSection("InitialUserData"));
 
             services.AddSingleton<IdentityConfig>();
+
         }
         
         /// <summary>
@@ -98,16 +110,18 @@ namespace HIS.WebApi.Auth
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityConfig identityConfig)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            loggerFactory.AddDebug(LogLevel.Error);
+            loggerFactory.AddFile("Logs/his-{Date}.txt", LogLevel.Warning);
+
 
             if (env.IsDevelopment())
             {
-                //InitializeDatabase(app, identityConfig);
-                //InitialiseUsers(app);
+                InitializeDatabase(app, identityConfig);
+                InitialiseUsers(app);
 
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
+                //app.UseBrowserLink();
             }
             else
             {
@@ -115,7 +129,7 @@ namespace HIS.WebApi.Auth
             }
 
             app.UseStaticFiles();
-
+            
             app.UseIdentity();
             app.UseIdentityServer();
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
@@ -168,10 +182,10 @@ namespace HIS.WebApi.Auth
                                     throw new ArgumentException(identityError.Description);
                                 }
                             }
-                            /* var roleStore = new RoleStore<IdentityRole>(context);
+                            var roleStore = new RoleStore<IdentityRole>(context);
                             roles = roleStore.Roles.Select(x => x.Name).ToArray();
                             var addRoleTask = usermanager.AddToRolesAsync(user, roles);
-                            addRoleTask.Wait();*/
+                            addRoleTask.Wait();
                         }
                     }
                 }
@@ -179,22 +193,23 @@ namespace HIS.WebApi.Auth
             }
         }
 
-        private void InitializeDatabase(IApplicationBuilder app, IdentityConfig identityConfig)
+        private void InitializeDatabase(IApplicationBuilder app, IdentityConfig identityConfig, bool recreateDatabases = false)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var persistantGrantDb = serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database;
-                if (persistantGrantDb.EnsureCreated())
+                if (recreateDatabases)
                 {
+                    persistantGrantDb.EnsureDeleted();
                     persistantGrantDb.Migrate();
                 }
-                
+
                 var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                if (context.Database.EnsureCreated())
+                if (recreateDatabases)
                 {
+                    context.Database.EnsureDeleted();
                     context.Database.Migrate();
                 }
-
                 if (!context.ApiResources.Any())
                 {
                     context.ApiResources.AddRange(identityConfig.GetApiResources().Select(x => x.ToEntity()));
@@ -203,6 +218,12 @@ namespace HIS.WebApi.Auth
                 if (!context.Clients.Any())
                 {
                     context.Clients.AddRange(identityConfig.GetClients().Select(x => x.ToEntity()));
+                    context.SaveChanges();
+                }
+
+                if (!context.IdentityResources.Any())
+                {
+                    context.IdentityResources.AddRange(identityConfig.GetIdentityResources().Select(x => x.ToEntity()));
                     context.SaveChanges();
                 }
             }

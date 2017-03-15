@@ -1,20 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using HIS.WebApi.Auth.Models;
+using HIS.WebApi.Auth.Services;
+using HIS.WebApi.Auth.ViewModels;
+using IdentityModel;
+using IdentityServer4;
+using IdentityServer4.Extensions;
+using IdentityServer4.Services;
+using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using HIS.WebApi.Auth.Models;
-using HIS.WebApi.Auth.Models.AccountViewModels;
-using HIS.WebApi.Auth.Services;
 
 namespace HIS.WebApi.Auth.Controllers
 {
     [Authorize]
+    [SecurityHeaders]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -22,29 +29,49 @@ namespace HIS.WebApi.Auth.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly IIdentityServerInteractionService _interaction;
+        private readonly IPersistedGrantService _persistedGrantService;
+        private readonly IClientStore _clientStore;
+        private readonly AccountService _account;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IIdentityServerInteractionService interaction,
+            IHttpContextAccessor httpContext,
+            IPersistedGrantService persistedGrantService,
+            IClientStore clientStore)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            _interaction = interaction;
+            _persistedGrantService = persistedGrantService;
+            _clientStore = clientStore;
+
+            _account = new AccountService(interaction, httpContext, clientStore);
         }
 
         //
         // GET: /Account/Login
-        [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login(string returnUrl = null)
+        [HttpGet]
+        public async Task<IActionResult> Login(string returnUrl)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            var vm = await _account.BuildLoginViewModelAsync(returnUrl);
+
+            if (vm.IsExternalLoginOnly)
+            {
+                // only one option for logging in
+                return ExternalLogin(vm.ExternalProviders.First().AuthenticationScheme, returnUrl);
+            }
+
+            return View(vm);
         }
 
         //
@@ -52,22 +79,21 @@ namespace HIS.WebApi.Auth.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginInputModel model)
         {
-            ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToLocal(model.ReturnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberLogin });
                 }
                 if (result.IsLockedOut)
                 {
@@ -77,66 +103,120 @@ namespace HIS.WebApi.Auth.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
+                    return View(await _account.BuildLoginViewModelAsync(model));
                 }
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return View(await _account.BuildLoginViewModelAsync(model));
+        }
+
+
+
+
+        /// <summary>
+        /// Show logout page
+        /// </summary>
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Logout(string logoutId)
+        {
+            var vm = await _account.BuildLogoutViewModelAsync(logoutId);
+
+            if (vm.ShowLogoutPrompt == false)
+            {
+                // no need to show prompt
+                return await Logout(vm);
+            }
+
+            return View(vm);
         }
         /*
-        //
-        // GET: /Account/Register
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
-
-        //
-        // POST: /Account/Register
+        /// <summary>
+        /// Handle logout page postback
+        /// </summary>
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout(LogoutViewModel model)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            var vm = await _account.BuildLoggedOutViewModelAsync(model.LogoutId);
+            if (vm.TriggerExternalSignout)
             {
-                var user = new ApplicationUser { UserName = model.Username, Username = model.Username };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
+                try
                 {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Username, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                    // hack: try/catch to handle social providers that throw
+                    await HttpContext.Authentication.SignOutAsync(vm.ExternalAuthenticationScheme,
+                        new AuthenticationProperties { RedirectUri = url });
                 }
-                AddErrors(result);
+                catch (NotSupportedException) // this is for the external providers that don't have signout
+                {
+                }
+                catch (InvalidOperationException) // this is for Windows/Negotiate
+                {
+                }
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            // delete authentication cookie
+            await _signInManager.SignOutAsync();
+
+            return View("LoggedOut", vm);
         }
         */
-        //
-        // POST: /Account/LogOff
+
+        /// <summary>
+        /// Handle logout page postback
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LogOff()
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout(LogoutViewModel model)
         {
+            var idp = User?.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
+            var subjectId = HttpContext.User.Identity.GetSubjectId();
+
+            if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
+            {
+                if (model.LogoutId == null)
+                {
+                    // if there's no current logout context, we need to create one
+                    // this captures necessary info from the current logged in user
+                    // before we signout and redirect away to the external IdP for signout
+                    model.LogoutId = await _interaction.CreateLogoutContextAsync();
+                }
+
+                string url = "/Account/Logout?logoutId=" + model.LogoutId;
+                try
+                {
+                    // hack: try/catch to handle social providers that throw
+                    await HttpContext.Authentication.SignOutAsync(idp, new AuthenticationProperties { RedirectUri = url });
+                }
+                catch (NotSupportedException)
+                {
+                }
+            }
+
+            // delete authentication cookie
             await _signInManager.SignOutAsync();
-            _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+
+            // set this so UI rendering sees an anonymous user
+            HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+
+            // get context information (client name, post logout redirect URI and iframe for federated signout)
+            var logout = await _interaction.GetLogoutContextAsync(model.LogoutId);
+            
+            var vm = new LoggedOutViewModel
+            {
+                PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
+                ClientName = logout?.ClientId,
+                SignOutIframeUrl = logout?.SignOutIFrameUrl
+            };
+
+            await _persistedGrantService.RemoveAllGrantsAsync(subjectId, logout?.ClientId ?? "spa-client");
+
+            return Redirect(logout?.PostLogoutRedirectUri ?? "http://localhost:8080");
         }
-        /*
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
@@ -187,11 +267,52 @@ namespace HIS.WebApi.Auth.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
-                var email = info.Principal.FindFirstValue(ClaimTypes.Username);
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Username = email });
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
             }
         }
 
+        //
+        // GET: /Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    // Send an email with this link
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+                    return RedirectToLocal(returnUrl);
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+        
         //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
@@ -207,7 +328,7 @@ namespace HIS.WebApi.Auth.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Username, Username = model.Username };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -225,7 +346,7 @@ namespace HIS.WebApi.Auth.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
-        */
+
         // GET: /Account/ConfirmEmail
         [HttpGet]
         [AllowAnonymous]
@@ -273,7 +394,7 @@ namespace HIS.WebApi.Auth.Controllers
                 // Send an email with this link
                 //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                //await _emailSender.SendEmailAsync(model.Username, "Reset Password",
+                //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
                 //   $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
                 //return View("ForgotPasswordConfirmation");
             }
@@ -377,7 +498,7 @@ namespace HIS.WebApi.Auth.Controllers
             }
 
             var message = "Your security code is: " + code;
-            if (model.SelectedProvider == "Username")
+            if (model.SelectedProvider == "Email")
             {
                 await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
             }

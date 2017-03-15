@@ -259,3 +259,5 @@ TemporaryDbContextFactory.cs
 **/app/**/*.js
 
 **/wwwroot/**/*.*
+**/(l|L)ogs/*.*
+/HIS.WebApi.Auth/Logs

@@ -1,5 +1,5 @@
 {
-  "name": "angular2-webpack-visualstudio",
+  "name": "his-spa",
   "version": "1.0.0",
   "description": "",
   "main": "wwwroot/index.html",
@@ -7,7 +7,7 @@
   "license": "ISC",
   "scripts": {
     "ngc": "ngc -p ./tsconfig-aot.json",
-    "start": "concurrently \"webpack-dev-server --hot --inline --port 8080\" \"dotnet run\" ",
+    "start": "concurrently \"webpack-dev-server --hot --inline --port 8080\" \"set ASPNETCORE_ENVIRONMENT=Development\" \"dotnet run\" ",
     "webpack-dev": "set NODE_ENV=development && webpack",
     "webpack-production": "set NODE_ENV=production && webpack",
     "build-dev": "npm run webpack-dev",
@@ -19,22 +19,23 @@
   "dependencies": {
     "@angular/common": "~2.4.9",
     "@angular/compiler": "~2.4.9",
+    "@angular/compiler-cli": "~2.4.9",
     "@angular/core": "~2.4.9",
     "@angular/forms": "~2.4.9",
     "@angular/http": "~2.4.9",
     "@angular/platform-browser": "~2.4.9",
     "@angular/platform-browser-dynamic": "~2.4.9",
+    "@angular/platform-server": "~2.4.9",
     "@angular/router": "~3.4.9",
     "@angular/upgrade": "~2.4.9",
     "angular-in-memory-web-api": "0.2.4",
+    "angular-oauth2-oidc": "^1.0.20",
+    "bootstrap": "^3.3.7",
     "core-js": "2.4.1",
+    "ie-shim": "~0.1.0",
     "reflect-metadata": "0.1.9",
     "rxjs": "5.0.3",
-    "zone.js": "0.7.5",
-    "@angular/compiler-cli": "~2.4.9",
-    "@angular/platform-server": "~2.4.9",
-    "bootstrap": "^3.3.7",
-    "ie-shim": "~0.1.0"
+    "zone.js": "^0.7.4"
   },
   "devDependencies": {
     "@types/core-js": "^0.9.35",

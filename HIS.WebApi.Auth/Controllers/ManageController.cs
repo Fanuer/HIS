@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using HIS.WebApi.Auth.Models;
+using HIS.WebApi.Auth.Services;
+using HIS.WebApi.Auth.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using HIS.WebApi.Auth.Models;
-using HIS.WebApi.Auth.Models.ManageViewModels;
-using HIS.WebApi.Auth.Services;
 
 namespace HIS.WebApi.Auth.Controllers
 {
     [Authorize]
+    [SecurityHeaders]
     public class ManageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
