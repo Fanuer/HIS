@@ -30,7 +30,7 @@ export class AppComponent {
         // instead of localStorage
         this.oauthService.setStorage(sessionStorage);
 
-        this.oauthService.issuer = 'https://localhost:44345';
+        this.oauthService.issuer = 'https://his-auth.azurewebsites.net';
 
         // Set a dummy secret
         // Please note that the auth-server used here demand the client to transmit a client secret, although

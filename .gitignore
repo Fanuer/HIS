@@ -261,3 +261,4 @@ TemporaryDbContextFactory.cs
 **/wwwroot/**/*.*
 **/(l|L)ogs/*.*
 /HIS.WebApi.Auth/Logs
+/HIS.SPA/aot/angularApp/app
