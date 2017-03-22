@@ -18,7 +18,7 @@ namespace HIS.Gateway.Services.Clients
     /// <summary>
     /// A Client within the Gateway that calls the recipe-api
     /// </summary>
-    internal class GatewayRecipeClient:S2SClientBase, IGatewayRecipeClient
+    internal partial class GatewayRecipeClient:S2SClientBase, IGatewayRecipeClient
     {
 
         #region CONST
@@ -38,41 +38,6 @@ namespace HIS.Gateway.Services.Clients
         #endregion
 
         #region METHODS
-        public async Task<ListViewModel<ShortRecipeViewModel>> GetRecipes(RecipeSearchViewModel searchModel = null, int page = 0, int entriesPerPage = 10)
-        {
-            var newUrl = new Uri(this.Client.BaseAddress, "Recipes/");
-            var query = "";
-
-            if (searchModel != null)
-            {
-                var searchQuery = this.Client.AddToUrlAsQueryString(searchModel);
-                if (!String.IsNullOrWhiteSpace(searchQuery))
-                {
-                    query = $"?{searchQuery}";
-                }
-            }
-            
-            query = QueryHelpers.AddQueryString(query, nameof(page), page.ToString());
-            query = QueryHelpers.AddQueryString(query, nameof(entriesPerPage), entriesPerPage.ToString());
-
-            return await this.Client.GetAsync<ListViewModel<ShortRecipeViewModel>>(new Uri(newUrl, query).ToString());
-        }
-
-        public async Task<IEnumerable<RecipeIngrediantViewModel>> GetRecipeIngrediantsAsync(int recipeId)
-        {
-            return await this.Client.GetAsync<IEnumerable<RecipeIngrediantViewModel>>($"Recipes/{recipeId}/Ingrediants");
-        }
-
-        public async Task<StepViewModel> GetStepAsync(int recipeId, int stepId = -1, StepDirection direction = StepDirection.ThisStep)
-        {
-            return await this.Client.GetAsync<StepViewModel>($"Recipes/{recipeId}/Steps/{stepId}" + (direction != StepDirection.ThisStep ? $"?direction={direction}" : ""));
-        }
-
-        public async Task StartCookingAsync(int recipeId)
-        {
-            await this.Client.PostAsync($"Recipes/{recipeId}/cooking");
-        }
-
         #endregion
 
         #region PROPERTIES

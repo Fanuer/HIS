@@ -23,7 +23,7 @@ export class MyXHRBackend extends XHRBackend {
     switch (response.status) {
       case 401:
         // You could redirect to login page here
-        this.router.navigate(['/login']);
+        this.router.navigate(['/unauthorized']);
         break;
         //return Observable.throw('your custom error here');
       /*case 403:

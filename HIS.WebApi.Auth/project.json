@@ -24,7 +24,7 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "IdentityServer4": "1.2.0",
+    "IdentityServer4": "1.0.0",
     "IdentityServer4.AspNetIdentity": "1.0.0",
     "IdentityServer4.EntityFramework": "1.0.0",
     "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",

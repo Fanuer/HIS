@@ -15,7 +15,7 @@ using Xunit;
 
 namespace HIS.Recipes.Services.Tests.ServiceTests
 {
-    public class TagServiceTests:TestBase
+    public class TagServiceTests: ServiceTestBase
     {
         [Fact]
         public async Task GetTags()

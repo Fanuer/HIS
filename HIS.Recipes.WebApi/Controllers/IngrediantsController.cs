@@ -30,7 +30,7 @@ namespace HIS.Recipes.WebApi.Controllers
 
         #region CTOR
         /// <summary>
-        /// Creates a new Tag Controller, which grants access to interaction with ingrediants
+        /// Creates a new Ingrediant Controller, which grants access to interaction with ingrediants
         /// </summary>
         /// <param name="service">service grants acces to the ingrediant store</param>
         public IngrediantsController(IIngrediantService service)
@@ -40,17 +40,30 @@ namespace HIS.Recipes.WebApi.Controllers
         #endregion
 
         #region METHODS
+
         /// <summary>
-        /// Returns all tags
+        /// Returns all ingrediants
         /// </summary>
+        /// <param name="searchterm">Searchterm to filter returned ingrediants</param>
+        /// <param name="page">0-based page. Used to implement pagination</param>
+        /// <param name="entriesPerPage">Number of elements within one page. Used to implement pagination</param>
         /// <returns></returns>
-        /// <response code="200">Returns a list of all available tags</response>
+        /// <response code="200">Returns a list of all available ingrediants</response>
         [HttpGet("api/v{version:apiVersion}/[controller]")]
-        public async Task<IQueryable<IngrediantStatisticViewModel>> GetIngrediants()
+        public async Task<ListViewModel<IngrediantStatisticViewModel>> GetIngrediants([FromQuery]string searchterm ="", [FromQuery]int page = 0, [FromQuery]int entriesPerPage=10)
         {
             var result = this._service.GetIngrediantList();
+            var totalCount = await result.CountAsync();
+            if (!String.IsNullOrWhiteSpace(searchterm))
+            {
+                result = result.Where(x => x.Name.IndexOf(searchterm, StringComparison.CurrentCultureIgnoreCase) >= 0);
+            }
+
+            var skipCount = Math.Max(0, Math.Min(page * entriesPerPage, result.Count() - entriesPerPage));
+            result = result.Skip(skipCount).Take(entriesPerPage);
+
             await result.ForEachAsync(x => x.Url = this.Url.RouteUrl("GetIngrediantById", new { id = x.Id }));
-            return result;
+            return new ListViewModel<IngrediantStatisticViewModel>(result, totalCount, page, entriesPerPage);
         }
 
         /// <summary>
@@ -61,11 +74,11 @@ namespace HIS.Recipes.WebApi.Controllers
         [HttpGet("api/v{version:apiVersion}/[controller]/{id:int}", Name = "GetIngrediantById")]
         public async Task<IActionResult> GetIngrediantAsync(int id)
         {
-            var tag = await this._service.GetIngrediantList().SingleOrDefaultAsync(x => x.Id.Equals(id));
+            var ingrediant = await this._service.GetIngrediantList().SingleOrDefaultAsync(x => x.Id.Equals(id));
 
-          if (tag == null) return NotFound("No Tag with the given id found");
-          tag.Url = this.Url.RouteUrl("GetIngrediantById", new {id = tag.Id});
-          return Ok(tag);
+          if (ingrediant == null) return NotFound("No Ingrediant with the given id found");
+          ingrediant.Url = this.Url.RouteUrl("GetIngrediantById", new {id = ingrediant.Id});
+          return Ok(ingrediant);
         }
 
         /// <summary>
@@ -88,21 +101,21 @@ namespace HIS.Recipes.WebApi.Controllers
         /// Updates an available ingrediant
         /// </summary>
         /// <param name="id">Id of the ingrediant to change</param>
-        /// <param name="model">New tag data</param>
-        /// <response code="204">After update was successfully</response>
+        /// <param name="model">New ingrediant data</param>
+        /// <response code="200">After update was successfully</response>
         /// <response code="400">If the given data are invalid</response>
-        /// <response code="404">If no tag was found for the given id</response>
+        /// <response code="404">If no ingrediant was found for the given id</response>
         [HttpPut("api/v{version:apiVersion}/[controller]/{id:int}")]
         public async Task<IActionResult> UpdateIngrediantAsync(int id, [FromBody]NamedViewModel model)
         {
             await _service.UpdateAsync(id, model);
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
         /// Removes an existing ingrediant
         /// </summary>
-        /// <param name="id">Id of the tag to delete</param>
+        /// <param name="id">Id of the ingrediant to delete</param>
         /// <response code="204">After deletion</response>
         [HttpDelete("api/v{version:apiVersion}/[controller]/{id:int}")]
         public async Task<IActionResult> DeleteIngrediantAsync(int id)
@@ -116,12 +129,14 @@ namespace HIS.Recipes.WebApi.Controllers
         /// </summary>
         /// <param name="recipeId">Id of the Recipe</param>
         /// <response code="200">After adding was successfully</response>
-        /// <response code="404">If Tag or Recipe was not found by the given id</response>
+        /// <response code="404">If ingrediant or Recipe was not found by the given id</response>
         [HttpGet("api/v{version:apiVersion}/Recipes/{recipeId:int}/Ingrediants")]
         [ProducesResponseType(typeof(IQueryable<IngrediantViewModel>), (int)HttpStatusCode.OK)]
-        public IActionResult GetIngrediantsForRecipe(int recipeId)
+        public async Task<IActionResult> GetIngrediantsForRecipe(int recipeId)
         {
-            return Ok(_service.GetIngrediantsForRecipe(recipeId));
+            var result = _service.GetIngrediantsForRecipe(recipeId);
+            await result.ForEachAsync(x => x.Url = this.Url.RouteUrl("GetIngrediantById", new { id = x.Id }));
+            return Ok(result);
         }
 
         /// <summary>
@@ -145,7 +160,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <param name="ingrediantId">Id of a Ingrediant</param>
         /// <response code="200">After removing was successfully</response>
         /// <response code="404">If Recipe or ingrediant was not found by the given id</response>
-        [HttpDelete, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/Tags/{ingrediantId:int}")]
+        [HttpDelete, Route("api/v{version:apiVersion}/Recipes/{recipeId:int}/ingrediants/{ingrediantId:int}")]
         public async Task<IActionResult> RemoveIngrediantFromRecipeAsync(int recipeId, int ingrediantId)
         {
             await _service.RemoveIngrediantFromRecipeAsync(recipeId, ingrediantId);

@@ -1,3 +1,4 @@
+import { RecipeDashboardComponent } from './components/recipe-dashboard.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpModule } from '@angular/http';
@@ -15,7 +16,8 @@ import { HomeComponent } from './components/home.component';
     ],
 
     declarations: [
-        HomeComponent
+        HomeComponent,
+        RecipeDashboardComponent
     ],
 
     exports: [

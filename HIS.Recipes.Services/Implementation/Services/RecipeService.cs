@@ -88,7 +88,6 @@ namespace HIS.Recipes.Services.Implementation.Services
             return result;
         }
 
-
         private async Task<IQueryable<Recipe>> SearchForRecipes(IQueryable<Recipe> recipes, RecipeSearchViewModel searchModel)
         {
             if (recipes == null) { throw new ArgumentNullException(nameof(recipes)); }
@@ -252,7 +251,6 @@ namespace HIS.Recipes.Services.Implementation.Services
             }
             return hits.Distinct();
         }
-
 
         public async Task<FullRecipeViewModel> GetRecipeAsync(int recipeId)
         {

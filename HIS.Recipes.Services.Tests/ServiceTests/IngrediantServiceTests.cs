@@ -19,7 +19,7 @@ using Xunit;
 
 namespace HIS.Recipes.Services.Tests.ServiceTests
 {
-    public class IngrediantServiceTests:TestBase
+    public class IngrediantServiceTests:ServiceTestBase
     {
         [Fact]
         public async Task AddIngrediant()

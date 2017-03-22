@@ -4,6 +4,7 @@ using HIS.Gateway.Services.Configs;
 using HIS.Gateway.Services.Interfaces;
 using HIS.Helpers.Options;
 using HIS.Helpers.Web.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,15 @@ namespace HIS.Gateway.WebApi
             {
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(new DateTime(2016, 12, 18), 1, 0);
+            });
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("admin", policyUser => { policyUser.RequireClaim("role", "admin"); });
+                options.AddPolicy("recipe-write", policyAdmin => { policyAdmin.RequireClaim("role", "his.recipe.write"); });
+                options.AddPolicy("recipe-read", policyAdmin => { policyAdmin.RequireClaim("role", "his.recipe.read"); });
+                options.AddPolicy("ha-read", policyUser => { policyUser.RequireClaim("role", "his.ha.read"); });
+                options.AddPolicy("ha-write", policyUser => { policyUser.RequireClaim("role", "his.ha.write"); });
             });
 
             #region Swagger

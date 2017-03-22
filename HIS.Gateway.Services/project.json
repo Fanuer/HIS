@@ -4,13 +4,14 @@
   "dependencies": {
     "HIS.Helpers": "1.0.0-*",
     "HIS.Recipes.Models": "1.0.0-*",
-    "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
-    "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
-    "Microsoft.Extensions.Options": "1.1.0",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.1.1",
+    "Microsoft.Extensions.Logging.Abstractions": "1.1.1",
+    "Microsoft.Extensions.Options": "1.1.1",
     "NETStandard.Library": "1.6.1",
     "IdentityModel": "2.3.1",
-    "Microsoft.AspNetCore.Mvc.Abstractions": "1.1.0",
-    "HIS.Helpers.Web": "1.0.0-*"
+    "Microsoft.AspNetCore.Mvc.Abstractions": "1.1.2",
+    "HIS.Helpers.Web": "1.0.0-*",
+    "HIS.Recipes.WebApi.Client": "1.0.0-*"
   },
 
   "frameworks": {

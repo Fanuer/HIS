@@ -41,7 +41,7 @@ namespace HIS.Gateway.Services.Clients
 
             if (searchModel != null)
             {
-                var searchQuery = this.Client.AddToUrlAsQueryString(searchModel);
+                var searchQuery = this.Client.ConvertToQueryString(searchModel);
                 if (!String.IsNullOrWhiteSpace(searchQuery))
                 {
                     query = $"?{searchQuery}";

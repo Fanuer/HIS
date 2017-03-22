@@ -11,7 +11,7 @@ using Xunit;
 
 namespace HIS.Recipes.Services.Tests.RepositoryTests
 {
-    public class RecipeRepositoryTests : TestBase
+    public class RecipeRepositoryTests : ServiceTestBase
     {
         [Fact]
         public async Task SearchRecipe()

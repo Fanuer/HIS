@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HIS.Recipes.Services.Tests.ServiceTests
 {
-    public class RecipeServiceTest:TestBase
+    public class RecipeServiceTest: ServiceTestBase
     {
         [Fact]
         public async Task GetRecipes()

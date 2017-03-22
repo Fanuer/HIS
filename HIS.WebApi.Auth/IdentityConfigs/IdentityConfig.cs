@@ -43,9 +43,23 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     ApiSecrets = new List<Secret>() {new Secret(_options.ApiResources.First(x=>x.Name.Equals("recipe-api")).Secret.Sha256()) },
                     // this API allows only following scopes
                     //Scopes = new List<Scope>() {new Scope("recipeUser", "A regular User"), new Scope("recipeAdmin", "An administrative User") }
+                },
+                new ApiResource("ha-api", "Api to interact with an openhab home automatisation")
+                {
+                    // include the following using claims in access token (in addition to subject id)
+                    UserClaims = {JwtClaimTypes.Name, JwtClaimTypes.Email},
+                    // secret for using introspection endpoint
+                    ApiSecrets = new List<Secret>() {new Secret(_options.ApiResources.First(x=>x.Name.Equals("recipe-api")).Secret.Sha256()) },
+                    // this API allows only following scopes
+                    //Scopes = new List<Scope>() {new Scope("recipeUser", "A regular User"), new Scope("recipeAdmin", "An administrative User") }
                 }, 
                 // no secret needed: all clients, known to the Auth Service call access the gateway
                 new ApiResource("gateway-resource", "Api Gateway Resource")
+                {
+                    ApiSecrets = new List<Secret>() {new Secret(_options.ApiResources.First(x=>x.Name.Equals("gateway-resource")).Secret.Sha256()) },
+                    Scopes = new List<Scope>() {new Scope("recipe-management-scope", "Scope for the recipe Api Resource"), new Scope("ha-scope", "Scope for the Home Automatisation Api Resource") },
+                    UserClaims = { "role", "his.admin", "his.user", "his.recipes", "his.recipes.write", "his.recipes.read" }
+                }
             };
         }
 
@@ -55,7 +69,8 @@ namespace HIS.WebApi.Auth.IdentityConfigs
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResources.Email()
+                new IdentityResources.Email(),
+                new IdentityResource("recipe-management-scope", new List<string>() {"role", "his.admin", "his.user", "his.recipes", "his.recipes.write", "his.recipes.read"})
             };
         }
 
@@ -77,7 +92,7 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     ClientName = "Api Gateway Client",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("gateway-client")).Secret.Sha256()) },
-                    AllowedScopes = new List<string>() { "recipe-api" } // scopes that client has access to
+                    AllowedScopes = new List<string>() { "recipe-api", "ha-api" } // scopes that client has access to
                 },
                 new Client()
                 {
@@ -107,17 +122,17 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                     
                     RedirectUris =
                     {
-                        "http://localhost:5000",
-                        "http://localhost:8080"
+                        "https://his-spa.azurewebsites.net/unauthorized",
+                        "http://localhost:8080/unauthorized"
                     },
                     PostLogoutRedirectUris  =
                     {
-                        "http://localhost:5000",
-                        "http://localhost:8080"
+                        "https://his-spa.azurewebsites.net/unauthorized",
+                        "http://localhost:8080/unauthorized"
                     },
                     AllowedCorsOrigins  =
                     {
-                        "http://localhost:5000",
+                        "https://his-spa.azurewebsites.net/",
                         "http://localhost:8080"
                     },
 
@@ -128,7 +143,35 @@ namespace HIS.WebApi.Auth.IdentityConfigs
                         IdentityServer4.IdentityServerConstants.StandardScopes.Email, 
                         "gateway-resource"
                     }
-                }
+                },
+
+
+                #region TestClients
+                new Client()
+                {
+                    ClientId = "recipe-api-test-client",
+                    ClientName = "Recipe Api Test Client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("recipe-api-test-client")).Secret.Sha256()) },
+                    AllowedScopes = new List<string>() { "recipe-api" } // scopes that client has access to
+                },
+                new Client()
+                {
+                    ClientId = "ha-api-test-client",
+                    ClientName = "Home Automatisation Api Test Client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("ha-api-test-client")).Secret.Sha256()) },
+                    AllowedScopes = new List<string>() { "ha-api" } // scopes that client has access to
+                },
+                new Client()
+                {
+                    ClientId = "api-gateway-test-client",
+                    ClientName = "Api Gateway Test Client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientSecrets = new List<Secret>() {new Secret(_options.Clients.First(x=>x.Name.Equals("api-gateway-test-client")).Secret.Sha256()) },
+                    AllowedScopes = new List<string>() { "gateway-resource" } // scopes that client has access to
+                },
+                #endregion
             };
         }
 

@@ -112,8 +112,6 @@ namespace HIS.WebApi.Auth.Controllers
         }
 
 
-
-
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -278,6 +276,7 @@ namespace HIS.WebApi.Auth.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
+            return Forbid();
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -289,6 +288,7 @@ namespace HIS.WebApi.Auth.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
+            return Forbid();
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {

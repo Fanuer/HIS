@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using HIS.WebApi.Auth.Data;
 using HIS.WebApi.Auth.Models;
 using HIS.WebApi.Auth.Services;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using AutoMapper;
 using HIS.WebApi.Auth.IdentityConfigs;
 using IdentityServer4.EntityFramework.DbContexts;
@@ -29,6 +31,8 @@ namespace HIS.WebApi.Auth
 {
     public class Startup
     {
+        private readonly IHostingEnvironment _env;
+
         #region CONST
 
         #endregion
@@ -41,6 +45,7 @@ namespace HIS.WebApi.Auth
 
         public Startup(IHostingEnvironment env)
         {
+            _env = env;
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -82,10 +87,10 @@ namespace HIS.WebApi.Auth
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name; // aktuelle Assembly
+            var cerPw = Configuration.GetSection("Identity").GetChildren().FirstOrDefault(x => x.Key == nameof(Options.IdentityOptions.CertificatePassword))?.Value;
+            var cert = new X509Certificate2(Path.Combine(_env.ContentRootPath, "cert_18.03.2017.pfx"), cerPw);
             services.AddIdentityServer()
-                .AddTemporarySigningCredential()
-                //.AddInMemoryPersistedGrants()
-                
+                .AddSigningCredential(cert)
                 .AddConfigurationStore(builder => builder.UseSqlServer(dbConnectionString, options => options.MigrationsAssembly(migrationsAssembly)))
                 .AddOperationalStore(builder => builder.UseSqlServer(dbConnectionString, options => options.MigrationsAssembly(migrationsAssembly)))
                 .AddAspNetIdentity<ApplicationUser>()

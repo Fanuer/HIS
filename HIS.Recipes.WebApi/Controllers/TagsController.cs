@@ -42,14 +42,26 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <summary>
         /// Returns all tags
         /// </summary>
+        /// <param name="searchterm">Searchterm to filter returned ingrediants</param>
+        /// <param name="page">0-based page. Used to implement pagination</param>
+        /// <param name="entriesPerPage">Number of elements within one page. Used to implement pagination</param>
         /// <returns></returns>
         /// <response code="200">Returns a list of all available tags</response>
         [HttpGet("api/v{version:apiVersion}/[controller]")]
-        public async Task<IQueryable<NamedViewModel>> GetTags()
+        public async Task<ListViewModel<NamedViewModel>> GetTagsAsync([FromQuery]string searchterm = "", [FromQuery]int page = 0, [FromQuery]int entriesPerPage = 10)
         {
             var result = this._service.GetTags();
+            var totalCount = await result.CountAsync();
+            if (!String.IsNullOrWhiteSpace(searchterm))
+            {
+                result = result.Where(x => x.Name.IndexOf(searchterm, StringComparison.CurrentCultureIgnoreCase) >= 0);
+            }
+
+            var skipCount = Math.Max(0, Math.Min(page * entriesPerPage, result.Count() - entriesPerPage));
+            result = result.Skip(skipCount).Take(entriesPerPage);
+
             await result.ForEachAsync(x => x.Url = this.Url.RouteUrl("GetTagById", new {id = x.Id}));
-            return result;
+            return new ListViewModel<NamedViewModel>(result, totalCount, page, entriesPerPage); ;
         }
 
         /// <summary>
@@ -63,6 +75,7 @@ namespace HIS.Recipes.WebApi.Controllers
             var tag = await _service.GetTags().SingleOrDefaultAsync(x => x.Id.Equals(id));
             if (tag != null)
             {
+                tag.Url = this.Url.RouteUrl("GetTagById", new {id = tag.Id});
                 return Ok(tag);
             }
 
@@ -90,14 +103,14 @@ namespace HIS.Recipes.WebApi.Controllers
         /// </summary>
         /// <param name="id">Id of the tag to change</param>
         /// <param name="model">New tag data</param>
-        /// <response code="204">After update was successfully</response>
+        /// <response code="200">After update was successfully</response>
         /// <response code="400">If the given data are invalid</response>
         /// <response code="404">If no tag was found for the given id</response>
         [HttpPut("api/v{version:apiVersion}/[controller]/{id:int}")]
         public async Task<IActionResult> UpdateTagAsync(int id, [FromBody]NamedViewModel  model)
         {
             await _service.UpdateAsync(id, model);
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>

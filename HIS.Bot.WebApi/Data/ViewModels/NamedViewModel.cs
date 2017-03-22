@@ -6,7 +6,7 @@ namespace HIS.Bot.WebApi.Data.ViewModels
     /// <summary>
     /// Returns an entity with its name, id and url
     /// </summary>
-    public class NamedViewModel:IViewModelEntity<int>
+    public class NamedViewModel:IViewModelEntity<int>, INamedEntity<int>
     {
         [Required]
         [Range(0, int.MaxValue)]

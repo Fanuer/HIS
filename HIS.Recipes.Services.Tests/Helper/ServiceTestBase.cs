@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HIS.Recipes.Services.Tests.Helper
 {
-    public abstract class TestBase:IDisposable
+    public abstract class ServiceTestBase:IDisposable
     {
         #region CONST
         #endregion
@@ -17,7 +17,7 @@ namespace HIS.Recipes.Services.Tests.Helper
         #endregion
 
         #region CTOR
-        ~TestBase()
+        ~ServiceTestBase()
         {
             Dispose(false);
         }

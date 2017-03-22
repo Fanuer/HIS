@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace HIS.Recipes.WebApi.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}")]
     [Authorize]
-    public class SouceController : Controller
+    public class SourcesController : Controller
     {
         #region CONST
         #endregion
@@ -28,7 +29,7 @@ namespace HIS.Recipes.WebApi.Controllers
 
         #region CTOR
 
-        public SouceController(ISourceService service)
+        public SourcesController(ISourceService service)
         {
             _service = service;
         }
@@ -41,10 +42,20 @@ namespace HIS.Recipes.WebApi.Controllers
         /// </summary>
         /// <response code="200">All Source Entries</response>
         [HttpGet("Sources")]
-        [ProducesResponseType(typeof(IEnumerable<SourceListEntryViewModel>), (int)HttpStatusCode.OK)]
-        public IActionResult GetSource()
+        [ProducesResponseType(typeof(ListViewModel<SourceListEntryViewModel>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetSourcesAsync([FromQuery]string searchterm = "", [FromQuery]int page = 0, [FromQuery]int entriesPerPage = 10)
         {
-            return Ok(_service.GetSources());
+            var result = _service.GetSources();
+            var totalCount = await result.CountAsync();
+            if (!String.IsNullOrWhiteSpace(searchterm))
+            {
+                result = result.Where(x => x.Name.IndexOf(searchterm, StringComparison.CurrentCultureIgnoreCase) >= 0);
+            }
+
+            var skipCount = Math.Max(0, Math.Min(page * entriesPerPage, result.Count() - entriesPerPage));
+            result = result.Skip(skipCount).Take(entriesPerPage);
+
+            return Ok(new ListViewModel<SourceListEntryViewModel>(result, totalCount, page, entriesPerPage));
         }
 
         /// <summary>
@@ -77,7 +88,7 @@ namespace HIS.Recipes.WebApi.Controllers
         /// <summary>
         /// Creates a new Cookbook
         /// </summary>
-        /// <response code="204">After Creation</response>
+        /// <response code="201">After Creation</response>
         [HttpPost("Cookbooks")]
         public async Task<IActionResult> AddCookbookAsync([FromBody]CookbookSourceCreationViewModel model)
         {

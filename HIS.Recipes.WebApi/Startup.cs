@@ -94,7 +94,7 @@ namespace HIS.Recipes.WebApi
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = authServerInfo.Value.AuthServerLocation,
-                ScopeName = authServerInfo.Value.ApiName,
+                AllowedScopes = { authServerInfo.Value.ApiName },
                 RequireHttpsMetadata = authServerInfo.Value.UseHttps && !env.IsDevelopment() // https only in production
             });
 

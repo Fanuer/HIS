@@ -1,0 +1,21 @@
+{
+  "buildOptions": {
+    "copyToOutput": {
+      "include": [ "appsettings.keys.json" ]
+    }
+  },
+  "dependencies": {
+    "HIS.Helpers.Test": "1.0.0-*",
+    "xunit": "2.2.0"
+  },
+  "frameworks": {
+    "netcoreapp1.6": {
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
+    }
+  },
+  "testRunner": "xunit",
+  "version": "1.0.0-*"
+}

@@ -9,5 +9,9 @@ namespace HIS.WebApi.Auth.Options
     {
         public List<SecretModel> ApiResources { get; set; }
         public List<SecretModel> Clients { get; set; }
+        /// <summary>
+        /// Password of the Certificate that is used to sign the tokens
+        /// </summary>
+        public string CertificatePassword { get; set; }
     }
 }

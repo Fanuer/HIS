@@ -57,7 +57,7 @@ namespace HIS.Recipes.WebApi.Controllers
         }
 
         /// <summary>
-        /// Returns all images of a recipe
+        /// Returns one images of a recipe
         /// </summary>
         /// <param name="recipeId">Id of a recipe</param>
         /// <param name="imageId">Id of an image</param>
@@ -71,7 +71,7 @@ namespace HIS.Recipes.WebApi.Controllers
             var result = await _service.GetImage(imageId);
             if (!result.RecipeId.Equals(recipeId))
             {
-                ModelState.AddModelError("recipeId", "The recipe does not contain an image with the given image imageId");
+                ModelState.AddModelError("recipeId", "The recipe does not contain an image with the given imageId");
             }
             return Ok(result);
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using HIS.Helpers.Exceptions;
@@ -18,11 +19,11 @@ namespace HIS.Helpers.Extensions
         /// <summary>
         /// Converts a 1-deep object to a query string
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of the model</typeparam>
         /// <param name="client">calling client</param>
         /// <param name="model">modeldata to add</param>
         /// <returns></returns>
-        public static string AddToUrlAsQueryString<T>(this HttpClient client, T model) where T : class
+        public static string ConvertToQueryString<T>(this HttpClient client, T model) where T : class
         {
             if (model == null) { return ""; } 
             var propList = new List<KeyValuePair<string, string>>();
@@ -44,6 +45,26 @@ namespace HIS.Helpers.Extensions
                 }
             }
             return propList.Any() ? String.Join("&", propList.Select(x => $"{x.Key}={WebUtility.UrlEncode(x.Value)}").ToArray()): "";
+        }
+
+        /// <summary>
+        /// Adds the models porperties to the given uri as query parameters
+        /// </summary>
+        /// <typeparam name="T">model type</typeparam>
+        /// <param name="client">Http-Client</param>
+        /// <param name="uri">given URL</param>
+        /// <param name="model">model whose properties will be added</param>
+        /// <returns></returns>
+        public static string AddToQueryString<T>(this HttpClient client, string uri, T model) where T : class
+        {
+            // Convert model to query-string
+            var queryString = client.ConvertToQueryString(model);
+            // if no uri was passed just return the queryString
+            if (String.IsNullOrWhiteSpace(uri)) {return queryString;}
+            // if no model was passed just return the uri
+            if (String.IsNullOrWhiteSpace(queryString)) { return uri;}
+            // if the uri doen not contain query parameters add them 
+            return !uri.Contains('?') ? $"{uri}?{queryString}" : $"{uri}&{queryString}";
         }
 
         public static async Task<HttpResponseMessage> PostAsJsonAsync<T>(this HttpClient client, string url, T model)

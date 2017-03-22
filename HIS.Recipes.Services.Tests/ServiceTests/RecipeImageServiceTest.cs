@@ -18,7 +18,7 @@ using Xunit;
 
 namespace HIS.Recipes.Services.Tests.ServiceTests
 {
-    public class RecipeImageServiceTest:TestBase
+    public class RecipeImageServiceTest: ServiceTestBase
     {
         [Fact]
         public async Task GetImages()

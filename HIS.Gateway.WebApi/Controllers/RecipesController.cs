@@ -90,6 +90,7 @@ namespace HIS.Gateway.WebApi.Controllers
             await Client.SetBearerTokenAsync(this.HttpContext);
             await this.Client.StartCookingAsync(recipeId);
         }
+
         #endregion
 
         #region PROPERTIES

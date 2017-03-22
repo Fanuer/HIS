@@ -2,6 +2,10 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "HIS.Helpers": "1.0.0-*",
+    "IdentityModel": "2.3.1",
+    "Microsoft.Extensions.Configuration": "1.1.1",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
     "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
     "NETStandard.Library": "1.6.1"
   },

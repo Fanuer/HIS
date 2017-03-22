@@ -41,31 +41,21 @@ namespace HIS.WebApi.Auth
             var roles = await _userManager.GetRolesAsync(user);
             if (roles.Any(x => x.Equals("Administrator") || x.Equals("Owner")))
             {
-                claims.Add(new Claim(JwtClaimTypes.Role, "admin"));
+                claims.Add(new Claim(JwtClaimTypes.Role, "his.admin"));
+                claims.Add(new Claim(JwtClaimTypes.Role, "his.recipes.write"));
             }
-            else
-            {
-                claims.Add(new Claim(JwtClaimTypes.Role, "user"));
-            }
+            claims.Add(new Claim(JwtClaimTypes.Role, "his.user"));
 
-            /*
-             Add additional Claims like 
-             if (user.DataEventRecordsRole == "dataEventRecords.admin")
-            {
-                claims.Add(new Claim(JwtClaimTypes.Role, "dataEventRecords.admin"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "dataEventRecords.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "dataEventRecords"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "dataEventRecords"));
-            }
-            else
-            {
-                claims.Add(new Claim(JwtClaimTypes.Role, "dataEventRecords.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "dataEventRecords"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "dataEventRecords"));
-            }
-             
-             */
+            // Add recipe-claims
+            claims.Add(new Claim(JwtClaimTypes.Role, "his.recipes"));
+            claims.Add(new Claim(JwtClaimTypes.Role, "his.recipes.read"));
+            claims.Add(new Claim(JwtClaimTypes.Scope, "his.recipes"));
 
+            // Add home automatisation-claims
+            claims.Add(new Claim(JwtClaimTypes.Role, "his.ha"));
+            claims.Add(new Claim(JwtClaimTypes.Role, "his.ha.read"));
+            claims.Add(new Claim(JwtClaimTypes.Scope, "his.ha"));
+            
             context.IssuedClaims = claims;
         }
 

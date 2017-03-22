@@ -17,7 +17,7 @@ using Xunit;
 
 namespace HIS.Recipes.Services.Tests.ServiceTests
 {
-    public class SourceServiceTests:TestBase
+    public class SourceServiceTests: ServiceTestBase
     {
         [Fact]
         public async Task GetCookbooks()

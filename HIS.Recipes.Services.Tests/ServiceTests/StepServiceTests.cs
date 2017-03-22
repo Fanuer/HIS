@@ -16,7 +16,7 @@ using Xunit;
 
 namespace HIS.Recipes.Services.Tests.ServiceTests
 {
-    public class StepServiceTests:TestBase
+    public class StepServiceTests: ServiceTestBase
     {
         [Fact]
         public async Task GetSteps()
